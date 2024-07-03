@@ -65,11 +65,20 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
     endif ()
 
-    # Append all warnings if option is enabled
+    # Append enable all warnings and throw error for warnings if option is enabled
     # https://learn.microsoft.com/en-us/cpp/build/reference/compiler-option-warning-level
     if (ENABLE_ALL_WARNINGS)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /WX")
     endif ()
+
+    # ------------- Always Disabled Warnings -------------
+    # Every warning that is disabled here should have a comment explaining why it is disabled. Disabling warnings should
+    # be avoided as much as possible
+
+    # Disable warning C4514: 'function' : unreferenced inline function has been removed. Not every function will be used
+    # in the current translation unit.
+    # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4514
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4514")
 
     # Setup build configurations
     set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
