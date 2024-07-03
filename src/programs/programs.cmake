@@ -1,0 +1,6 @@
+function(add_opal_executable target root files)
+    add_executable(${target} ${files})
+    target_include_directories(${target} PRIVATE ${RUNTIME_ROOT} ${THIRD_PARTY_ROOT})
+    set_target_properties(${target} PROPERTIES FOLDER "programs")
+    source_group(TREE ${root} FILES ${files})
+endfunction()
