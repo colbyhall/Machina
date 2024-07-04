@@ -428,6 +428,11 @@ namespace op::core {
 	using std::move;
 } // namespace op::core
 
+namespace op {
+	using core::forward;
+	using core::move;
+} // namespace op
+
 #define OP_ENUM_CLASS_BITFIELD(Enum)                                                                                   \
 	inline Enum& operator|=(Enum& A, Enum B) {                                                                         \
 		return (Enum&)((op::core::UnderlyingType(Enum)&)A |= (op::core::UnderlyingType(Enum))B);                       \

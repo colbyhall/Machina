@@ -80,9 +80,21 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4514
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4514")
 
-    # Disable warning for function not being inlined when marked as inlined
+    # Disable warning for function not being inlined when marked as inlined. This may not always happen based on
+    # compiler optimizations.
     # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4710
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4710")
+
+    # Disable warning for adding struct padding due to alignment specifier. We want to use the alignment specifier and
+    # this will add padding to structures.
+    # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4324
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4324")
+    # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4820
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4820")
+
+    # Disable warning for use of QSpectre notification. This warning seems to be acting just as a notification.
+    # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/c5045
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd5045")
 
     # Setup build configurations
     set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
