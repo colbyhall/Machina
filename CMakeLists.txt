@@ -80,6 +80,10 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4514
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4514")
 
+    # Disable warning for function not being inlined when marked as inlined
+    # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4710
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4710")
+
     # Setup build configurations
     set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 
@@ -147,7 +151,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # https://learn.microsoft.com/en-us/cpp/build/reference/ltcg-link-time-code-generation
     set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "/LTCG")
 
-    message(STATUS, "Using MSVC compiler")
+    message("Using " ${CMAKE_CXX_COMPILER_ID} " (" ${CMAKE_CXX_COMPILER_VERSION} ")")
 else ()
     message(FATAL_ERROR, "Compiler not supported. Only MSVC is supported at the moment")
 endif ()

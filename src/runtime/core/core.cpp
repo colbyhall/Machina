@@ -1,4 +1,8 @@
-#include "core/concepts.h"
-#include "core/primitives.h"
+#include "core/test.h"
 
-int foo() { return op::core::NumericLimits<int>::max(); }
+OP_TEST_SUITE("core") {
+	OP_TEST_CASE("foo bar") {
+		OP_INFO("Hello World");
+		OP_CHECK(1 == 1);
+	}
+}

@@ -1,6 +1,8 @@
-function(add_third_party_library target root files)
-    add_library(${target} ${files})
+function(add_third_party_library target root)
+    add_library(${target} ${ARGN})
     target_include_directories(${target} PRIVATE ${RUNTIME_ROOT} ${THIRD_PARTY_ROOT})
     set_target_properties(${target} PROPERTIES FOLDER "third_party")
-    source_group(TREE ${root} FILES ${files})
+    source_group(TREE ${root} FILES ${ARGN})
 endfunction()
+
+include(${THIRD_PARTY_ROOT}/doctest/doctest.cmake)
