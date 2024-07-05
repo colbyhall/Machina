@@ -83,7 +83,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Disable warning for function not being inlined when marked as inlined. This may not always happen based on
     # compiler optimizations.
     # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4710
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4710")
+    # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4714
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4710 /wd4714")
 
     # Disable warning for adding struct padding due to alignment specifier. We want to use the alignment specifier and
     # this will add padding to structures.

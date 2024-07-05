@@ -5,7 +5,7 @@
  */
 
 #include "core/containers/non_null.h"
-#include "core/test.h"
+#include "core/debug/test.h"
 
 using namespace op::core;
 

@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include "core/assertions.h"
 #include "core/concepts.h"
 #include "core/containers/option.h"
+#include "core/debug/assertions.h"
 #include "core/memory.h"
 #include "core/primitives.h"
 

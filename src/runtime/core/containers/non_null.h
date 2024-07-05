@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "core/assertions.h"
+#include "core/debug/assertions.h"
 #include "core/primitives.h"
 #include "core/type_traits.h"
 

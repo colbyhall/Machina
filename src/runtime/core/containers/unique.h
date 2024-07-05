@@ -13,9 +13,9 @@ namespace op::core {
 	template <typename Base>
 	class Unique {
 	public:
-		Unique()
+		explicit Unique()
 			requires DefaultInitializable<Base>
-			: Unique(Base{}) {}
+			: Unique{ Base{} } {}
 
 		template <typename... Args>
 		static OP_ALWAYS_INLINE Unique<Base> create(Args&&... args)
@@ -38,13 +38,15 @@ namespace op::core {
 
 		template <typename Derived = Base>
 		Unique(Unique<Derived>&& move) noexcept
-			requires DerivedFrom<Derived, Base>
+			requires DerivedFrom<Derived, Base> || SameAs<Derived, Base>
 			: m_ptr(move.m_ptr) {
 			move.m_ptr = nullptr;
 		}
 
 		template <typename Derived = Base>
-		Unique& operator=(Unique<Derived>&& move) noexcept {
+		Unique& operator=(Unique<Derived>&& move) noexcept
+			requires DerivedFrom<Derived, Base> || SameAs<Derived, Base>
+		{
 			this->~Unique();
 
 			m_ptr = move.m_ptr;
