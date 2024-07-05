@@ -200,6 +200,7 @@ OP_TEST_SUITE("containers") {
 			Array<int, StackAllocator<120>> arr2{ op::move(arr) };
 			OP_REQUIRE(arr2.is_valid_index(0));
 			OP_CHECK(arr2[0] == 120);
+			OP_CHECK(arr.is_empty());
 		}
 
 		OP_SUBCASE("move assignment") {
@@ -212,6 +213,7 @@ OP_TEST_SUITE("containers") {
 			arr2 = op::move(arr);
 			OP_REQUIRE(arr2.is_valid_index(0));
 			OP_CHECK(arr2[0] == 120);
+			OP_CHECK(arr.is_empty());
 		}
 
 		OP_SUBCASE("move insert") {
