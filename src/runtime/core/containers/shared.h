@@ -302,7 +302,7 @@ namespace op::core {
 		using Counter = SharedCounter<Type>;
 
 		OP_NO_DISCARD OP_ALWAYS_INLINE Shared<T, Type> to_shared() const {
-			return m_this.as_ref().unwrap().upgrade().unwrap();
+			return m_this.as_const_ref().unwrap().upgrade().unwrap();
 		}
 
 	private:

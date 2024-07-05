@@ -72,7 +72,7 @@ namespace op::core {
 			m_set = copy.m_set;
 			if (m_set) {
 				auto* p = m_data;
-				new (p) T(copy.as_ref().unwrap());
+				new (p) T(copy.as_const_ref().unwrap());
 			}
 		}
 
@@ -85,7 +85,7 @@ namespace op::core {
 			m_set = copy.m_set;
 			if (m_set) {
 				auto* p = m_data;
-				new (p) T(copy.as_ref().unwrap());
+				new (p) T(copy.as_const_ref().unwrap());
 			}
 
 			return *this;
@@ -167,7 +167,7 @@ namespace op::core {
 			return t;
 		}
 
-		OP_ALWAYS_INLINE Option<T&> as_mut() {
+		OP_ALWAYS_INLINE Option<T&> as_ref() {
 			if (is_set()) {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				return Option<T&>{ *p };
@@ -176,7 +176,7 @@ namespace op::core {
 			return nullopt;
 		}
 
-		OP_ALWAYS_INLINE Option<T const&> as_ref() const {
+		OP_ALWAYS_INLINE Option<T const&> as_const_ref() const {
 			if (is_set()) {
 				auto* p = reinterpret_cast<T const*>(&m_data[0]);
 				return Option<T const&>{ *p };
@@ -262,7 +262,7 @@ namespace op::core {
 			return t;
 		}
 
-		OP_ALWAYS_INLINE Option<T&> as_mut() {
+		OP_ALWAYS_INLINE Option<T&> as_ref() {
 			if (is_set()) {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				return Option<T&>(*p);
@@ -271,7 +271,7 @@ namespace op::core {
 			}
 		}
 
-		OP_ALWAYS_INLINE Option<T const&> as_ref() const {
+		OP_ALWAYS_INLINE Option<T const&> as_const_ref() const {
 			if (is_set()) {
 				auto* p = reinterpret_cast<T const*>(&m_data[0]);
 				return Option<T const&>(*p);

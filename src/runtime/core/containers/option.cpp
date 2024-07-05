@@ -29,8 +29,8 @@ OP_TEST_SUITE("containers") {
 
 			Option<Array<int>> opt = op::move(arr);
 			OP_REQUIRE(opt.is_set());
-			OP_CHECK(opt.as_ref().unwrap()[0] == 120);
-			OP_CHECK(opt.as_ref().unwrap()[1] == 122);
+			OP_CHECK(opt.as_const_ref().unwrap()[0] == 120);
+			OP_CHECK(opt.as_const_ref().unwrap()[1] == 122);
 		}
 
 		OP_SUBCASE("value move assignment") {
@@ -41,8 +41,8 @@ OP_TEST_SUITE("containers") {
 			Option<Array<int>> opt = nullopt;
 			opt = op::move(arr);
 			OP_REQUIRE(opt.is_set());
-			OP_CHECK(opt.as_ref().unwrap()[0] == 120);
-			OP_CHECK(opt.as_ref().unwrap()[1] == 122);
+			OP_CHECK(opt.as_const_ref().unwrap()[0] == 120);
+			OP_CHECK(opt.as_const_ref().unwrap()[1] == 122);
 		}
 
 		OP_SUBCASE("value copy constructor") {
@@ -53,9 +53,9 @@ OP_TEST_SUITE("containers") {
 
 			Option<Array<int>> opt = arr;
 			OP_REQUIRE(opt.is_set());
-			OP_CHECK(opt.as_ref().unwrap()[0] == 120);
-			OP_CHECK(opt.as_ref().unwrap()[1] == 122);
-			OP_CHECK(ptr != &opt.as_ref().unwrap()[0]);
+			OP_CHECK(opt.as_const_ref().unwrap()[0] == 120);
+			OP_CHECK(opt.as_const_ref().unwrap()[1] == 122);
+			OP_CHECK(ptr != &opt.as_const_ref().unwrap()[0]);
 		}
 
 		OP_SUBCASE("value copy assignment") {
@@ -67,9 +67,9 @@ OP_TEST_SUITE("containers") {
 			Option<Array<int>> opt = nullopt;
 			opt = arr;
 			OP_REQUIRE(opt.is_set());
-			OP_CHECK(opt.as_ref().unwrap()[0] == 120);
-			OP_CHECK(opt.as_ref().unwrap()[1] == 122);
-			OP_CHECK(ptr != &opt.as_ref().unwrap()[0]);
+			OP_CHECK(opt.as_const_ref().unwrap()[0] == 120);
+			OP_CHECK(opt.as_const_ref().unwrap()[1] == 122);
+			OP_CHECK(ptr != &opt.as_const_ref().unwrap()[0]);
 		}
 
 		OP_SUBCASE("copy constructor") {
@@ -81,8 +81,8 @@ OP_TEST_SUITE("containers") {
 
 			Option<Array<int>> opt2 = opt;
 			OP_REQUIRE(opt2.is_set());
-			OP_REQUIRE(opt.as_ref().unwrap().len() == opt2.as_ref().unwrap().len());
-			OP_CHECK(&opt.as_ref().unwrap()[0] != &opt2.as_ref().unwrap()[0]);
+			OP_REQUIRE(opt.as_const_ref().unwrap().len() == opt2.as_const_ref().unwrap().len());
+			OP_CHECK(&opt.as_const_ref().unwrap()[0] != &opt2.as_const_ref().unwrap()[0]);
 		}
 
 		OP_SUBCASE("copy assignment") {
@@ -95,8 +95,8 @@ OP_TEST_SUITE("containers") {
 			Option<Array<int>> opt2 = nullopt;
 			opt2 = opt;
 			OP_REQUIRE(opt2.is_set());
-			OP_REQUIRE(opt.as_ref().unwrap().len() == opt2.as_ref().unwrap().len());
-			OP_CHECK(&opt.as_ref().unwrap()[0] != &opt2.as_ref().unwrap()[0]);
+			OP_REQUIRE(opt.as_const_ref().unwrap().len() == opt2.as_const_ref().unwrap().len());
+			OP_CHECK(&opt.as_const_ref().unwrap()[0] != &opt2.as_const_ref().unwrap()[0]);
 		}
 
 		OP_SUBCASE("move constructor") {
@@ -107,9 +107,9 @@ OP_TEST_SUITE("containers") {
 
 			Option<Array<int>> opt = op::move(arr);
 			OP_REQUIRE(opt.is_set());
-			OP_CHECK(opt.as_ref().unwrap()[0] == 120);
-			OP_CHECK(opt.as_ref().unwrap()[1] == 122);
-			OP_CHECK(ptr == &opt.as_ref().unwrap()[0]);
+			OP_CHECK(opt.as_const_ref().unwrap()[0] == 120);
+			OP_CHECK(opt.as_const_ref().unwrap()[1] == 122);
+			OP_CHECK(ptr == &opt.as_const_ref().unwrap()[0]);
 		}
 
 		OP_SUBCASE("move assignment") {
@@ -124,9 +124,9 @@ OP_TEST_SUITE("containers") {
 			Option<Array<int>> opt2 = nullopt;
 			opt2 = op::move(opt);
 			OP_REQUIRE(opt2.is_set());
-			OP_CHECK(opt2.as_ref().unwrap()[0] == 120);
-			OP_CHECK(opt2.as_ref().unwrap()[1] == 122);
-			OP_CHECK(ptr == &opt2.as_ref().unwrap()[0]);
+			OP_CHECK(opt2.as_const_ref().unwrap()[0] == 120);
+			OP_CHECK(opt2.as_const_ref().unwrap()[1] == 122);
+			OP_CHECK(ptr == &opt2.as_const_ref().unwrap()[0]);
 		}
 
 		OP_SUBCASE("unwrap") {
@@ -155,19 +155,6 @@ OP_TEST_SUITE("containers") {
 			OP_CHECK(unwrapped.is_empty());
 		}
 
-		OP_SUBCASE("as_mut") {
-			Array<int> arr;
-			arr.push(120);
-			arr.push(122);
-
-			Option<Array<int>> opt = op::move(arr);
-			OP_REQUIRE(opt.is_set());
-			Option<Array<int>&> mut = opt.as_mut();
-			OP_REQUIRE(mut.is_set());
-			mut.unwrap().push(123);
-			OP_CHECK(opt.as_ref().unwrap()[2] == 123);
-		}
-
 		OP_SUBCASE("as_ref") {
 			Array<int> arr;
 			arr.push(120);
@@ -175,7 +162,20 @@ OP_TEST_SUITE("containers") {
 
 			Option<Array<int>> opt = op::move(arr);
 			OP_REQUIRE(opt.is_set());
-			Option<Array<int> const&> ref = opt.as_ref();
+			Option<Array<int>&> mut = opt.as_ref();
+			OP_REQUIRE(mut.is_set());
+			mut.unwrap().push(123);
+			OP_CHECK(opt.as_const_ref().unwrap()[2] == 123);
+		}
+
+		OP_SUBCASE("as_const_ref") {
+			Array<int> arr;
+			arr.push(120);
+			arr.push(122);
+
+			Option<Array<int>> opt = op::move(arr);
+			OP_REQUIRE(opt.is_set());
+			Option<Array<int> const&> ref = opt.as_const_ref();
 			OP_REQUIRE(ref.is_set());
 			OP_CHECK(ref.unwrap()[0] == 120);
 			OP_CHECK(ref.unwrap()[1] == 122);
@@ -267,19 +267,19 @@ OP_TEST_SUITE("containers") {
 			OP_CHECK(unwrapped == 120);
 		}
 
-		OP_SUBCASE("as_mut") {
+		OP_SUBCASE("as_ref") {
 			Option<int> opt = 120;
 			OP_REQUIRE(opt.is_set());
-			Option<int&> mut = opt.as_mut();
+			Option<int&> mut = opt.as_ref();
 			OP_REQUIRE(mut.is_set());
 			mut.unwrap() = 123;
 			OP_CHECK(opt.unwrap() == 123);
 		}
 
-		OP_SUBCASE("as_ref") {
+		OP_SUBCASE("as_const_ref") {
 			Option<int> opt = 120;
 			OP_REQUIRE(opt.is_set());
-			Option<int const&> ref = opt.as_ref();
+			Option<int const&> ref = opt.as_const_ref();
 			OP_REQUIRE(ref.is_set());
 			OP_CHECK(ref.unwrap() == 120);
 		}

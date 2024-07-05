@@ -114,8 +114,8 @@ OP_TEST_SUITE("containers") {
 				OP_REQUIRE(upgrade.is_set());
 				OP_CHECK(shared.strong() == 2);
 				OP_CHECK(shared.weak() == 1);
-				OP_CHECK(shared.strong() == upgrade.as_ref().unwrap().strong());
-				OP_CHECK(shared.weak() == upgrade.as_ref().unwrap().weak());
+				OP_CHECK(shared.strong() == upgrade.as_const_ref().unwrap().strong());
+				OP_CHECK(shared.weak() == upgrade.as_const_ref().unwrap().weak());
 			}
 			OP_CHECK(shared.strong() == 1);
 			OP_CHECK(shared.weak() == 0);
@@ -241,8 +241,8 @@ OP_TEST_SUITE("containers") {
 				OP_REQUIRE(upgrade.is_set());
 				OP_CHECK(shared.strong() == 2);
 				OP_CHECK(shared.weak() == 1);
-				OP_CHECK(shared.strong() == upgrade.as_ref().unwrap().strong());
-				OP_CHECK(shared.weak() == upgrade.as_ref().unwrap().weak());
+				OP_CHECK(shared.strong() == upgrade.as_const_ref().unwrap().strong());
+				OP_CHECK(shared.weak() == upgrade.as_const_ref().unwrap().weak());
 			}
 			OP_CHECK(shared.strong() == 1);
 			OP_CHECK(shared.weak() == 0);
