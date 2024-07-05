@@ -84,3 +84,7 @@ namespace op::core {
 		Base* m_ptr;
 	};
 } // namespace op::core
+
+namespace op {
+	using core::Unique;
+} // namespace op
