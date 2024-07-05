@@ -20,7 +20,7 @@ namespace op::core {
 		OP_ALWAYS_INLINE Slice(InitializerList<T const> list)
 			requires(is_const<T>)
 			: m_ptr(list.begin())
-			, m_len(static_cast<usize>(list.end() - list.begin())) {}
+			, m_len(list.size()) {}
 
 		// Copy and Move operators
 		OP_ALWAYS_INLINE Slice(const Slice<T>& copy);

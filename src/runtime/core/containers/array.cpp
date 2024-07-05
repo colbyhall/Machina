@@ -16,6 +16,27 @@ OP_TEST_SUITE("containers") {
 			OP_CHECK(arr.len() == 0);
 		}
 
+		OP_SUBCASE("initializer_list") {
+			Array<int> arr = { 1, 2, 3, 4, 5 };
+			OP_CHECK(arr.len() == 5);
+			OP_CHECK(arr[0] == 1);
+			OP_CHECK(arr[1] == 2);
+			OP_CHECK(arr[2] == 3);
+			OP_CHECK(arr[3] == 4);
+			OP_CHECK(arr[4] == 5);
+		}
+
+		OP_SUBCASE("slice constructor") {
+			Slice<const int> slice = { 1, 2, 3, 4, 5 };
+			Array<int> arr{ slice };
+			OP_CHECK(arr.len() == 5);
+			OP_CHECK(arr[0] == 1);
+			OP_CHECK(arr[1] == 2);
+			OP_CHECK(arr[2] == 3);
+			OP_CHECK(arr[3] == 4);
+			OP_CHECK(arr[4] == 5);
+		}
+
 		OP_SUBCASE("copy constructor") {
 			Array<int> arr;
 			arr.push(120);
@@ -67,6 +88,47 @@ OP_TEST_SUITE("containers") {
 			OP_REQUIRE(arr2.is_valid_index(0));
 			OP_CHECK(arr2[0] == 120);
 			OP_CHECK(ptr == &arr2[0]);
+		}
+
+		OP_SUBCASE("as_slice") {
+			Array<int> arr = { 1, 2, 3, 4, 5 };
+			auto slice = arr.as_slice();
+			OP_CHECK(slice.len() == 5);
+			OP_CHECK(slice[0] == 1);
+			OP_CHECK(slice[1] == 2);
+			OP_CHECK(slice[2] == 3);
+			OP_CHECK(slice[3] == 4);
+			OP_CHECK(slice[4] == 5);
+		}
+
+		OP_SUBCASE("as_const_slice") {
+			Array<int> arr = { 1, 2, 3, 4, 5 };
+			auto slice = arr.as_const_slice();
+			OP_CHECK(slice.len() == 5);
+			OP_CHECK(slice[0] == 1);
+			OP_CHECK(slice[1] == 2);
+			OP_CHECK(slice[2] == 3);
+			OP_CHECK(slice[3] == 4);
+			OP_CHECK(slice[4] == 5);
+		}
+
+		OP_SUBCASE("get") {
+			Array<int> arr;
+			arr.push(120);
+			OP_REQUIRE(arr.is_valid_index(0));
+			OP_CHECK(arr.get(0).is_set());
+			OP_CHECK(arr.get(0).unwrap() == 120);
+			OP_CHECK(!arr.get(1).is_set());
+		}
+
+		OP_SUBCASE("last") {
+			Array<int> arr;
+			OP_CHECK(!arr.last().is_set());
+			arr.push(120);
+			arr.push(121);
+			arr.push(122);
+			OP_CHECK(arr.last().is_set());
+			OP_CHECK(arr.last().unwrap() == 122);
 		}
 
 		OP_SUBCASE("reserve") {
@@ -160,31 +222,41 @@ OP_TEST_SUITE("containers") {
 		}
 	}
 
-	OP_TEST_CASE("Array<StackAllocator>") {
+	OP_TEST_CASE("Array<InlineAllocator>") {
 		OP_SUBCASE("default constructor") {
-			Array<int, StackAllocator<120>> arr;
+			Array<int, InlineAllocator<120>> arr;
 			OP_CHECK(arr.len() == 0);
 		}
 
+		OP_SUBCASE("initializer list") {
+			Array<int, InlineAllocator<16>> arr = { 1, 2, 3, 4, 5 };
+			OP_CHECK(arr.len() == 5);
+			OP_CHECK(arr[0] == 1);
+			OP_CHECK(arr[1] == 2);
+			OP_CHECK(arr[2] == 3);
+			OP_CHECK(arr[3] == 4);
+			OP_CHECK(arr[4] == 5);
+		}
+
 		OP_SUBCASE("copy constructor") {
-			Array<int, StackAllocator<120>> arr;
+			Array<int, InlineAllocator<120>> arr;
 			arr.push(120);
 			OP_REQUIRE(arr.is_valid_index(0));
 			OP_REQUIRE(arr[0] == 120);
 
-			Array<int, StackAllocator<120>> arr2{ arr };
+			Array<int, InlineAllocator<120>> arr2{ arr };
 			OP_REQUIRE(arr2.is_valid_index(0));
 			OP_CHECK(arr2[0] == 120);
 			OP_CHECK(&arr[0] != &arr2[0]);
 		}
 
 		OP_SUBCASE("copy assignment") {
-			Array<int, StackAllocator<120>> arr;
+			Array<int, InlineAllocator<120>> arr;
 			arr.push(120);
 			OP_REQUIRE(arr.is_valid_index(0));
 			OP_REQUIRE(arr[0] == 120);
 
-			Array<int, StackAllocator<120>> arr2;
+			Array<int, InlineAllocator<120>> arr2;
 			arr2 = arr;
 			OP_REQUIRE(arr2.is_valid_index(0));
 			OP_CHECK(arr2[0] == 120);
@@ -192,24 +264,24 @@ OP_TEST_SUITE("containers") {
 		}
 
 		OP_SUBCASE("move constructor") {
-			Array<int, StackAllocator<120>> arr;
+			Array<int, InlineAllocator<120>> arr;
 			arr.push(120);
 			OP_REQUIRE(arr.is_valid_index(0));
 			OP_REQUIRE(arr[0] == 120);
 
-			Array<int, StackAllocator<120>> arr2{ op::move(arr) };
+			Array<int, InlineAllocator<120>> arr2{ op::move(arr) };
 			OP_REQUIRE(arr2.is_valid_index(0));
 			OP_CHECK(arr2[0] == 120);
 			OP_CHECK(arr.is_empty());
 		}
 
 		OP_SUBCASE("move assignment") {
-			Array<int, StackAllocator<120>> arr;
+			Array<int, InlineAllocator<120>> arr;
 			arr.push(120);
 			OP_REQUIRE(arr.is_valid_index(0));
 			OP_REQUIRE(arr[0] == 120);
 
-			Array<int, StackAllocator<120>> arr2;
+			Array<int, InlineAllocator<120>> arr2;
 			arr2 = op::move(arr);
 			OP_REQUIRE(arr2.is_valid_index(0));
 			OP_CHECK(arr2[0] == 120);
@@ -217,9 +289,9 @@ OP_TEST_SUITE("containers") {
 		}
 
 		OP_SUBCASE("move insert") {
-			Array<Array<int, StackAllocator<120>>, StackAllocator<120>> arr;
+			Array<Array<int, InlineAllocator<120>>, InlineAllocator<120>> arr;
 
-			Array<int, StackAllocator<120>> inner;
+			Array<int, InlineAllocator<120>> inner;
 			inner.insert(0, 120);
 
 			arr.insert(0, op::move(inner));
@@ -229,16 +301,16 @@ OP_TEST_SUITE("containers") {
 		}
 
 		OP_SUBCASE("copy insert") {
-			Array<int, StackAllocator<120>> arr;
+			Array<int, InlineAllocator<120>> arr;
 			arr.insert(0, 1);
 			OP_REQUIRE(arr.is_valid_index(0));
 			OP_CHECK(arr[0] == 1);
 		}
 
 		OP_SUBCASE("move push") {
-			Array<Array<int, StackAllocator<120>>, StackAllocator<120>> arr;
+			Array<Array<int, InlineAllocator<120>>, InlineAllocator<120>> arr;
 
-			Array<int, StackAllocator<120>> inner;
+			Array<int, InlineAllocator<120>> inner;
 			inner.insert(0, 120);
 
 			arr.push(op::move(inner));
@@ -248,14 +320,14 @@ OP_TEST_SUITE("containers") {
 		}
 
 		OP_SUBCASE("copy push") {
-			Array<int, StackAllocator<120>> arr;
+			Array<int, InlineAllocator<120>> arr;
 			arr.push(1);
 			OP_REQUIRE(arr.len() == 1);
 			OP_CHECK(arr[0] == 1);
 		}
 
 		OP_SUBCASE("remove") {
-			Array<int, StackAllocator<120>> arr;
+			Array<int, InlineAllocator<120>> arr;
 
 			arr.insert(0, 1);
 			OP_REQUIRE(arr.is_valid_index(0));
@@ -267,9 +339,9 @@ OP_TEST_SUITE("containers") {
 		}
 
 		OP_SUBCASE("move pop") {
-			Array<Array<int, StackAllocator<120>>, StackAllocator<120>> arr;
+			Array<Array<int, InlineAllocator<120>>, InlineAllocator<120>> arr;
 
-			Array<int, StackAllocator<120>> inner;
+			Array<int, InlineAllocator<120>> inner;
 			inner.push(120);
 			arr.push(op::move(inner));
 
@@ -285,7 +357,7 @@ OP_TEST_SUITE("containers") {
 		}
 
 		OP_SUBCASE("copy pop") {
-			Array<int, StackAllocator<120>> arr;
+			Array<int, InlineAllocator<120>> arr;
 
 			arr.push(1);
 			OP_REQUIRE(arr.is_valid_index(0));
