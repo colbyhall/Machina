@@ -12,7 +12,7 @@ namespace op::core {
 	template <typename T>
 	struct NumericLimits;
 
-	using u8 = unsigned char;
+	using u8 = unsigned __int8;
 	static_assert(sizeof(u8) == 1, "u8 should only be 1 byte");
 	template <>
 	struct NumericLimits<u8> {
@@ -20,7 +20,7 @@ namespace op::core {
 		static constexpr u8 max() { return 0xff; }
 	};
 
-	using u16 = unsigned short;
+	using u16 = unsigned __int16;
 	static_assert(sizeof(u16) == 2, "u16 should only be 2 bytes");
 	template <>
 	struct NumericLimits<u16> {
@@ -28,7 +28,7 @@ namespace op::core {
 		static constexpr u16 max() { return 0xffff; }
 	};
 
-	using u32 = unsigned int;
+	using u32 = unsigned __int32;
 	static_assert(sizeof(u32) == 4, "u32 should only be 4 bytes");
 	template <>
 	struct NumericLimits<u32> {
@@ -36,7 +36,7 @@ namespace op::core {
 		static constexpr u32 max() { return 0xffffffff; }
 	};
 
-	using u64 = unsigned long long;
+	using u64 = unsigned __int64;
 	static_assert(sizeof(u64) == 8, "u64 should only be 8 bytes");
 	using usize = u64;
 	static_assert(sizeof(usize) == 8, "usize should only be 8 bytes");
@@ -46,7 +46,7 @@ namespace op::core {
 		static constexpr u64 max() { return 0xffffffffffffffff; }
 	};
 
-	using i8 = signed char;
+	using i8 = __int8;
 	static_assert(sizeof(i8) == 1, "i8 should only be 1 byte");
 	template <>
 	struct NumericLimits<i8> {
@@ -54,7 +54,7 @@ namespace op::core {
 		static constexpr i8 max() { return 127; }
 	};
 
-	using i16 = short;
+	using i16 = __int16;
 	static_assert(sizeof(i16) == 2, "i16 should only be 2 bytes");
 	template <>
 	struct NumericLimits<i16> {
@@ -62,7 +62,7 @@ namespace op::core {
 		static constexpr i16 max() { return 32767; }
 	};
 
-	using i32 = int;
+	using i32 = __int32;
 	static_assert(sizeof(i32) == 4, "i32 should only be 4 bytes");
 	template <>
 	struct NumericLimits<i32> {
@@ -70,7 +70,7 @@ namespace op::core {
 		static constexpr i32 max() { return 2147483647; }
 	};
 
-	using i64 = long long;
+	using i64 = __int64;
 	static_assert(sizeof(i64) == 8, "i64 should only be 8 bytes");
 	using isize = i64;
 	static_assert(sizeof(isize) == 8, "isize should only be 8 bytes");
