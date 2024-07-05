@@ -16,7 +16,7 @@ endfunction()
 #
 # Finally, we turn on the compilation flag OP_ENABLE_TEST to enable the test code to be compiled in the library.
 function(test_runtime_library target)
-    add_executable(${target}_test ${ARGN} ${CORE_ROOT}/test_main.cpp)
+    add_executable(${target}_test ${ARGN} ${CORE_ROOT}/debug/test_main.cpp)
     target_include_directories(${target}_test PRIVATE ${RUNTIME_ROOT} ${THIRD_PARTY_ROOT})
     set_target_properties(${target}_test PROPERTIES LINKER_LANGUAGE CXX)
     get_target_property(OUT ${target}_test LINK_LIBRARIES)
