@@ -424,8 +424,14 @@ namespace op::core {
 	template <typename B>
 	inline constexpr bool negation = std::negation_v<B>;
 
+	// https://en.cppreference.com/w/cpp/utility/forward
 	using std::forward;
+
+	// https://en.cppreference.com/w/cpp/utility/move
 	using std::move;
+
+	// https://en.cppreference.com/w/cpp/utility/functional/invoke
+	using std::invoke;
 } // namespace op::core
 
 namespace op {
