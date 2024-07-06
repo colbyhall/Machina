@@ -3,6 +3,7 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/concepts.h
         ${CORE_ROOT}/core.cmake
         ${CORE_ROOT}/core.h
+        ${CORE_ROOT}/core.natvis
         ${CORE_ROOT}/initializer_list.h
         ${CORE_ROOT}/memory.h
         ${CORE_ROOT}/memory.cpp

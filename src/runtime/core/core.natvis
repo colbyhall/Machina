@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="op::core::Array&lt;*&gt;">
+        <Expand>
+            <Item Name="[len]">m_len</Item>
+            <Item Name="[cap]">m_storage.m_cap</Item>
+            <ArrayItems>
+                <Size>m_len</Size>
+                <ValuePointer>m_storage.m_ptr</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+    
+    <Type Name="op::core::Slice&lt;*&gt;">
+        <Expand>
+            <Item Name="[len]">m_len</Item>
+            <ArrayItems>
+                <Size>m_len</Size>
+                <ValuePointer>m_ptr</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+
+    <Type Name="op::core::Option&lt;*&gt;">
+        <DisplayString Condition="!m_set">None</DisplayString>
+
+        <Expand>
+            <ExpandedItem Condition="m_set">($T1*)(m_data)</ExpandedItem>
+        </Expand>
+    </Type>
+
+    <Type Name="op::core::Unique&lt;*&gt;">
+        <Expand>
+            <ExpandedItem>m_ptr</ExpandedItem>
+        </Expand>
+    </Type>
+
+    <Type Name="op::core::Shared&lt;*&gt;">
+        <Expand>
+            <Item Name="[strong]">m_counter->m_strong</Item>
+            <Item Name="[weak]">m_counter->m_weak</Item>
+            <ExpandedItem>m_base</ExpandedItem>
+        </Expand>
+    </Type>
+</AutoVisualizer>

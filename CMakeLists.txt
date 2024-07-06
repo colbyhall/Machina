@@ -8,7 +8,7 @@ option(GENERATE_DEBUG_SYMBOLS "Generate debug symbols" ON)
 # Enable all warnings
 option(ENABLE_ALL_WARNINGS "Enable all warnings and warnings as errors" ON)
 
-#
+# Setup project settings for MSVC
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Only support 64 bit architecture
     set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE "x64")
