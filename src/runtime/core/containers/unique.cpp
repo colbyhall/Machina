@@ -7,9 +7,9 @@
 #include "core/containers/unique.h"
 #include "core/debug/test.h"
 
-using namespace op::core;
-
 OP_TEST_SUITE("containers") {
+	using namespace op::core;
+
 	OP_TEST_CASE("Unique") {
 		struct Foo {
 			int a = 0;

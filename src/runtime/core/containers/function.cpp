@@ -8,11 +8,11 @@
 #include "core/containers/unique.h"
 #include "core/debug/test.h"
 
-using namespace op::core;
-
-int test(int x) { return x + 7; }
-
 OP_TEST_SUITE("containers") {
+	using namespace op::core;
+
+	int test(int x) { return x + 7; }
+
 	class Functor {
 	public:
 		int operator()(int x) const { return x + 1; }

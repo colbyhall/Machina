@@ -7,9 +7,9 @@
 #include "core/containers/slice.h"
 #include "core/debug/test.h"
 
-using namespace op;
-
 OP_TEST_SUITE("containers") {
+	using namespace op;
+
 	OP_TEST_CASE("Slice") {
 		OP_SUBCASE("default constructor") {
 			Slice<int> slice;

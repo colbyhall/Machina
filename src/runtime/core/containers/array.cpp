@@ -7,9 +7,9 @@
 #include "core/containers/array.h"
 #include "core/debug/test.h"
 
-using namespace op::core;
-
 OP_TEST_SUITE("containers") {
+	using namespace op::core;
+
 	OP_TEST_CASE("Array<HeapAllocator>") {
 		OP_SUBCASE("default constructor") {
 			Array<int> arr;

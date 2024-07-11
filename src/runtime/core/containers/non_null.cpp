@@ -7,9 +7,9 @@
 #include "core/containers/non_null.h"
 #include "core/debug/test.h"
 
-using namespace op::core;
-
 OP_TEST_SUITE("containers") {
+	using namespace op::core;
+	
 	OP_TEST_CASE("NonNull") {
 		OP_SUBCASE("constructor") {
 			int value = 5;

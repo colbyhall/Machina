@@ -7,9 +7,9 @@
 #include "core/containers/shared.h"
 #include "core/debug/test.h"
 
-using namespace op;
-
 OP_TEST_SUITE("containers") {
+	using namespace op;
+
 	OP_TEST_CASE("Shared") {
 		OP_SUBCASE("default constructor") {
 			const Shared<int> shared;
