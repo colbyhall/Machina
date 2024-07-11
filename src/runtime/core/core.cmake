@@ -28,6 +28,10 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/containers/string_view.cpp
         ${CORE_ROOT}/containers/unique.h
         ${CORE_ROOT}/containers/unique.cpp
+        ${CORE_ROOT}/containers/wstring.h
+        ${CORE_ROOT}/containers/wstring.cpp
+        ${CORE_ROOT}/containers/wstring_view.h
+        ${CORE_ROOT}/containers/wstring_view.cpp
 
         ${CORE_ROOT}/debug/assertions.h
         ${CORE_ROOT}/debug/test.h

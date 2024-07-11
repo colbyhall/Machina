@@ -55,6 +55,8 @@ namespace op::core {
 
 		OP_ALWAYS_INLINE Element* begin() { return m_storage.data(); }
 		OP_ALWAYS_INLINE Element* end() { return m_storage.data() + m_len; }
+		OP_ALWAYS_INLINE const Element* begin() const { return m_storage.data(); }
+		OP_ALWAYS_INLINE const Element* end() const { return m_storage.data() + m_len; }
 		OP_ALWAYS_INLINE const Element* cbegin() const { return m_storage.data(); }
 		OP_ALWAYS_INLINE const Element* cend() const { return m_storage.data() + m_len; }
 
@@ -280,7 +282,7 @@ namespace op::core {
 			core::set(src, 0, sizeof(Element));
 		}
 
-		new (src) Element(op::forward<Element>(item));
+		new (src) Element{ op::forward<Element>(item) };
 		m_len += 1;
 	}
 
@@ -303,7 +305,7 @@ namespace op::core {
 			core::set(src, 0, sizeof(Element));
 		}
 
-		new (src) Element(op::forward<Element>(item));
+		new (src) Element{ item };
 		m_len += 1;
 	}
 
@@ -322,7 +324,7 @@ namespace op::core {
 	{
 		const auto index = len();
 		insert(index, item);
-		return push(op::move(copy));
+		return index;
 	}
 
 	template <typename T, ArrayAllocator Allocator>
