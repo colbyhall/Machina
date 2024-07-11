@@ -56,9 +56,14 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     string(REPLACE "/GR" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
 
+    # Enable UTF-8 source and execution character set
+    # https://learn.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
+
     # Disable C++ exceptions handling
     # https://learn.microsoft.com/en-us/cpp/build/reference/eh-exception-handling-model
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHa-")
+
     # Append generate symbols if option is enabled
     # https://learn.microsoft.com/en-us/cpp/build/reference/z7-zi-zi-debug-information-format
     if (GENERATE_DEBUG_SYMBOLS)
