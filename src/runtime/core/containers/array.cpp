@@ -220,6 +220,21 @@ OP_TEST_SUITE("containers") {
 			OP_REQUIRE(value.is_set());
 			OP_CHECK(value.unwrap() == 1);
 		}
+
+		OP_SUBCASE("set len") {
+			Array<int> arr;
+			arr.set_len(10);
+			OP_CHECK(arr.len() == 10);
+			for (usize i = 0; i < 10; i++) {
+				OP_CHECK(arr[i] == 0);
+			}
+		}
+
+		OP_SUBCASE("set len uninitialized") {
+			Array<int> arr;
+			arr.set_len_uninitialized(10);
+			OP_CHECK(arr.len() == 10);
+		}
 	}
 
 	OP_TEST_CASE("Array<InlineAllocator>") {
@@ -366,6 +381,21 @@ OP_TEST_SUITE("containers") {
 			const auto value = arr.pop();
 			OP_REQUIRE(value.is_set());
 			OP_CHECK(value.unwrap() == 1);
+		}
+
+		OP_SUBCASE("set len") {
+			Array<int, InlineAllocator<120>> arr;
+			arr.set_len(10);
+			OP_CHECK(arr.len() == 10);
+			for (usize i = 0; i < 10; i++) {
+				OP_CHECK(arr[i] == 0);
+			}
+		}
+
+		OP_SUBCASE("set len uninitialized") {
+			Array<int, InlineAllocator<120>> arr;
+			arr.set_len_uninitialized(10);
+			OP_CHECK(arr.len() == 10);
 		}
 	}
 }

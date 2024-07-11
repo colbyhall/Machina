@@ -22,6 +22,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/containers/shared.cpp
         ${CORE_ROOT}/containers/slice.h
         ${CORE_ROOT}/containers/slice.cpp
+        ${CORE_ROOT}/containers/string.h
+        ${CORE_ROOT}/containers/string.cpp
         ${CORE_ROOT}/containers/string_view.h
         ${CORE_ROOT}/containers/string_view.cpp
         ${CORE_ROOT}/containers/unique.h

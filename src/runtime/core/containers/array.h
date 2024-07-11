@@ -93,6 +93,12 @@ namespace op::core {
 		OP_ALWAYS_INLINE Option<Element> pop()
 			requires Movable<Element> or Copyable<Element>;
 
+		void set_len(usize len)
+			requires DefaultInitializable<Element>;
+
+		void set_len_uninitialized(usize len)
+			requires is_trivial<Element>;
+
 		void reset();
 
 	private:
@@ -371,6 +377,54 @@ namespace op::core {
 		for (i32 i = count - 1; i >= 0; i -= 1) {
 			remove(static_cast<usize>(i));
 		}
+	}
+
+	template <typename T, ArrayAllocator Allocator>
+	void Array<T, Allocator>::set_len(usize len)
+		requires DefaultInitializable<Element>
+	{
+		if (len == m_len) {
+			return;
+		}
+
+		if (len > m_len) {
+			if (len > cap()) {
+				if constexpr (allocator_supports_reserve) {
+					reserve(len - m_len);
+				} else {
+					OP_PANIC("Ran out of space in array to insert item into.");
+				}
+			}
+
+			for (usize i = m_len; i < len; ++i) {
+				new (m_storage.data() + i) Element();
+			}
+		} else {
+			for (usize i = len; i < m_len; ++i) {
+				m_storage.data()[i].~Element();
+			}
+		}
+		m_len = len;
+	}
+
+	template <typename T, ArrayAllocator Allocator>
+	void Array<T, Allocator>::set_len_uninitialized(usize len)
+		requires is_trivial<Element>
+	{
+		if (len == m_len) {
+			return;
+		}
+
+		if (len > m_len) {
+			if (len > cap()) {
+				if constexpr (allocator_supports_reserve) {
+					reserve(len - m_len);
+				} else {
+					OP_PANIC("Ran out of space in array to insert item into.");
+				}
+			}
+		}
+		m_len = len;
 	}
 
 	struct HeapAllocator {
