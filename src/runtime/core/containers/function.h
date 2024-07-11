@@ -111,6 +111,8 @@ namespace op::core {
 				requires is_constructible<F, Args...>
 				: f{ op::forward<Args>(args)... } {}
 			~FunctorWrapper() final = default;
+			FunctorWrapper(const FunctorWrapper& copy) = delete;
+			FunctorWrapper& operator=(const FunctorWrapper& copy) = delete;
 
 			void* ptr() override { return &f; }
 
@@ -139,7 +141,7 @@ namespace op::core {
 			template <typename F>
 			RemoveReference<F>* bind(F&& f) {
 				void* memory = core::alloc(core::Layout::single<FunctorWrapper<F>>());
-				m_ptr = new (memory) FunctorWrapper<F>(op::forward<F>(f));
+				m_ptr = new (memory) FunctorWrapper<F>{ op::forward<F>(f) };
 
 				return static_cast<RemoveReference<F>*>(m_ptr->ptr());
 			}

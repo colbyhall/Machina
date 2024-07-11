@@ -26,8 +26,9 @@ OP_TEST_SUITE("containers") {
 
 	OP_TEST_CASE("Function") {
 		OP_SUBCASE("from lambda") {
-			Function<int(int)> fn = [](int x) { return x + 1; };
-			OP_CHECK(fn(5) == 6);
+			int foo = 5;
+			Function<int(int)> fn = [foo](int x) { return x + foo; };
+			OP_CHECK(fn(5) == 10);
 		}
 
 		OP_SUBCASE("from functor") {
