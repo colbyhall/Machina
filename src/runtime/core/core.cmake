@@ -4,6 +4,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/core.cmake
         ${CORE_ROOT}/core.h
         ${CORE_ROOT}/core.natvis
+        ${CORE_ROOT}/hash.h
+        ${CORE_ROOT}/hash.cpp
         ${CORE_ROOT}/initializer_list.h
         ${CORE_ROOT}/memory.h
         ${CORE_ROOT}/memory.cpp
@@ -14,6 +16,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/containers/array.cpp
         ${CORE_ROOT}/containers/function.h
         ${CORE_ROOT}/containers/function.cpp
+        ${CORE_ROOT}/containers/hash_map.h
+        ${CORE_ROOT}/containers/hash_map.cpp
         ${CORE_ROOT}/containers/non_null.h
         ${CORE_ROOT}/containers/non_null.cpp
         ${CORE_ROOT}/containers/option.h

@@ -353,7 +353,7 @@ namespace op::core {
 		// Decrement length
 		m_len -= 1;
 
-		return result;
+		return result.unwrap();
 	}
 
 	template <typename T, ArrayAllocator Allocator>

@@ -123,7 +123,7 @@ namespace op::core {
 		}
 
 		OP_NO_DISCARD OP_ALWAYS_INLINE bool is_set() const { return m_set; }
-		OP_ALWAYS_INLINE operator bool() const { return is_set(); }
+		OP_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
 
 		OP_ALWAYS_INLINE T unwrap()
 			requires Movable<T> || Copyable<T>
@@ -235,7 +235,7 @@ namespace op::core {
 		}
 
 		OP_NO_DISCARD OP_ALWAYS_INLINE bool is_set() const { return m_set; }
-		OP_ALWAYS_INLINE operator bool() const { return is_set(); }
+		OP_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
 
 		OP_ALWAYS_INLINE T unwrap() const {
 			OP_ASSERT(is_set(), "Value must be set to be unwrapped");
