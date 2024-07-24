@@ -16,7 +16,7 @@ namespace op::core::math {
 
 		constexpr OP_ALWAYS_INLINE Vector2() : x{ 0 }, y{ 0 } {}
 		constexpr OP_ALWAYS_INLINE Vector2(T xy) : x{ xy }, y{ xy } {}
-		constexpr OP_ALWAYS_INLINE explicit Vector2(T _x, T _y) : x{ _x }, y{ _y } {}
+		constexpr OP_ALWAYS_INLINE Vector2(T _x, T _y) : x{ _x }, y{ _y } {}
 
 		OP_ALWAYS_INLINE static Vector2<T> from_rad(T theta)
 			requires FloatingPoint<T>
@@ -24,30 +24,30 @@ namespace op::core::math {
 			return Vector2<T>{ cos(theta), sin(theta) };
 		}
 
-		OP_ALWAYS_INLINE Vector2 operator+(const Vector2& rhs) const { return Vector2{ x + rhs.x, y + rhs.y }; }
-		OP_ALWAYS_INLINE Vector2 operator-(const Vector2& rhs) const { return Vector2{ x - rhs.x, y - rhs.y }; }
-		OP_ALWAYS_INLINE Vector2 operator*(const Vector2& rhs) const { return Vector2{ x * rhs.x, y * rhs.y }; }
-		OP_ALWAYS_INLINE Vector2 operator/(const Vector2& rhs) const { return Vector2{ x / rhs.x, y / rhs.y }; }
+		OP_ALWAYS_INLINE Vector2 operator+(const Vector2& rhs) const { return { x + rhs.x, y + rhs.y }; }
+		OP_ALWAYS_INLINE Vector2 operator-(const Vector2& rhs) const { return { x - rhs.x, y - rhs.y }; }
+		OP_ALWAYS_INLINE Vector2 operator*(const Vector2& rhs) const { return { x * rhs.x, y * rhs.y }; }
+		OP_ALWAYS_INLINE Vector2 operator/(const Vector2& rhs) const { return { x / rhs.x, y / rhs.y }; }
 		OP_ALWAYS_INLINE void operator+=(const Vector2& rhs) { *this = *this + rhs; }
 		OP_ALWAYS_INLINE void operator-=(const Vector2& rhs) { *this = *this - rhs; }
 		OP_ALWAYS_INLINE void operator*=(const Vector2& rhs) { *this = *this * rhs; }
 		OP_ALWAYS_INLINE void operator/=(const Vector2& rhs) { *this = *this / rhs; }
-		OP_ALWAYS_INLINE Vector2 operator-() const { return Vector2{ -x, -y }; }
+		OP_ALWAYS_INLINE Vector2 operator-() const { return { -x, -y }; }
 
 		/**
-		 * @return the cos of the angle between the two vectors.
+		 * @returns the cos of the angle between the two vectors.
 		 */
-		OP_ALWAYS_INLINE T dot(const Vector2<T>& rhs) const { return x * rhs.x + y * rhs.y; }
+		OP_ALWAYS_INLINE T dot(const Vector2& rhs) const { return x * rhs.x + y * rhs.y; }
 
 		/**
 		 * @return the sin of the angle between the two vectors.
 		 */
-		OP_ALWAYS_INLINE T cross(const Vector2<T>& rhs) const { return x * rhs.y - y * rhs.x; }
+		OP_ALWAYS_INLINE T cross(const Vector2& rhs) const { return x * rhs.y - y * rhs.x; }
 
 		/**
 		 * @returns a new vector that is perpendicular to this vector.
 		 */
-		OP_ALWAYS_INLINE Vector2<T> perp() const { return Vector2{ y, -x }; }
+		OP_ALWAYS_INLINE Vector2 perp() const { return { y, -x }; }
 
 		/**
 		 * @returns the length of the vector squared.
@@ -62,7 +62,7 @@ namespace op::core::math {
 		/**
 		 * @returns an option containing the normalized vector if the length is not zero.
 		 */
-		OP_ALWAYS_INLINE Option<Vector2<T>> normalized() const
+		OP_ALWAYS_INLINE Option<Vector2> normalized() const
 			requires FloatingPoint<T>
 		{
 			if (len_sq() >= kinda_small_number<T>) {
@@ -72,29 +72,13 @@ namespace op::core::math {
 		}
 
 		OP_NO_DISCARD OP_ALWAYS_INLINE bool contains(T value) const { return x == value || y == value; }
-		OP_NO_DISCARD OP_ALWAYS_INLINE bool equals(const Vector2<T>& rhs, T tolerance = kinda_small_number<T>) const {
-			return math::equals<T>(x, rhs.x, tolerance) && math::equals<T>(y, rhs.y, tolerance);
+		OP_NO_DISCARD OP_ALWAYS_INLINE bool equals(const Vector2& rhs, T tolerance = kinda_small_number<T>) const {
+			return math::equals(x, rhs.x, tolerance) && math::equals(y, rhs.y, tolerance);
 		}
 
-		/**
-		 * Returns the minimum elements of two vectors.
-		 *
-		 * @param rhs The other vector to compare against.
-		 * @return The minimum elements of the two vectors.
-		 */
-		OP_NO_DISCARD Vector2<T> min(const Vector2<T>& rhs) const {
-			return Vector2{ math::min<T>(x, rhs.x), math::min<T>(y, rhs.y) };
-		}
+		OP_NO_DISCARD Vector2 min(const Vector2& rhs) const { return { math::min(x, rhs.x), math::min(y, rhs.y) }; }
 
-		/**
-		 * Returns the maximum elements of two vectors.
-		 *
-		 * @param rhs The other vector to compare against.
-		 * @return The maximum elements of the two vectors.
-		 */
-		OP_NO_DISCARD Vector2<T> max(const Vector2<T>& rhs) const {
-			return Vector2{ math::max<T>(x, rhs.x), math::max<T>(y, rhs.y) };
-		}
+		OP_NO_DISCARD Vector2 max(const Vector2& rhs) const { return { math::max(x, rhs.x), math::max(y, rhs.y) }; }
 
 		/**
 		 * Cast the vector to another type.
