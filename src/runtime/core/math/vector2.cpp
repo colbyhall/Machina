@@ -61,7 +61,6 @@ OP_TEST_SUITE("math") {
 			const Vector2<i32> b = 5;
 			OP_CHECK((b / a).equals(b));
 		}
-		//////////////////
 
 		OP_SUBCASE("operator+=") {
 			Vector2<i32> a = 0;
@@ -120,7 +119,7 @@ OP_TEST_SUITE("math") {
 			OP_CHECK(math::equals(foo.len_sq(), 1.f));
 		}
 
-		OP_SUBCASE("len_sq") {
+		OP_SUBCASE("len") {
 			const Vector2<f32> foo = 1.f;
 			OP_CHECK(math::equals(foo.len(), math::sqrt(2.f)));
 		}

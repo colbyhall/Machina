@@ -46,6 +46,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/math/vector2.cpp
         ${CORE_ROOT}/math/vector3.h
         ${CORE_ROOT}/math/vector3.cpp
+        ${CORE_ROOT}/math/vector4.h
+        ${CORE_ROOT}/math/vector4.cpp
 
         ${CORE_ROOT}/sync/atomic.h
         ${CORE_ROOT}/sync/atomic.cpp
