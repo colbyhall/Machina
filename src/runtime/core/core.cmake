@@ -42,6 +42,8 @@ set(CORE_SRC_FILES
 
         ${CORE_ROOT}/math/math.h
         ${CORE_ROOT}/math/math.cpp
+        ${CORE_ROOT}/math/matrix4.h
+        ${CORE_ROOT}/math/matrix4.cpp
         ${CORE_ROOT}/math/quaternion.h
         ${CORE_ROOT}/math/quaternion.cpp
         ${CORE_ROOT}/math/vector2.h
