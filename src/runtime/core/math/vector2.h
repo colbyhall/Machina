@@ -9,7 +9,7 @@
 #include "core/containers/option.h"
 #include "core/math/math.h"
 
-namespace op::core {
+namespace op::core::math {
 	template <Number T>
 	struct Vector2 {
 		T x, y;
@@ -21,7 +21,7 @@ namespace op::core {
 		OP_ALWAYS_INLINE static Vector2<T> from_rad(T theta)
 			requires FloatingPoint<T>
 		{
-			return Vector2<T>{ op::cos(theta), op::sin(theta) };
+			return Vector2<T>{ cos(theta), sin(theta) };
 		}
 
 		OP_ALWAYS_INLINE Vector2 operator+(const Vector2& rhs) const { return Vector2{ x + rhs.x, y + rhs.y }; }
@@ -57,7 +57,7 @@ namespace op::core {
 		/**
 		 * @returns the length of the vector.
 		 */
-		OP_ALWAYS_INLINE T len() const { return op::sqrt(len_sq()); }
+		OP_ALWAYS_INLINE T len() const { return sqrt(len_sq()); }
 
 		/**
 		 * @returns an option containing the normalized vector if the length is not zero.
@@ -73,7 +73,7 @@ namespace op::core {
 
 		OP_NO_DISCARD OP_ALWAYS_INLINE bool contains(T value) const { return x == value || y == value; }
 		OP_NO_DISCARD OP_ALWAYS_INLINE bool equals(const Vector2<T>& rhs, T tolerance = kinda_small_number<T>) const {
-			return core::equals(x, rhs.x, tolerance) && core::equals(y, rhs.y, tolerance);
+			return math::equals<T>(x, rhs.x, tolerance) && math::equals<T>(y, rhs.y, tolerance);
 		}
 
 		/**
@@ -83,7 +83,7 @@ namespace op::core {
 		 * @return The minimum elements of the two vectors.
 		 */
 		OP_NO_DISCARD Vector2<T> min(const Vector2<T>& rhs) const {
-			return Vector2{ op::min(x, rhs.x), op::min(y, rhs.y) };
+			return Vector2{ math::min<T>(x, rhs.x), math::min<T>(y, rhs.y) };
 		}
 
 		/**
@@ -93,7 +93,7 @@ namespace op::core {
 		 * @return The maximum elements of the two vectors.
 		 */
 		OP_NO_DISCARD Vector2<T> max(const Vector2<T>& rhs) const {
-			return Vector2{ op::max(x, rhs.x), op::max(y, rhs.y) };
+			return Vector2{ math::max<T>(x, rhs.x), math::max<T>(y, rhs.y) };
 		}
 
 		/**
@@ -107,8 +107,8 @@ namespace op::core {
 			return Vector2<D>{ static_cast<D>(x), static_cast<D>(y) };
 		}
 	};
-} // namespace op::core
+} // namespace op::core::math
 
 namespace op {
-	using core::Vector2;
+	using core::math::Vector2;
 } // namespace op

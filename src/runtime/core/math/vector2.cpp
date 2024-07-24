@@ -30,12 +30,12 @@ OP_TEST_SUITE("math") {
 
 		OP_SUBCASE("from_rad") {
 			const auto foo = Vector2<f32>::from_rad(0.f);
-			OP_CHECK(op::equals(foo.x, 1.f));
-			OP_CHECK(op::equals(foo.y, 0.f));
+			OP_CHECK(math::equals(foo.x, 1.f));
+			OP_CHECK(math::equals(foo.y, 0.f));
 
-			const auto bar = Vector2<f32>::from_rad(op::pi<f32> / 2.f);
-			OP_CHECK(op::equals(bar.x, 0.f));
-			OP_CHECK(op::equals(bar.y, 1.f));
+			const auto bar = Vector2<f32>::from_rad(math::pi<f32> / 2.f);
+			OP_CHECK(math::equals(bar.x, 0.f));
+			OP_CHECK(math::equals(bar.y, 1.f));
 		}
 
 		OP_SUBCASE("operator+") {
@@ -99,15 +99,15 @@ OP_TEST_SUITE("math") {
 		OP_SUBCASE("dot") {
 			const Vector2<f32> foo{ 1.f, 0.f };
 			const Vector2<f32> bar{ 0.f, 1.f };
-			OP_CHECK(op::equals(foo.dot(foo), 1.f));
-			OP_CHECK(op::equals(foo.dot(bar), 0.f));
+			OP_CHECK(math::equals(foo.dot(foo), 1.f));
+			OP_CHECK(math::equals(foo.dot(bar), 0.f));
 		}
 
 		OP_SUBCASE("cross") {
 			const Vector2<f32> foo{ 1.f, 0.f };
 			const Vector2<f32> bar{ 0.f, 1.f };
-			OP_CHECK(op::equals(foo.cross(foo), 0.f));
-			OP_CHECK(op::equals(foo.cross(bar), 1.f));
+			OP_CHECK(math::equals(foo.cross(foo), 0.f));
+			OP_CHECK(math::equals(foo.cross(bar), 1.f));
 		}
 
 		OP_SUBCASE("perp") {
@@ -117,19 +117,19 @@ OP_TEST_SUITE("math") {
 
 		OP_SUBCASE("len_sq") {
 			const Vector2<f32> foo{ 1.f, 0.f };
-			OP_CHECK(op::equals(foo.len_sq(), 1.f));
+			OP_CHECK(math::equals(foo.len_sq(), 1.f));
 		}
 
 		OP_SUBCASE("len_sq") {
 			const Vector2<f32> foo = 1.f;
-			OP_CHECK(op::equals(foo.len(), op::sqrt(2.f)));
+			OP_CHECK(math::equals(foo.len(), math::sqrt(2.f)));
 		}
 
 		OP_SUBCASE("normalized") {
 			const Vector2<f32> a = 1.f;
 			const auto a_normalized = a.normalized();
 			OP_CHECK(a_normalized.is_set());
-			OP_CHECK(a.normalized().unwrap().equals(op::sqrt(2.f) * 0.5f));
+			OP_CHECK(a.normalized().unwrap().equals(math::sqrt(2.f) * 0.5f));
 
 			const Vector2<f32> b = 0.f;
 			OP_CHECK(!b.normalized().is_set());
@@ -143,7 +143,7 @@ OP_TEST_SUITE("math") {
 			f32 a = 1;
 			a -= 1;
 			const Vector2<f32> bar{ 1.f / a, 0.f };
-			OP_CHECK(bar.contains(op::nan<f32>));
+			OP_CHECK(bar.contains(math::nan<f32>));
 		}
 
 		OP_SUBCASE("equals") {

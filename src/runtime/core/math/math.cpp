@@ -7,7 +7,7 @@
 #include "core/math/math.h"
 #include <cmath>
 
-namespace op::core {
+namespace op::core::math {
 	f32 cos(f32 x) { return std::cos(x); }
 	f64 cos(f64 x) { return std::cos(x); }
 
@@ -37,45 +37,46 @@ namespace op::core {
 
 	f32 powf(f32 x, f32 y) { return std::powf(x, y); }
 	f64 pow(f64 x, f64 y) { return std::pow(x, y); }
-} // namespace op::core
+} // namespace op::core::math
 
 #include "core/debug/test.h"
 
 OP_TEST_SUITE("math") {
+	using namespace op;
 	OP_TEST_CASE("min") {
-		OP_CHECK(op::min(0.f, 1.f) == 0.f);
-		OP_CHECK(op::min(1.f, 0.f) == 0.f);
+		OP_CHECK(math::min(0.f, 1.f) == 0.f);
+		OP_CHECK(math::min(1.f, 0.f) == 0.f);
 	}
 
 	OP_TEST_CASE("max") {
-		OP_CHECK(op::max(0.f, 1.f) == 1.f);
-		OP_CHECK(op::max(1.f, 0.f) == 1.f);
+		OP_CHECK(math::max(0.f, 1.f) == 1.f);
+		OP_CHECK(math::max(1.f, 0.f) == 1.f);
 	}
 
 	OP_TEST_CASE("clamp") {
-		OP_CHECK(op::clamp(-5.f, 0.f, 1.f) == 0.f);
-		OP_CHECK(op::clamp(5.f, 0.f, 1.f) == 1.f);
-		OP_CHECK(op::clamp(0.5f, 0.f, 1.f) == 0.5f);
+		OP_CHECK(math::clamp(-5.f, 0.f, 1.f) == 0.f);
+		OP_CHECK(math::clamp(5.f, 0.f, 1.f) == 1.f);
+		OP_CHECK(math::clamp(0.5f, 0.f, 1.f) == 0.5f);
 	}
 
 	OP_TEST_CASE("abs") {
-		OP_CHECK(op::abs(-1.f) == 1.f);
-		OP_CHECK(op::abs(1.f) == 1.f);
+		OP_CHECK(math::abs(-1.f) == 1.f);
+		OP_CHECK(math::abs(1.f) == 1.f);
 	}
 
 	OP_TEST_CASE("lerp") {
-		OP_CHECK(op::lerp(0.f, 1.f, 0.5f) == .5f);
-		OP_CHECK(op::lerp(0.f, 10.f, 0.5f) == 5.f);
+		OP_CHECK(math::lerp(0.f, 1.f, 0.5f) == .5f);
+		OP_CHECK(math::lerp(0.f, 10.f, 0.5f) == 5.f);
 	}
 
 	OP_TEST_CASE("square") {
-		OP_CHECK(op::square(1.f) == 1.f);
-		OP_CHECK(op::square(2.f) == 4.f);
-		OP_CHECK(op::square(3.f) == 9.f);
+		OP_CHECK(math::square(1.f) == 1.f);
+		OP_CHECK(math::square(2.f) == 4.f);
+		OP_CHECK(math::square(3.f) == 9.f);
 	}
 
 	OP_TEST_CASE("equals") {
-		OP_CHECK(op::equals(1.f, 1.f));
-		OP_CHECK(op::equals(2.f, 2.f));
+		OP_CHECK(math::equals(1.f, 1.f));
+		OP_CHECK(math::equals(2.f, 2.f));
 	}
 }

@@ -11,7 +11,7 @@
 
 #include <limits>
 
-namespace op::core {
+namespace op::core::math {
 	template <typename T>
 	concept Number = FloatingPoint<T> || Integral<T>;
 
@@ -27,7 +27,7 @@ namespace op::core {
 
 	template <Number T>
 	constexpr OP_ALWAYS_INLINE T clamp(T value, T min, T max) {
-		return core::min<T>(core::max<T>(value, min), max);
+		return math::min<T>(math::max<T>(value, min), max);
 	}
 
 	template <FloatingPoint T>
@@ -112,7 +112,7 @@ namespace op::core {
 
 	template <FloatingPoint T>
 	constexpr OP_ALWAYS_INLINE bool is_near_zero(T a) {
-		return core::abs<T>(a) <= core::small_number<T>;
+		return abs<T>(a) <= small_number<T>;
 	}
 
 	template <FloatingPoint T>
@@ -127,48 +127,48 @@ namespace op::core {
 
 	template <Number T>
 	constexpr OP_ALWAYS_INLINE T equals(T a, T b, T tolerance = kinda_small_number<T>) {
-		return core::abs(a - b) <= tolerance;
+		return abs<T>(a - b) <= tolerance;
 	}
-} // namespace op::core
+} // namespace op::core::math
 
-namespace op {
-	using core::Number;
+namespace op::math {
+	using core::math::Number;
 
-	using core::abs;
-	using core::acos;
-	using core::asin;
-	using core::atan;
-	using core::atan2;
-	using core::clamp;
-	using core::cos;
-	using core::equals;
-	using core::fmod;
-	using core::lerp;
-	using core::max;
-	using core::min;
-	using core::sin;
-	using core::sqrt;
-	using core::square;
-	using core::tan;
-
-	template <Number T>
-	inline constexpr T pi = core::pi<T>;
+	using core::math::abs;
+	using core::math::acos;
+	using core::math::asin;
+	using core::math::atan;
+	using core::math::atan2;
+	using core::math::clamp;
+	using core::math::cos;
+	using core::math::equals;
+	using core::math::fmod;
+	using core::math::lerp;
+	using core::math::max;
+	using core::math::min;
+	using core::math::sin;
+	using core::math::sqrt;
+	using core::math::square;
+	using core::math::tan;
 
 	template <Number T>
-	inline constexpr T tau = core::tau<T>;
+	inline constexpr T pi = core::math::pi<T>;
 
 	template <Number T>
-	inline constexpr T deg_to_rad = core::deg_to_rad<T>;
+	inline constexpr T tau = core::math::tau<T>;
 
 	template <Number T>
-	inline constexpr T rad_to_deg = core::rad_to_deg<T>;
+	inline constexpr T deg_to_rad = core::math::deg_to_rad<T>;
 
 	template <Number T>
-	inline constexpr T infinity = core::infinity<T>;
+	inline constexpr T rad_to_deg = core::math::rad_to_deg<T>;
 
 	template <Number T>
-	inline constexpr T epsilon = core::epsilon<T>;
+	inline constexpr T infinity = core::math::infinity<T>;
 
 	template <Number T>
-	inline constexpr T nan = core::nan<T>;
-} // namespace op
+	inline constexpr T epsilon = core::math::epsilon<T>;
+
+	template <Number T>
+	inline constexpr T nan = core::math::nan<T>;
+} // namespace op::math

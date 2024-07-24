@@ -40,6 +40,11 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/debug/assertions.h
         ${CORE_ROOT}/debug/test.h
 
+        ${CORE_ROOT}/math/math.h
+        ${CORE_ROOT}/math/math.cpp
+        ${CORE_ROOT}/math/vector2.h
+        ${CORE_ROOT}/math/vector2.cpp
+
         ${CORE_ROOT}/sync/atomic.h
         ${CORE_ROOT}/sync/atomic.cpp
 )
