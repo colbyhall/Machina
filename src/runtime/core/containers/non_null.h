@@ -14,36 +14,6 @@ namespace op::core {
 	template <typename T>
 	class NonNull;
 
-	template <typename T>
-	class NonNull {
-	public:
-		// Only way to initialize NonNull is by a valid ptr
-		OP_ALWAYS_INLINE constexpr NonNull(T* ptr) : m_ptr(ptr) {
-			OP_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
-		}
-
-		// Prevent default and nullptr initialization
-		NonNull() = delete;
-		NonNull(NullPtr) = delete;
-
-		// Accessors
-		OP_ALWAYS_INLINE operator T*() const { return m_ptr; }
-		OP_ALWAYS_INLINE operator NonNull<void>() const { return m_ptr; }
-		OP_ALWAYS_INLINE operator NonNull<void const>() const { return m_ptr; }
-		OP_ALWAYS_INLINE T* operator->() const { return m_ptr; }
-		OP_ALWAYS_INLINE T& operator*() const { return *m_ptr; }
-		OP_ALWAYS_INLINE T& operator[](usize index) const { return m_ptr[index]; }
-
-		// Compare ops
-		OP_ALWAYS_INLINE bool operator==(NonNull<T> ptr) const { return ptr.m_ptr == m_ptr; }
-		OP_ALWAYS_INLINE bool operator==(T* ptr) const { return ptr == m_ptr; }
-		OP_ALWAYS_INLINE bool operator!=(NonNull<T> ptr) const { return ptr.m_ptr != m_ptr; }
-		OP_ALWAYS_INLINE bool operator!=(T* ptr) const { return ptr != m_ptr; }
-
-	private:
-		T* m_ptr;
-	};
-
 	// void ptr specialization
 	template <>
 	class NonNull<void> {
@@ -110,6 +80,40 @@ namespace op::core {
 	private:
 		void const* m_ptr;
 	};
+
+
+	template <typename T>
+	class NonNull {
+	public:
+		// Only way to initialize NonNull is by a valid ptr
+		OP_ALWAYS_INLINE constexpr NonNull(T* ptr) : m_ptr(ptr) {
+			OP_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
+		}
+
+		// Prevent default and nullptr initialization
+		NonNull() = delete;
+		NonNull(NullPtr) = delete;
+
+		// Accessors
+		OP_ALWAYS_INLINE operator T*() const { return m_ptr; }
+		OP_ALWAYS_INLINE operator NonNull<void>() const { return m_ptr; }
+		OP_ALWAYS_INLINE operator NonNull<void const>() const { return m_ptr; }
+		OP_ALWAYS_INLINE T* operator->() const { return m_ptr; }
+		OP_ALWAYS_INLINE T& operator*() const { return *m_ptr; }
+		OP_ALWAYS_INLINE T& operator[](usize index) const { return m_ptr[index]; }
+
+		// Compare ops
+		OP_ALWAYS_INLINE bool operator==(NonNull<T> ptr) const { return ptr.m_ptr == m_ptr; }
+		OP_ALWAYS_INLINE bool operator==(T* ptr) const { return ptr == m_ptr; }
+		OP_ALWAYS_INLINE bool operator!=(NonNull<T> ptr) const { return ptr.m_ptr != m_ptr; }
+		OP_ALWAYS_INLINE bool operator!=(T* ptr) const { return ptr != m_ptr; }
+
+	private:
+		T* m_ptr;
+	};
+
+
+
 } // namespace op::core
 
 namespace op {

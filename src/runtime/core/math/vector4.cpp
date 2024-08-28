@@ -7,6 +7,7 @@
 #include "core/math/vector4.h"
 #include "core/debug/test.h"
 
+#if OP_ENABLE_TEST
 OP_TEST_SUITE("math") {
 	using namespace op;
 
@@ -161,3 +162,4 @@ OP_TEST_SUITE("math") {
 		}
 	}
 }
+#endif // OP_ENABLE_TEST

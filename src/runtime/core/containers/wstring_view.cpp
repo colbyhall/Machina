@@ -23,6 +23,7 @@ namespace op::core {
 	}
 } // namespace op::core
 
+#if OP_ENABLE_TEST
 OP_TEST_SUITE("containers") {
 	using namespace op::core;
 
@@ -31,3 +32,4 @@ OP_TEST_SUITE("containers") {
 		OP_CHECK(view.len() == 11);
 	}
 }
+#endif // OP_ENABLE_TEST

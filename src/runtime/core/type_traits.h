@@ -8,6 +8,7 @@
 
 #include "core/core.h"
 #include <type_traits>
+#include <utility>
 
 // Aliasing type traits found in the C++20 standard library to match our naming conventions
 // https://en.cppreference.com/w/cpp/header/type_traits

@@ -9,6 +9,7 @@
 
 using namespace op::core;
 
+#if OP_ENABLE_TEST
 OP_TEST_SUITE("sync") {
 	OP_TEST_CASE("Atomic") {
 		OP_SUBCASE("default constructor") {
@@ -109,3 +110,4 @@ OP_TEST_SUITE("sync") {
 		}
 	}
 }
+#endif // OP_ENABLE_TEST

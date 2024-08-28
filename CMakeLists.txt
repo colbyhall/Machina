@@ -168,11 +168,43 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Enable link time optimizations for static libraries
     # https://learn.microsoft.com/en-us/cpp/build/reference/ltcg-link-time-code-generation
     set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "/LTCG")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+    set(CMAKE_CONFIGURATION_TYPES "Debug;Release;ReleaseASAN;ReleaseUBSAN;ReleaseCoverage;Distribution")
 
-    message("Using " ${CMAKE_CXX_COMPILER_ID} " (" ${CMAKE_CXX_COMPILER_VERSION} ")")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+
+    if (ENABLE_ALL_WARNINGS)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+    endif ()
+
+    # Optionally generate debug symbols
+    if (GENERATE_DEBUG_SYMBOLS)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+    endif ()
+
+    # Set compiler flag for disabling RTTI
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+
+    # Set compiler flag for disabling exception-handling
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+
+    # Do not use -ffast-math since it cannot be turned off in a single compilation unit under clang, see Core.h
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffp-model=fast")
+
+    # On clang 14 and later we can turn off float contraction through a pragma, older versions and deterministic versions need it off always, see Core.h
+    if (CMAKE_CXX_COMPILER_VERSION LESS 14 OR CROSS_PLATFORM_DETERMINISTIC)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffp-contract=off")
+    endif ()
+
+    set(CMAKE_CXX_FLAGS_DISTRIBUTION "${CMAKE_CXX_FLAGS_RELEASE}")
+    set(CMAKE_CXX_FLAGS_RELEASEASAN "-fsanitize=address")
+    set(CMAKE_CXX_FLAGS_RELEASEUBSAN "-fsanitize=undefined,implicit-conversion,float-divide-by-zero,local-bounds -fno-sanitize-recover=all")
+    set(CMAKE_CXX_FLAGS_RELEASECOVERAGE "-O0 -DJPH_NO_FORCE_INLINE -fprofile-instr-generate -fcoverage-mapping")
 else ()
     message(FATAL_ERROR, "Compiler not supported. Only MSVC is supported at the moment")
 endif ()
+
+message("Using " ${CMAKE_CXX_COMPILER_ID} " (" ${CMAKE_CXX_COMPILER_VERSION} ")")
 
 # Set repository root
 set(OPAL_ROOT ${CMAKE_CURRENT_SOURCE_DIR})

@@ -9,6 +9,7 @@
 // Define supported platforms
 #define OP_PLATFORM_UNKNOWN 0
 #define OP_PLATFORM_WINDOWS 1
+#define OP_PLATFORM_MACOS	2
 
 // Determine platform
 #if defined(_WIN32) || defined(_WIN64)
@@ -17,6 +18,8 @@
 		#error UWP is not supported
 	#endif
 	#define OP_PLATFORM OP_PLATFORM_WINDOWS
+#elif __APPLE__
+	#define OP_PLATFORM OP_PLATFORM_MACOS
 #endif
 
 #ifndef OP_PLATFORM
@@ -30,10 +33,13 @@
 // Define supported compilers
 #define OP_COMPILER_UNKNOWN 0
 #define OP_COMPILER_MSVC	1
+#define OP_COMPILER_CLANG	2
 
 // Determine the compiler
 #if defined(_MSC_VER)
 	#define OP_COMPILER OP_COMPILER_MSVC
+#elif defined(__clang__)
+	#define OP_COMPILER OP_COMPILER_CLANG
 #endif
 
 #ifndef OP_COMPILER
@@ -47,6 +53,7 @@
 // Define supported CPU architectures
 #define OP_CPU_UNKNOWN 0
 #define OP_CPU_X86	   1
+#define OP_CPU_ARM	   2
 
 // Determine the CPU architecture
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
@@ -55,6 +62,8 @@
 	#if !defined(__x86_64__) && !defined(_M_X64)
 		#error Only support 64 bit architecture
 	#endif
+#elif __arm64__
+	#define OP_CPU OP_CPU_ARM
 #endif
 
 #ifndef OP_CPU_X86
@@ -78,6 +87,8 @@
 
 #if OP_COMPILER == OP_COMPILER_MSVC
 	#define OP_ALWAYS_INLINE __forceinline
+#elif OP_COMPILER == OP_COMPILER_CLANG
+	#define OP_ALWAYS_INLINE __attribute__((always_inline))
 #else
 	#error Undefined inline
 #endif
@@ -90,7 +101,7 @@
 #endif
 
 // Define macro to get current function name
-#if OP_COMPILER == OP_COMPILER_MSVC
+#if OP_COMPILER == OP_COMPILER_MSVC || OP_COMPILER == OP_COMPILER_CLANG
 	#define OP_FUNCTION_NAME __FUNCTION__
 #else
 	#error Undefined function name
@@ -98,6 +109,8 @@
 
 #if OP_COMPILER == OP_COMPILER_MSVC
 	#define OP_DEBUGBREAK __debugbreak()
+#elif OP_COMPILER == OP_COMPILER_CLANG
+	#define OP_DEBUGBREAK __builtin_trap()
 #else
 	#error Unknown debug break
 #endif

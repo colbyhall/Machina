@@ -19,6 +19,7 @@
 
 // Remove non doctest macros
 #define DOCTEST_CONFIG_NO_SHORT_MACRO_NAMES
+#define DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS
 #include "doctest/doctest.h"
 
 // Move the DOCTEST macros to OP_ prefixed macros

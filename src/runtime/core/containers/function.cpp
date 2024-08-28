@@ -8,6 +8,7 @@
 #include "core/containers/unique.h"
 #include "core/debug/test.h"
 
+#if OP_ENABLE_TEST
 OP_TEST_SUITE("containers") {
 	using namespace op::core;
 
@@ -59,3 +60,4 @@ OP_TEST_SUITE("containers") {
 		}
 	}
 }
+#endif // OP_ENABLE_TEST

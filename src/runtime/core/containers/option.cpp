@@ -8,9 +8,10 @@
 #include "core/containers/array.h"
 #include "core/debug/test.h"
 
+#if OP_ENABLE_TEST
 OP_TEST_SUITE("containers") {
 	using namespace op::core;
-	
+
 	OP_TEST_CASE("Option non trivially copyable type") {
 		OP_SUBCASE("default constructor") {
 			Option<Array<int>> opt;
@@ -355,3 +356,4 @@ OP_TEST_SUITE("containers") {
 		}
 	}
 }
+#endif // OP_ENABLE_TEST

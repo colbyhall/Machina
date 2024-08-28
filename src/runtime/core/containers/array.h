@@ -24,9 +24,9 @@ namespace op::core {
 	template <typename T, ArrayAllocator Allocator = HeapAllocator>
 	class Array {
 	private:
-		template <typename T>
-		using Storage = Allocator::template Storage<T>;
-		inline constexpr static bool allocator_supports_reserve = Allocator::template supports_reserve;
+		template <typename D>
+		using Storage = Allocator::template Storage<D>;
+		inline constexpr static bool allocator_supports_reserve = Allocator::supports_reserve;
 
 	public:
 		using Element = T;
