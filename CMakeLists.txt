@@ -8,6 +8,8 @@ option(GENERATE_DEBUG_SYMBOLS "Generate debug symbols" ON)
 # Enable all warnings
 option(ENABLE_ALL_WARNINGS "Enable all warnings and warnings as errors" ON)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Setup project settings for MSVC
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Only support 64 bit architecture
@@ -171,7 +173,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     set(CMAKE_CONFIGURATION_TYPES "Debug;Release;ReleaseASAN;ReleaseUBSAN;ReleaseCoverage;Distribution")
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++20")
 
     if (ENABLE_ALL_WARNINGS)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")

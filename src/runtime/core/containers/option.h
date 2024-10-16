@@ -7,8 +7,16 @@
 #pragma once
 
 #include "core/concepts.h"
-#include "core/containers/non_null.h"
 #include "core/memory.h"
+
+#define TRY(expression) 						\
+	({   										\
+		auto&& _temp_result = (expression); 	\
+  		if (!_temp_result.is_set()) { 			\
+  			return op::core::nullopt;			\
+		}										\
+		_temp_result.unwrap();					\
+  	})
 
 namespace op::core {
 	struct NullOpt {
