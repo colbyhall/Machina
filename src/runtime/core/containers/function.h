@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include "core/memory.h"
+#include <core/memory.h>
 
-namespace op::core {
+namespace grizzly::core {
 	namespace hidden {
 		template <typename Functor, typename FuncType>
 		struct FunctionRefCaller;
@@ -16,13 +16,13 @@ namespace op::core {
 		template <typename Functor, typename R, typename... P>
 		struct FunctionRefCaller<Functor, R(P...)> {
 			static R call(void* obj, P&... params) {
-				return op::core::invoke(*(Functor*)obj, op::forward<P>(params)...);
+				return core::invoke(*(Functor*)obj, grizzly::forward<P>(params)...);
 			}
 		};
 
 		template <typename Functor, typename... P>
 		struct FunctionRefCaller<Functor, void(P...)> {
-			static void call(void* obj, P&... params) { op::core::invoke(*(Functor*)obj, op::forward<P>(params)...); }
+			static void call(void* obj, P&... params) { core::invoke(*(Functor*)obj, grizzly::forward<P>(params)...); }
 		};
 
 		template <typename S, typename F>
@@ -37,9 +37,9 @@ namespace op::core {
 
 			template <typename F>
 			FunctionBase(F&& f)
-				requires(!op::core::is_same<FunctionBase, op::core::Decay<F>>)
+				requires(!grizzly::core::is_same<FunctionBase, grizzly::core::Decay<F>>)
 			{
-				if (auto* binding = m_storage.bind(op::forward<F>(f))) {
+				if (auto* binding = m_storage.bind(grizzly::forward<F>(f))) {
 					OP_UNUSED(binding);
 					using DecayedFunctor = RemovePointer<decltype(binding)>;
 					m_callable = &FunctionRefCaller<DecayedFunctor, R(Param...)>::call;
@@ -49,7 +49,7 @@ namespace op::core {
 			FunctionBase& operator=(const FunctionBase& copy) noexcept = delete;
 			FunctionBase(FunctionBase&& move) noexcept
 				: m_callable(move.m_callable)
-				, m_storage(op::move(move.m_storage)) {
+				, m_storage(grizzly::move(move.m_storage)) {
 				if (m_callable) {
 					move.m_callable = nullptr;
 				}
@@ -57,10 +57,10 @@ namespace op::core {
 			FunctionBase& operator=(FunctionBase&& move) noexcept {
 				this->~FunctionBase();
 
-				m_callable = op::move(move.m_callable);
+				m_callable = grizzly::move(move.m_callable);
 				move.m_callable = nullptr;
 
-				m_storage = op::move(move.m_storage);
+				m_storage = grizzly::move(move.m_storage);
 			}
 
 			R operator()(Param... params) const {
@@ -109,7 +109,7 @@ namespace op::core {
 			template <typename... Args>
 			explicit FunctorWrapper(Args&&... args)
 				requires is_constructible<F, Args...>
-				: f{ op::forward<Args>(args)... } {}
+				: f{ grizzly::forward<Args>(args)... } {}
 			~FunctorWrapper() final = default;
 			FunctorWrapper(const FunctorWrapper& copy) = delete;
 			FunctorWrapper& operator=(const FunctorWrapper& copy) = delete;
@@ -141,7 +141,7 @@ namespace op::core {
 			template <typename F>
 			RemoveReference<F>* bind(F&& f) {
 				void* memory = core::alloc(core::Layout::single<FunctorWrapper<F>>());
-				m_ptr = new (memory) FunctorWrapper<F>{ op::forward<F>(f) };
+				m_ptr = new (memory) FunctorWrapper<F>{ grizzly::forward<F>(f) };
 
 				return static_cast<RemoveReference<F>*>(m_ptr->ptr());
 			}
@@ -156,29 +156,29 @@ namespace op::core {
 
 		template <typename F, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible =
-			op::core::is_constructible<R, decltype(declval<F>()(declval<P>()...))>;
+			grizzly::core::is_constructible<R, decltype(declval<F>()(declval<P>()...))>;
 		template <typename MR, typename Class, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR Class::*, R, P...> =
-			op::core::is_constructible<R, MR>;
+			grizzly::core::is_constructible<R, MR>;
 		template <typename MR, typename Class, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR Class::*const, R, P...> =
-			op::core::is_constructible<R, MR>;
+			grizzly::core::is_constructible<R, MR>;
 		template <typename MR, typename Class, typename... MP, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR (Class::*)(MP...), R, P...> =
-			op::core::is_constructible<R, MR>;
+			grizzly::core::is_constructible<R, MR>;
 		template <typename MR, typename Class, typename... MP, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR (Class::*)(MP...) const, R, P...> =
-			op::core::is_constructible<R, MR>;
+			grizzly::core::is_constructible<R, MR>;
 
 		template <typename A, typename B>
 		inline constexpr bool func_can_bind_to_functor = false;
 
 		template <typename F, typename R, typename... P>
 		inline constexpr bool func_can_bind_to_functor<R(P...), F> =
-			op::core::is_invocable<F, P...> && functor_return_type_is_compatible<F, R, P...>;
+			grizzly::core::is_invocable<F, P...> && functor_return_type_is_compatible<F, R, P...>;
 
 		template <typename F, typename... P>
-		inline constexpr bool func_can_bind_to_functor<void(P...), F> = op::core::is_invocable<F, P...>;
+		inline constexpr bool func_can_bind_to_functor<void(P...), F> = grizzly::core::is_invocable<F, P...>;
 	} // namespace hidden
 
 	template <typename F>
@@ -207,7 +207,7 @@ namespace op::core {
 
 		template <typename Functor>
 			requires(!is_function_ref<Decay<Functor>> && hidden::func_can_bind_to_functor<F, Decay<Functor>>)
-		FunctionRef(Functor&& f) : Super(op::forward<Functor>(f)) {}
+		FunctionRef(Functor&& f) : Super(grizzly::forward<Functor>(f)) {}
 		FunctionRef(const FunctionRef& copy) noexcept = delete;
 		FunctionRef& operator=(const FunctionRef& copy) const noexcept = delete;
 		FunctionRef(FunctionRef&& move) noexcept = default;
@@ -224,16 +224,16 @@ namespace op::core {
 
 		template <typename Functor>
 			requires(!is_op_function<Decay<Functor>> && hidden::func_can_bind_to_functor<F, Decay<Functor>>)
-		Function(Functor&& f) : Super{ op::forward<Functor>(f) } {}
+		Function(Functor&& f) : Super{ grizzly::forward<Functor>(f) } {}
 		Function(const Function& copy) noexcept = delete;
 		Function& operator=(const Function& copy) noexcept = delete;
 		Function(Function&& move) noexcept = default;
 		Function& operator=(Function&& move) noexcept = default;
 		~Function() = default;
 	};
-} // namespace op::core
+} // namespace grizzly::core
 
-namespace op {
+namespace grizzly {
 	using core::Function;
 	using core::FunctionRef;
-} // namespace op
+} // namespace grizzly

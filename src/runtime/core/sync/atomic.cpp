@@ -4,110 +4,110 @@
  * This software is released under the MIT License.
  */
 
-#include "core/sync/atomic.h"
-#include "core/debug/test.h"
+#include <core/debug/test.h>
+#include <core/sync/atomic.h>
 
-using namespace op::core;
+#if GRIZZLY_ENABLE_TEST
+GRIZZLY_TEST_SUITE("sync") {
+	using namespace grizzly::core;
 
-#if OP_ENABLE_TEST
-OP_TEST_SUITE("sync") {
-	OP_TEST_CASE("Atomic") {
-		OP_SUBCASE("default constructor") {
+	GRIZZLY_TEST_CASE("Atomic") {
+		GRIZZLY_SUBCASE("default constructor") {
 			Atomic<int> atomic;
-			OP_CHECK(atomic.load() == 0);
+			GRIZZLY_CHECK(atomic.load() == 0);
 		}
 
-		OP_SUBCASE("value constructor") {
+		GRIZZLY_SUBCASE("value constructor") {
 			Atomic<int> atomic{ 5 };
-			OP_CHECK(atomic.load() == 5);
+			GRIZZLY_CHECK(atomic.load() == 5);
 		}
 
-		OP_SUBCASE("copy constructor") {
+		GRIZZLY_SUBCASE("copy constructor") {
 			Atomic<int> atomic{ 5 };
 			Atomic<int> copy{ atomic };
-			OP_CHECK(copy.load() == 5);
+			GRIZZLY_CHECK(copy.load() == 5);
 		}
 
-		OP_SUBCASE("copy assignment") {
+		GRIZZLY_SUBCASE("copy assignment") {
 			Atomic<int> atomic{ 5 };
 			Atomic<int> copy;
 			copy = atomic;
-			OP_CHECK(copy.load() == 5);
+			GRIZZLY_CHECK(copy.load() == 5);
 		}
 
-		OP_SUBCASE("move constructor") {
+		GRIZZLY_SUBCASE("move constructor") {
 			Atomic<int> atomic{ 5 };
-			Atomic<int> move{ op::move(atomic) };
-			OP_CHECK(move.load() == 5);
-			OP_CHECK(atomic.load() == 5);
+			Atomic<int> move{ grizzly::move(atomic) };
+			GRIZZLY_CHECK(move.load() == 5);
+			GRIZZLY_CHECK(atomic.load() == 5);
 		}
 
-		OP_SUBCASE("move assignment") {
+		GRIZZLY_SUBCASE("move assignment") {
 			Atomic<int> atomic{ 5 };
 			Atomic<int> move;
-			move = op::move(atomic);
-			OP_CHECK(move.load() == 5);
-			OP_CHECK(atomic.load() == 5);
+			move = grizzly::move(atomic);
+			GRIZZLY_CHECK(move.load() == 5);
+			GRIZZLY_CHECK(atomic.load() == 5);
 		}
 
-		OP_SUBCASE("load") {
+		GRIZZLY_SUBCASE("load") {
 			Atomic<int> atomic{ 5 };
-			OP_CHECK(atomic.load() == 5);
+			GRIZZLY_CHECK(atomic.load() == 5);
 		}
 
-		OP_SUBCASE("store") {
+		GRIZZLY_SUBCASE("store") {
 			Atomic<int> atomic;
 			atomic.store(5);
-			OP_CHECK(atomic.load() == 5);
+			GRIZZLY_CHECK(atomic.load() == 5);
 		}
 
-		OP_SUBCASE("exchange") {
+		GRIZZLY_SUBCASE("exchange") {
 			Atomic<int> atomic{ 5 };
-			OP_CHECK(atomic.exchange(10) == 5);
-			OP_CHECK(atomic.load() == 10);
+			GRIZZLY_CHECK(atomic.exchange(10) == 5);
+			GRIZZLY_CHECK(atomic.load() == 10);
 		}
 
-		OP_SUBCASE("compare_exchange_weak") {
+		GRIZZLY_SUBCASE("compare_exchange_weak") {
 			Atomic<int> atomic{ 5 };
-			OP_CHECK(atomic.compare_exchange_weak(5, 10).unwrap() == 5);
-			OP_CHECK(atomic.load() == 10);
+			GRIZZLY_CHECK(atomic.compare_exchange_weak(5, 10).unwrap() == 5);
+			GRIZZLY_CHECK(atomic.load() == 10);
 		}
 
-		OP_SUBCASE("compare_exchange_strong") {
+		GRIZZLY_SUBCASE("compare_exchange_strong") {
 			Atomic<int> atomic{ 5 };
-			OP_CHECK(atomic.compare_exchange_strong(5, 10).unwrap() == 5);
-			OP_CHECK(atomic.load() == 10);
+			GRIZZLY_CHECK(atomic.compare_exchange_strong(5, 10).unwrap() == 5);
+			GRIZZLY_CHECK(atomic.load() == 10);
 		}
 
-		OP_SUBCASE("fetch_add") {
+		GRIZZLY_SUBCASE("fetch_add") {
 			Atomic<int> atomic{ 5 };
-			OP_CHECK(atomic.fetch_add(5) == 5);
-			OP_CHECK(atomic.load() == 10);
+			GRIZZLY_CHECK(atomic.fetch_add(5) == 5);
+			GRIZZLY_CHECK(atomic.load() == 10);
 		}
 
-		OP_SUBCASE("fetch_sub") {
+		GRIZZLY_SUBCASE("fetch_sub") {
 			Atomic<int> atomic{ 5 };
-			OP_CHECK(atomic.fetch_sub(5) == 5);
-			OP_CHECK(atomic.load() == 0);
+			GRIZZLY_CHECK(atomic.fetch_sub(5) == 5);
+			GRIZZLY_CHECK(atomic.load() == 0);
 		}
 
-		OP_SUBCASE("fetch_and") {
+		GRIZZLY_SUBCASE("fetch_and") {
 			Atomic<int> atomic{ 5 };
-			OP_CHECK(atomic.fetch_and(3) == 5);
-			OP_CHECK(atomic.load() == 1);
+			GRIZZLY_CHECK(atomic.fetch_and(3) == 5);
+			GRIZZLY_CHECK(atomic.load() == 1);
 		}
 
-		OP_SUBCASE("fetch_or") {
+		GRIZZLY_SUBCASE("fetch_or") {
 			Atomic<int> atomic{ 5 };
-			OP_CHECK(atomic.fetch_or(3) == 5);
-			OP_CHECK(atomic.load() == 7);
+			GRIZZLY_CHECK(atomic.fetch_or(3) == 5);
+			GRIZZLY_CHECK(atomic.load() == 7);
 		}
 
-		OP_SUBCASE("fetch_xor") {
+		GRIZZLY_SUBCASE("fetch_xor") {
 			Atomic<int> atomic{ 5 };
-			OP_CHECK(atomic.fetch_xor(3) == 5);
-			OP_CHECK(atomic.load() == 6);
+			GRIZZLY_CHECK(atomic.fetch_xor(3) == 5);
+			GRIZZLY_CHECK(atomic.load() == 6);
 		}
 	}
 }
-#endif // OP_ENABLE_TEST
+#endif // GRIZZLY_ENABLE_TEST

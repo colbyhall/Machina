@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include "core/memory.h"
-#include "core/sync/atomic.h"
+#include <core/memory.h>
+#include <core/sync/atomic.h>
 
-namespace op::core {
+namespace grizzly::core {
 	enum class SharedType { NonAtomic, Atomic };
 
 	template <SharedType Type>
@@ -25,23 +25,23 @@ namespace op::core {
 	public:
 		SharedCounter() = default;
 
-		OP_ALWAYS_INLINE u32 strong() const { return m_strong; }
-		OP_ALWAYS_INLINE u32 weak() const { return m_weak; }
+		GRIZZLY_ALWAYS_INLINE u32 strong() const { return m_strong; }
+		GRIZZLY_ALWAYS_INLINE u32 weak() const { return m_weak; }
 
-		OP_ALWAYS_INLINE u32 add_strong() const {
+		GRIZZLY_ALWAYS_INLINE u32 add_strong() const {
 			m_strong += 1;
 			return m_strong - 1;
 		}
-		OP_ALWAYS_INLINE u32 remove_strong() const {
+		GRIZZLY_ALWAYS_INLINE u32 remove_strong() const {
 			m_strong -= 1;
 			return m_strong + 1;
 		}
 
-		OP_ALWAYS_INLINE u32 add_weak() const {
+		GRIZZLY_ALWAYS_INLINE u32 add_weak() const {
 			m_weak += 1;
 			return m_weak - 1;
 		}
-		OP_ALWAYS_INLINE u32 remove_weak() const {
+		GRIZZLY_ALWAYS_INLINE u32 remove_weak() const {
 			m_weak -= 1;
 			return m_weak + 1;
 		}
@@ -56,14 +56,14 @@ namespace op::core {
 	public:
 		SharedCounter() = default;
 
-		OP_ALWAYS_INLINE u32 strong() const { return m_strong.load(Order::Acquire); }
-		OP_ALWAYS_INLINE u32 weak() const { return m_weak.load(Order::Acquire); }
+		GRIZZLY_ALWAYS_INLINE u32 strong() const { return m_strong.load(Order::Acquire); }
+		GRIZZLY_ALWAYS_INLINE u32 weak() const { return m_weak.load(Order::Acquire); }
 
-		OP_ALWAYS_INLINE u32 add_strong() const { return m_strong.fetch_add(1, Order::AcqRel); }
-		OP_ALWAYS_INLINE u32 remove_strong() const { return m_strong.fetch_sub(1, Order::AcqRel); }
+		GRIZZLY_ALWAYS_INLINE u32 add_strong() const { return m_strong.fetch_add(1, Order::AcqRel); }
+		GRIZZLY_ALWAYS_INLINE u32 remove_strong() const { return m_strong.fetch_sub(1, Order::AcqRel); }
 
-		OP_ALWAYS_INLINE u32 add_weak() const { return m_weak.fetch_add(1, Order::AcqRel); }
-		OP_ALWAYS_INLINE u32 remove_weak() const { return m_weak.fetch_sub(1, Order::AcqRel); }
+		GRIZZLY_ALWAYS_INLINE u32 add_weak() const { return m_weak.fetch_add(1, Order::AcqRel); }
+		GRIZZLY_ALWAYS_INLINE u32 remove_weak() const { return m_weak.fetch_sub(1, Order::AcqRel); }
 
 	private:
 		Atomic<u32> m_strong{ 1 };
@@ -80,10 +80,10 @@ namespace op::core {
 			: Shared{ Base{} } {}
 
 		template <typename... Args>
-		static OP_ALWAYS_INLINE Shared<Base, Type> create(Args&&... args)
+		static GRIZZLY_ALWAYS_INLINE Shared<Base, Type> create(Args&&... args)
 			requires ConstructibleFrom<Base, Args...>
 		{
-			return Shared<Base, Type>{ Base{ op::forward<Args>(args)... } };
+			return Shared<Base, Type>{ Base{ grizzly::forward<Args>(args)... } };
 		}
 
 		Shared(const Shared& copy) noexcept : m_counter(copy.m_counter), m_base(copy.m_base) {
@@ -154,24 +154,28 @@ namespace op::core {
 			}
 		}
 
-		OP_ALWAYS_INLINE Weak<Base, Type> downgrade() const {
+		GRIZZLY_ALWAYS_INLINE Weak<Base, Type> downgrade() const {
 			auto& c = counter();
 			c.add_weak();
 			return Weak<Base, Type>{ m_counter, m_base };
 		}
 
 		// Accessors
-		OP_ALWAYS_INLINE explicit operator Base*() { return &value(); }
-		OP_ALWAYS_INLINE explicit operator Base const*() const { return &value(); }
-		OP_ALWAYS_INLINE explicit operator Base&() { return value(); }
-		OP_ALWAYS_INLINE explicit operator Base const&() const { return value(); }
-		OP_ALWAYS_INLINE Base* operator->() { return &value(); }
-		OP_ALWAYS_INLINE Base const* operator->() const { return &value(); }
-		OP_ALWAYS_INLINE Base& operator*() { return value(); }
-		OP_ALWAYS_INLINE Base const& operator*() const { return value(); }
+		GRIZZLY_ALWAYS_INLINE explicit operator Base*() { return &value(); }
+		GRIZZLY_ALWAYS_INLINE explicit operator Base const*() const { return &value(); }
+		GRIZZLY_ALWAYS_INLINE explicit operator Base&() { return value(); }
+		GRIZZLY_ALWAYS_INLINE explicit operator Base const&() const { return value(); }
+		GRIZZLY_ALWAYS_INLINE Base* operator->() { return &value(); }
+		GRIZZLY_ALWAYS_INLINE Base const* operator->() const { return &value(); }
+		GRIZZLY_ALWAYS_INLINE Base& operator*() { return value(); }
+		GRIZZLY_ALWAYS_INLINE Base const& operator*() const { return value(); }
 
-		OP_NO_DISCARD OP_ALWAYS_INLINE u32 strong() const { return m_counter != nullptr ? counter().strong() : 0; }
-		OP_NO_DISCARD OP_ALWAYS_INLINE u32 weak() const { return m_counter != nullptr ? counter().weak() : 0; }
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE u32 strong() const {
+			return m_counter != nullptr ? counter().strong() : 0;
+		}
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE u32 weak() const {
+			return m_counter != nullptr ? counter().weak() : 0;
+		}
 
 	private:
 		explicit Shared(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
@@ -182,7 +186,7 @@ namespace op::core {
 			};
 
 			const auto layout = core::Layout::single<Combined>();
-			auto* ptr = new (core::alloc(layout)) Combined{ SharedCounter<Type>{}, op::forward<Base>(base) };
+			auto* ptr = new (core::alloc(layout)) Combined{ SharedCounter<Type>{}, grizzly::forward<Base>(base) };
 
 			m_counter = &ptr->counter;
 			m_base = &ptr->base;
@@ -197,8 +201,8 @@ namespace op::core {
 		template <typename, SharedType>
 		friend class Weak;
 
-		OP_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
-		OP_ALWAYS_INLINE Base& value() const { return *m_base; }
+		GRIZZLY_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
+		GRIZZLY_ALWAYS_INLINE Base& value() const { return *m_base; }
 
 		Counter* m_counter = nullptr;
 		Base* m_base = nullptr;
@@ -268,7 +272,7 @@ namespace op::core {
 			}
 		}
 
-		OP_NO_DISCARD Option<Shared<Base, Type>> upgrade() const {
+		GRIZZLY_NO_DISCARD Option<Shared<Base, Type>> upgrade() const {
 			auto& c = counter();
 			const auto strong_count = c.strong();
 			if (strong_count > 0) {
@@ -278,11 +282,15 @@ namespace op::core {
 			return nullopt;
 		}
 
-		OP_NO_DISCARD OP_ALWAYS_INLINE u32 strong() const { return m_counter != nullptr ? counter().strong() : 0; }
-		OP_NO_DISCARD OP_ALWAYS_INLINE u32 weak() const { return m_counter != nullptr ? counter().weak() : 0; }
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE u32 strong() const {
+			return m_counter != nullptr ? counter().strong() : 0;
+		}
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE u32 weak() const {
+			return m_counter != nullptr ? counter().weak() : 0;
+		}
 
 	private:
-		OP_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
+		GRIZZLY_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
 
 		explicit Weak(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
 
@@ -301,7 +309,7 @@ namespace op::core {
 	public:
 		using Counter = SharedCounter<Type>;
 
-		OP_NO_DISCARD OP_ALWAYS_INLINE Shared<T, Type> to_shared() const {
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Shared<T, Type> to_shared() const {
 			return m_this.as_const_ref().unwrap().upgrade().unwrap();
 		}
 
@@ -311,9 +319,9 @@ namespace op::core {
 
 		Option<Weak<T, Type>> m_this = nullopt;
 	};
-} // namespace op::core
+} // namespace grizzly::core
 
-namespace op {
+namespace grizzly {
 	template <typename T>
 	using Shared = core::Shared<T, core::SharedType::NonAtomic>;
 
@@ -331,4 +339,4 @@ namespace op {
 
 	template <typename T>
 	using AtomicWeak = core::Weak<T, core::SharedType::Atomic>;
-} // namespace op
+} // namespace grizzly

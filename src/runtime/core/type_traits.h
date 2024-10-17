@@ -6,13 +6,13 @@
 
 #pragma once
 
-#include "core/core.h"
+#include <core/core.h>
 #include <type_traits>
 #include <utility>
 
 // Aliasing type traits found in the C++20 standard library to match our naming conventions
 // https://en.cppreference.com/w/cpp/header/type_traits
-namespace op::core {
+namespace grizzly::core {
 	// https://en.cppreference.com/w/cpp/types/is_void
 	template <typename T>
 	inline constexpr bool is_void = std::is_void_v<T>;
@@ -433,30 +433,30 @@ namespace op::core {
 
 	// https://en.cppreference.com/w/cpp/utility/functional/invoke
 	using std::invoke;
-} // namespace op::core
+} // namespace grizzly::core
 
-namespace op {
+namespace grizzly {
 	using core::forward;
 	using core::move;
-} // namespace op
+} // namespace grizzly
 
-#define OP_ENUM_CLASS_BITFIELD(Enum)                                                                                   \
+#define GRIZZLY_ENUM_CLASS_BITFIELD(Enum)                                                                                   \
 	inline Enum& operator|=(Enum& A, Enum B) {                                                                         \
-		return (Enum&)((op::core::UnderlyingType(Enum)&)A |= (op::core::UnderlyingType(Enum))B);                       \
+		return (Enum&)((grizzly::core::UnderlyingType(Enum)&)A |= (grizzly::core::UnderlyingType(Enum))B);                       \
 	}                                                                                                                  \
 	inline Enum& operator&=(Enum& A, Enum B) {                                                                         \
-		return (Enum&)((op::core::UnderlyingType(Enum)&)A &= (op::core::UnderlyingType(Enum))B);                       \
+		return (Enum&)((grizzly::core::UnderlyingType(Enum)&)A &= (grizzly::core::UnderlyingType(Enum))B);                       \
 	}                                                                                                                  \
 	inline Enum& operator^=(Enum& A, Enum B) {                                                                         \
-		return (Enum&)((op::core::UnderlyingType(Enum)&)A ^= (op::core::UnderlyingType(Enum))B);                       \
+		return (Enum&)((grizzly::core::UnderlyingType(Enum)&)A ^= (grizzly::core::UnderlyingType(Enum))B);                       \
 	}                                                                                                                  \
 	inline Enum operator|(Enum A, Enum B) {                                                                            \
-		return (Enum)((op::core::UnderlyingType(Enum))A | (op::core::UnderlyingType(Enum))B);                          \
+		return (Enum)((grizzly::core::UnderlyingType(Enum))A | (grizzly::core::UnderlyingType(Enum))B);                          \
 	}                                                                                                                  \
 	inline Enum operator&(Enum A, Enum B) {                                                                            \
-		return (Enum)((op::core::UnderlyingType(Enum))A & (op::core::UnderlyingType(Enum))B);                          \
+		return (Enum)((grizzly::core::UnderlyingType(Enum))A & (grizzly::core::UnderlyingType(Enum))B);                          \
 	}                                                                                                                  \
 	inline Enum operator^(Enum A, Enum B) {                                                                            \
-		return (Enum)((op::core::UnderlyingType(Enum))A ^ (op::core::UnderlyingType(Enum))B);                          \
+		return (Enum)((grizzly::core::UnderlyingType(Enum))A ^ (grizzly::core::UnderlyingType(Enum))B);                          \
 	}                                                                                                                  \
-	inline Enum operator~(Enum A) { return (Enum) ~(op::core::UnderlyingType(Enum))A; }
+	inline Enum operator~(Enum A) { return (Enum) ~(grizzly::core::UnderlyingType(Enum))A; }

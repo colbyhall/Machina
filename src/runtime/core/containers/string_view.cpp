@@ -4,9 +4,9 @@
  * This software is released under the MIT License.
  */
 
-#include "core/containers/string_view.h"
+#include <core/containers/string_view.h>
 
-namespace op::core {
+namespace grizzly::core {
 	CharsIterator StringView::chars() const { return CharsIterator(*this); }
 
 	bool StringView::operator==(const StringView& right) const {
@@ -68,7 +68,7 @@ namespace op::core {
 	}
 
 	void CharsIterator::next() {
-		OP_ASSERT(should_continue());
+		GRIZZLY_ASSERT(should_continue());
 
 		for (; m_byte_index < m_string.len(); m_byte_index += 1) {
 			const UTF8Char c = (*m_string)[m_byte_index];
@@ -99,21 +99,21 @@ namespace op::core {
 		}
 		return get_codepoint;
 	}
-} // namespace op::core
+} // namespace grizzly::core
 
-#include "core/debug/test.h"
+#include <core/debug/test.h>
 
-#if OP_ENABLE_TEST
-OP_TEST_SUITE("containers") {
-	using namespace op::core;
+#if GRIZZLY_ENABLE_TEST
+GRIZZLY_TEST_SUITE("containers") {
+	using namespace grizzly::core;
 
-	OP_TEST_CASE("StringView") {
+	GRIZZLY_TEST_CASE("StringView") {
 		const StringView foo = u8"aΠ1";
 		const Char chars[] = { 'a', 0x03A0, '1' };
 		for (auto iter = foo.chars(); iter; ++iter) {
 			const auto c = *iter;
-			OP_CHECK(c == chars[iter.index()]);
+			GRIZZLY_CHECK(c == chars[iter.index()]);
 		}
 	}
 }
-#endif // OP_ENABLE_TEST
+#endif // GRIZZLY_ENABLE_TEST

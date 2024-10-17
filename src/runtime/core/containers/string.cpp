@@ -4,9 +4,9 @@
  * This software is released under the MIT License.
  */
 
-#include "core/containers/string.h"
+#include <core/containers/string.h>
 
-namespace op::core {
+namespace grizzly::core {
 	constexpr u32 utf8_reject = 12;
 
 	usize utf8_encode(Char c, UTF8Char* dest, u32& errors) {
@@ -40,7 +40,7 @@ namespace op::core {
 		UTF8Char local[4] = {};
 		u32 error;
 		const usize char_len = utf8_encode(c, local, error);
-		OP_ASSERT(error != utf8_reject);
+		GRIZZLY_ASSERT(error != utf8_reject);
 
 		// Preallocate enough space to add the bytes
 		const usize slag = m_bytes.cap() - m_bytes.len();
@@ -74,46 +74,46 @@ namespace op::core {
 
 		return *this;
 	}
-} // namespace op::core
+} // namespace grizzly::core
 
-#include "core/debug/test.h"
+#include <core/debug/test.h>
 
-#if OP_ENABLE_TEST
-OP_TEST_SUITE("containers") {
-	using namespace op::core;
+#if GRIZZLY_ENABLE_TEST
+GRIZZLY_TEST_SUITE("containers") {
+	using namespace grizzly::core;
 
-	OP_TEST_CASE("String") {
-		OP_SUBCASE("default constructor") {
+	GRIZZLY_TEST_CASE("String") {
+		GRIZZLY_SUBCASE("default constructor") {
 			String string;
-			OP_CHECK(string.len() == 0);
+			GRIZZLY_CHECK(string.len() == 0);
 		}
 
-		OP_SUBCASE("from") {
+		GRIZZLY_SUBCASE("from") {
 			const UTF8Char* const utf8_literal = u8"foo";
 			const String string = String::from(utf8_literal);
-			OP_CHECK(string.len() == 3);
+			GRIZZLY_CHECK(string.len() == 3);
 
 			for (auto iter = string.chars(); iter; ++iter) {
 				const auto c = *iter;
-				OP_CHECK(c == utf8_literal[iter.index()]);
+				GRIZZLY_CHECK(c == utf8_literal[iter.index()]);
 			}
 		}
 
-		OP_SUBCASE("push") {
+		GRIZZLY_SUBCASE("push") {
 			String string;
 			string.push('f');
 			string.push('o');
 			string.push('o');
-			OP_CHECK(string.len() == 3);
-			OP_CHECK(string == u8"foo");
+			GRIZZLY_CHECK(string.len() == 3);
+			GRIZZLY_CHECK(string == u8"foo");
 		}
 
-		OP_SUBCASE("append") {
+		GRIZZLY_SUBCASE("append") {
 			String string;
 			string.append(u8"foo");
-			OP_CHECK(string.len() == 3);
-			OP_CHECK(string == u8"foo");
+			GRIZZLY_CHECK(string.len() == 3);
+			GRIZZLY_CHECK(string == u8"foo");
 		}
 	}
 }
-#endif // OP_ENABLE_TEST
+#endif // GRIZZLY_ENABLE_TEST

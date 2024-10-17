@@ -4,13 +4,13 @@
  * This software is released under the MIT License.
  */
 
-#include "core/containers/function.h"
-#include "core/containers/unique.h"
-#include "core/debug/test.h"
+#include <core/containers/function.h>
+#include <core/containers/unique.h>
+#include <core/debug/test.h>
 
-#if OP_ENABLE_TEST
-OP_TEST_SUITE("containers") {
-	using namespace op::core;
+#if GRIZZLY_ENABLE_TEST
+GRIZZLY_TEST_SUITE("containers") {
+	using namespace grizzly::core;
 
 	int test(int x) { return x + 7; }
 
@@ -25,39 +25,39 @@ OP_TEST_SUITE("containers") {
 		int bar(int y) const { return x + y; }
 	};
 
-	OP_TEST_CASE("Function") {
-		OP_SUBCASE("from lambda") {
+	GRIZZLY_TEST_CASE("Function") {
+		GRIZZLY_SUBCASE("from lambda") {
 			int foo = 5;
 			Function<int(int)> fn = [foo](int x) { return x + foo; };
-			OP_CHECK(fn(5) == 10);
+			GRIZZLY_CHECK(fn(5) == 10);
 		}
 
-		OP_SUBCASE("from functor") {
+		GRIZZLY_SUBCASE("from functor") {
 			Function<int(int)> fn = Functor{};
-			OP_CHECK(fn(5) == 6);
+			GRIZZLY_CHECK(fn(5) == 6);
 		};
 
-		OP_SUBCASE("from function pointer") {
+		GRIZZLY_SUBCASE("from function pointer") {
 			Function<int(int)> fn = &test;
-			OP_CHECK(fn(5) == 12);
+			GRIZZLY_CHECK(fn(5) == 12);
 		}
 	}
 
-	OP_TEST_CASE("FunctionRef") {
-		OP_SUBCASE("from lambda") {
+	GRIZZLY_TEST_CASE("FunctionRef") {
+		GRIZZLY_SUBCASE("from lambda") {
 			FunctionRef<int(int)> fn = [](int x) { return x + 1; };
-			OP_CHECK(fn(5) == 6);
+			GRIZZLY_CHECK(fn(5) == 6);
 		}
 
-		OP_SUBCASE("from functor") {
+		GRIZZLY_SUBCASE("from functor") {
 			FunctionRef<int(int)> fn = Functor{};
-			OP_CHECK(fn(5) == 6);
+			GRIZZLY_CHECK(fn(5) == 6);
 		};
 
-		OP_SUBCASE("from function pointer") {
+		GRIZZLY_SUBCASE("from function pointer") {
 			FunctionRef<int(int)> fn = &test;
-			OP_CHECK(fn(5) == 12);
+			GRIZZLY_CHECK(fn(5) == 12);
 		}
 	}
 }
-#endif // OP_ENABLE_TEST
+#endif // GRIZZLY_ENABLE_TEST

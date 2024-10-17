@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(opal CXX)
+project(grizzly CXX)
 
 # When turning this option on, the libraries and executables will be compiled with debug symbols
 option(GENERATE_DEBUG_SYMBOLS "Generate debug symbols" ON)
@@ -203,17 +203,17 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     set(CMAKE_CXX_FLAGS_RELEASEUBSAN "-fsanitize=undefined,implicit-conversion,float-divide-by-zero,local-bounds -fno-sanitize-recover=all")
     set(CMAKE_CXX_FLAGS_RELEASECOVERAGE "-O0 -DJPH_NO_FORCE_INLINE -fprofile-instr-generate -fcoverage-mapping")
 else ()
-    message(FATAL_ERROR, "Compiler not supported. Only MSVC is supported at the moment")
+    message(FATAL_ERROR, "Compiler not supported.")
 endif ()
 
 message("Using " ${CMAKE_CXX_COMPILER_ID} " (" ${CMAKE_CXX_COMPILER_VERSION} ")")
 
 # Set repository root
-set(OPAL_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(GRIZZLY_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Enable testing using CTest
 enable_testing()
 
 # Include the source directory cmake file
-include(${OPAL_ROOT}/src/src.cmake)
+include(${GRIZZLY_ROOT}/src/src.cmake)
 

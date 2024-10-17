@@ -6,15 +6,15 @@
 
 #pragma once
 
-#include "core/concepts.h"
-#include "core/containers/option.h"
-#include "core/containers/slice.h"
-#include "core/debug/assertions.h"
-#include "core/initializer_list.h"
-#include "core/memory.h"
-#include "core/primitives.h"
+#include <core/concepts.h>
+#include <core/containers/option.h>
+#include <core/containers/slice.h>
+#include <core/debug/assertions.h>
+#include <core/initializer_list.h>
+#include <core/memory.h>
+#include <core/primitives.h>
 
-namespace op::core {
+namespace grizzly::core {
 	template <typename T>
 	inline constexpr bool is_array_allocator = false;
 	struct HeapAllocator;
@@ -46,37 +46,37 @@ namespace op::core {
 		Array& operator=(Array&& move) noexcept;
 		~Array();
 
-		OP_NO_DISCARD OP_ALWAYS_INLINE usize len() const { return m_len; }
-		OP_NO_DISCARD OP_ALWAYS_INLINE usize cap() const { return m_storage.cap(); }
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize len() const { return m_len; }
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize cap() const { return m_storage.cap(); }
 
-		OP_NO_DISCARD OP_ALWAYS_INLINE bool is_empty() const { return len() == 0; }
-		OP_NO_DISCARD OP_ALWAYS_INLINE explicit operator bool() const { return !is_empty(); }
-		OP_NO_DISCARD OP_ALWAYS_INLINE bool is_valid_index(usize index) const { return index < len(); }
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE bool is_empty() const { return len() == 0; }
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE explicit operator bool() const { return !is_empty(); }
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE bool is_valid_index(usize index) const { return index < len(); }
 
-		OP_ALWAYS_INLINE Element* begin() { return m_storage.data(); }
-		OP_ALWAYS_INLINE Element* end() { return m_storage.data() + m_len; }
-		OP_ALWAYS_INLINE const Element* begin() const { return m_storage.data(); }
-		OP_ALWAYS_INLINE const Element* end() const { return m_storage.data() + m_len; }
-		OP_ALWAYS_INLINE const Element* cbegin() const { return m_storage.data(); }
-		OP_ALWAYS_INLINE const Element* cend() const { return m_storage.data() + m_len; }
+		GRIZZLY_ALWAYS_INLINE Element* begin() { return m_storage.data(); }
+		GRIZZLY_ALWAYS_INLINE Element* end() { return m_storage.data() + m_len; }
+		GRIZZLY_ALWAYS_INLINE const Element* begin() const { return m_storage.data(); }
+		GRIZZLY_ALWAYS_INLINE const Element* end() const { return m_storage.data() + m_len; }
+		GRIZZLY_ALWAYS_INLINE const Element* cbegin() const { return m_storage.data(); }
+		GRIZZLY_ALWAYS_INLINE const Element* cend() const { return m_storage.data() + m_len; }
 
-		OP_NO_DISCARD OP_ALWAYS_INLINE Slice<T> as_slice() { return Slice{ m_storage.data(), m_len }; }
-		OP_NO_DISCARD OP_ALWAYS_INLINE Slice<const T> as_const_slice() const
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Slice<T> as_slice() { return Slice{ m_storage.data(), m_len }; }
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Slice<const T> as_const_slice() const
 			requires(!is_const<T>)
 		{
 			return Slice<const T>{ m_storage.data(), m_len };
 		}
 
-		OP_NO_DISCARD OP_ALWAYS_INLINE Element& operator[](usize index);
-		OP_NO_DISCARD OP_ALWAYS_INLINE const Element& operator[](usize index) const;
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Element& operator[](usize index);
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE const Element& operator[](usize index) const;
 
-		OP_NO_DISCARD OP_ALWAYS_INLINE Option<Element&> get(usize index);
-		OP_NO_DISCARD OP_ALWAYS_INLINE Option<Element const&> get(usize index) const;
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<Element&> get(usize index);
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<Element const&> get(usize index) const;
 
-		OP_NO_DISCARD OP_ALWAYS_INLINE Option<Element&> last();
-		OP_NO_DISCARD OP_ALWAYS_INLINE Option<Element const&> last() const;
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<Element&> last();
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<Element const&> last() const;
 
-		OP_ALWAYS_INLINE void reserve(usize amount)
+		GRIZZLY_ALWAYS_INLINE void reserve(usize amount)
 			requires allocator_supports_reserve;
 
 		void insert(usize index, Element&& item)
@@ -84,15 +84,15 @@ namespace op::core {
 		void insert(usize index, const Element& item)
 			requires CopyConstructible<Element>;
 
-		OP_ALWAYS_INLINE usize push(Element&& item)
+		GRIZZLY_ALWAYS_INLINE usize push(Element&& item)
 			requires MoveConstructible<Element>;
-		OP_ALWAYS_INLINE usize push(const Element& item)
+		GRIZZLY_ALWAYS_INLINE usize push(const Element& item)
 			requires CopyConstructible<Element>;
 
 		Element remove(usize index)
 			requires Movable<Element> || Copyable<Element>;
 
-		OP_ALWAYS_INLINE Option<Element> pop()
+		GRIZZLY_ALWAYS_INLINE Option<Element> pop()
 			requires Movable<Element> or Copyable<Element>;
 
 		void set_len(usize len)
@@ -170,8 +170,8 @@ namespace op::core {
 	Array<T, Allocator>& Array<T, Allocator>::operator=(const Array& copy) noexcept
 		requires CopyConstructible<Element>
 	{
-		auto to_destroy = op::move(*this);
-		OP_UNUSED(to_destroy);
+		auto to_destroy = grizzly::move(*this);
+		GRIZZLY_UNUSED(to_destroy);
 
 		m_len = copy.m_len;
 		if constexpr (allocator_supports_reserve) {
@@ -185,19 +185,19 @@ namespace op::core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	Array<T, Allocator>::Array(Array&& move) noexcept : m_storage(op::move(move.m_storage))
+	Array<T, Allocator>::Array(Array&& move) noexcept : m_storage(grizzly::move(move.m_storage))
 													  , m_len(move.m_len) {
 		move.m_len = 0;
 	}
 
 	template <typename T, ArrayAllocator Allocator>
 	Array<T, Allocator>& Array<T, Allocator>::operator=(Array&& move) noexcept {
-		auto to_destroy = op::move(*this);
-		OP_UNUSED(to_destroy);
+		auto to_destroy = grizzly::move(*this);
+		GRIZZLY_UNUSED(to_destroy);
 
 		m_len = move.m_len;
 		move.m_len = 0;
-		m_storage = op::move(move.m_storage);
+		m_storage = grizzly::move(move.m_storage);
 		return *this;
 	}
 
@@ -210,19 +210,19 @@ namespace op::core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	OP_ALWAYS_INLINE Array<T, Allocator>::Element& Array<T, Allocator>::operator[](usize index) {
-		OP_ASSERT(is_valid_index(index), "Index out of bounds");
+	GRIZZLY_ALWAYS_INLINE Array<T, Allocator>::Element& Array<T, Allocator>::operator[](usize index) {
+		GRIZZLY_ASSERT(is_valid_index(index), "Index out of bounds");
 		return m_storage.data()[index];
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	OP_ALWAYS_INLINE const Array<T, Allocator>::Element& Array<T, Allocator>::operator[](usize index) const {
-		OP_ASSERT(is_valid_index(index), "Index out of bounds");
+	GRIZZLY_ALWAYS_INLINE const Array<T, Allocator>::Element& Array<T, Allocator>::operator[](usize index) const {
+		GRIZZLY_ASSERT(is_valid_index(index), "Index out of bounds");
 		return m_storage.data()[index];
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	OP_NO_DISCARD OP_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element&>
+	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element&>
 	Array<T, Allocator>::get(usize index) {
 		if (is_valid_index(index)) {
 			return m_storage.data()[index];
@@ -231,7 +231,7 @@ namespace op::core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	OP_NO_DISCARD OP_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element const&>
+	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element const&>
 	Array<T, Allocator>::get(usize index) const {
 		if (is_valid_index(index)) {
 			return m_storage.data()[index];
@@ -240,7 +240,8 @@ namespace op::core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	OP_NO_DISCARD OP_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element&> Array<T, Allocator>::last() {
+	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element&>
+	Array<T, Allocator>::last() {
 		if (!is_empty()) {
 			return m_storage.data()[m_len - 1];
 		}
@@ -248,7 +249,7 @@ namespace op::core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	OP_NO_DISCARD OP_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element const&>
+	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element const&>
 	Array<T, Allocator>::last() const {
 		if (!is_empty()) {
 			return m_storage.data()[m_len - 1];
@@ -257,7 +258,7 @@ namespace op::core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	OP_ALWAYS_INLINE void Array<T, Allocator>::reserve(usize amount)
+	GRIZZLY_ALWAYS_INLINE void Array<T, Allocator>::reserve(usize amount)
 		requires allocator_supports_reserve
 	{
 		m_storage.reserve(amount);
@@ -267,12 +268,12 @@ namespace op::core {
 	void Array<T, Allocator>::insert(usize index, Element&& item)
 		requires MoveConstructible<Element>
 	{
-		OP_ASSERT(index <= m_len);
+		GRIZZLY_ASSERT(index <= m_len);
 		if (len() == cap()) {
 			if constexpr (allocator_supports_reserve) {
 				reserve(1);
 			} else {
-				OP_PANIC("Ran out of space in array to insert item into.");
+				GRIZZLY_PANIC("Ran out of space in array to insert item into.");
 			}
 		}
 
@@ -282,7 +283,7 @@ namespace op::core {
 			core::set(src, 0, sizeof(Element));
 		}
 
-		new (src) Element{ op::forward<Element>(item) };
+		new (src) Element{ grizzly::forward<Element>(item) };
 		m_len += 1;
 	}
 
@@ -290,12 +291,12 @@ namespace op::core {
 	void Array<T, Allocator>::insert(usize index, const Element& item)
 		requires CopyConstructible<Element>
 	{
-		OP_ASSERT(index <= m_len);
+		GRIZZLY_ASSERT(index <= m_len);
 		if (len() == cap()) {
 			if constexpr (allocator_supports_reserve) {
 				reserve(1);
 			} else {
-				OP_PANIC("Ran out of space in array to insert item into.");
+				GRIZZLY_PANIC("Ran out of space in array to insert item into.");
 			}
 		}
 
@@ -310,16 +311,16 @@ namespace op::core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	OP_ALWAYS_INLINE usize Array<T, Allocator>::push(Element&& item)
+	GRIZZLY_ALWAYS_INLINE usize Array<T, Allocator>::push(Element&& item)
 		requires MoveConstructible<Element>
 	{
 		const auto index = len();
-		insert(index, op::forward<T>(item));
+		insert(index, grizzly::forward<T>(item));
 		return index;
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	OP_ALWAYS_INLINE usize Array<T, Allocator>::push(const Element& item)
+	GRIZZLY_ALWAYS_INLINE usize Array<T, Allocator>::push(const Element& item)
 		requires CopyConstructible<Element>
 	{
 		const auto index = len();
@@ -331,11 +332,11 @@ namespace op::core {
 	T Array<T, Allocator>::remove(usize index)
 		requires Movable<Element> || Copyable<Element>
 	{
-		OP_ASSERT(is_valid_index(index), "Index out of bounds");
+		GRIZZLY_ASSERT(is_valid_index(index), "Index out of bounds");
 
 		Option<Element> result = nullopt;
 		if constexpr (Movable<Element>) {
-			result = op::move(m_storage.data()[index]);
+			result = grizzly::move(m_storage.data()[index]);
 		} else {
 			result = m_storage.data()[index];
 		}
@@ -347,7 +348,7 @@ namespace op::core {
 		// If not removed from the end of the vector copy entire array over
 		if (index < m_len - 1) {
 			auto* src = m_storage.data() + index;
-			op::core::move(src, src + 1, (len() - index) * sizeof(Element));
+			grizzly::core::move(src, src + 1, (len() - index) * sizeof(Element));
 		}
 
 		// Decrement length
@@ -357,14 +358,14 @@ namespace op::core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	OP_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element> Array<T, Allocator>::pop()
+	GRIZZLY_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element> Array<T, Allocator>::pop()
 		requires Movable<Element> or Copyable<Element>
 	{
 		if (m_len > 0) {
 			m_len -= 1;
 
 			if constexpr (Movable<Element>) {
-				return op::move(m_storage.data()[m_len]);
+				return grizzly::move(m_storage.data()[m_len]);
 			} else {
 				return m_storage.data()[m_len];
 			}
@@ -394,7 +395,7 @@ namespace op::core {
 				if constexpr (allocator_supports_reserve) {
 					reserve(len - m_len);
 				} else {
-					OP_PANIC("Ran out of space in array to insert item into.");
+					GRIZZLY_PANIC("Ran out of space in array to insert item into.");
 				}
 			}
 
@@ -422,7 +423,7 @@ namespace op::core {
 				if constexpr (allocator_supports_reserve) {
 					reserve(len - m_len);
 				} else {
-					OP_PANIC("Ran out of space in array to insert item into.");
+					GRIZZLY_PANIC("Ran out of space in array to insert item into.");
 				}
 			}
 		}
@@ -443,8 +444,8 @@ namespace op::core {
 				move.m_cap = 0;
 			}
 			Storage& operator=(Storage&& move) noexcept {
-				auto to_destroy = op::move(*this);
-				OP_UNUSED(to_destroy);
+				auto to_destroy = grizzly::move(*this);
+				GRIZZLY_UNUSED(to_destroy);
 
 				m_ptr = move.m_ptr;
 				move.m_ptr = nullptr;
@@ -478,8 +479,8 @@ namespace op::core {
 				}
 			}
 
-			OP_ALWAYS_INLINE T* data() const { return m_ptr; }
-			OP_ALWAYS_INLINE usize cap() const { return m_cap; }
+			GRIZZLY_ALWAYS_INLINE T* data() const { return m_ptr; }
+			GRIZZLY_ALWAYS_INLINE usize cap() const { return m_cap; }
 
 		private:
 			T* m_ptr = nullptr;
@@ -510,9 +511,9 @@ namespace op::core {
 				return *this;
 			}
 
-			OP_ALWAYS_INLINE T* data() { return reinterpret_cast<T*>(&m_bytes[0]); }
-			OP_ALWAYS_INLINE const T* data() const { return reinterpret_cast<const T*>(&m_bytes[0]); }
-			OP_ALWAYS_INLINE usize cap() const { return Count; }
+			GRIZZLY_ALWAYS_INLINE T* data() { return reinterpret_cast<T*>(&m_bytes[0]); }
+			GRIZZLY_ALWAYS_INLINE const T* data() const { return reinterpret_cast<const T*>(&m_bytes[0]); }
+			GRIZZLY_ALWAYS_INLINE usize cap() const { return Count; }
 
 		private:
 			alignas(T) u8 m_bytes[sizeof(T) * Count];
@@ -520,10 +521,10 @@ namespace op::core {
 	};
 	template <usize Count>
 	inline constexpr bool is_array_allocator<InlineAllocator<Count>> = true;
-} // namespace op::core
+} // namespace grizzly::core
 
-namespace op {
+namespace grizzly {
 	using core::Array;
 	using core::HeapAllocator;
 	using core::InlineAllocator;
-} // namespace op
+} // namespace grizzly

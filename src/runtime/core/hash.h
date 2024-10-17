@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include "core/containers/slice.h"
+#include <core/containers/slice.h>
 
-namespace op::core {
+namespace grizzly::core {
 	class Hasher {
 	public:
 		virtual u64 finish() = 0;
@@ -31,9 +31,9 @@ namespace op::core {
 	private:
 		u64 m_result = 0;
 	};
-} // namespace op::core
+} // namespace grizzly::core
 
-namespace op {
+namespace grizzly {
 	template <typename Hasher>
 	void hash(Hasher& hasher, const u8& value) {
 		hasher.write({ reinterpret_cast<const u8*>(&value), sizeof(u8) });
@@ -74,4 +74,4 @@ namespace op {
 	void hash(Hasher& hasher, const f64& value) {
 		hasher.write({ reinterpret_cast<const u8*>(&value), sizeof(f64) });
 	}
-} // namespace op
+} // namespace grizzly

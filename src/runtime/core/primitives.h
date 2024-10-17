@@ -6,12 +6,10 @@
 
 #pragma once
 
-#include "core/core.h"
-
 #include <cstddef>
 #include <cstdint>
 
-namespace op::core {
+namespace grizzly::core {
 	template <typename T>
 	struct NumericLimits;
 
@@ -95,9 +93,9 @@ namespace op::core {
 	static_assert(sizeof(f64) == 8, "f64 should only be 8 bytes");
 
 	using NullPtr = decltype(nullptr);
-} // namespace op::core
+} // namespace grizzly::core
 
-namespace op {
+namespace grizzly {
 	// Export core primitives to the op namespace
 	using core::f32;
 	using core::f64;
@@ -112,4 +110,4 @@ namespace op {
 	using core::u64;
 	using core::u8;
 	using core::usize;
-} // namespace op
+} // namespace grizzly

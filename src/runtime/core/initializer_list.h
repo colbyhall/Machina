@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include "core/core.h"
+#include <core/core.h>
 #include <initializer_list>
 
-namespace op {
+namespace grizzly {
 	template <typename T>
 	using InitializerList = std::initializer_list<T>;
-} // namespace op
+} // namespace grizzly

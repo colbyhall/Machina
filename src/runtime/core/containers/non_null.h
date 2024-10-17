@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include "core/debug/assertions.h"
-#include "core/primitives.h"
-#include "core/type_traits.h"
+#include <core/debug/assertions.h>
+#include <core/primitives.h>
+#include <core/type_traits.h>
 
-namespace op::core {
+namespace grizzly::core {
 	template <typename T>
 	class NonNull;
 
@@ -19,8 +19,8 @@ namespace op::core {
 	class NonNull<void> {
 	public:
 		// Only way to initialize NonNull is by a valid ptr
-		OP_ALWAYS_INLINE constexpr NonNull(void* ptr) : m_ptr(ptr) {
-			OP_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
+		GRIZZLY_ALWAYS_INLINE constexpr NonNull(void* ptr) : m_ptr(ptr) {
+			GRIZZLY_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
 		}
 
 		// Prevent default and nullptr initialization
@@ -28,18 +28,18 @@ namespace op::core {
 		NonNull(NullPtr) = delete;
 
 		// Accessor
-		OP_ALWAYS_INLINE operator void*() const { return m_ptr; }
-		OP_ALWAYS_INLINE void* operator*() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE operator void*() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE void* operator*() const { return m_ptr; }
 
 		// Compare ops
-		OP_ALWAYS_INLINE bool operator==(NonNull<void> ptr) const { return ptr.m_ptr == m_ptr; }
-		OP_ALWAYS_INLINE bool operator==(void* ptr) const { return ptr == m_ptr; }
-		OP_ALWAYS_INLINE bool operator!=(NonNull<void> ptr) const { return ptr.m_ptr != m_ptr; }
-		OP_ALWAYS_INLINE bool operator!=(void* ptr) const { return ptr != m_ptr; }
+		GRIZZLY_ALWAYS_INLINE bool operator==(NonNull<void> ptr) const { return ptr.m_ptr == m_ptr; }
+		GRIZZLY_ALWAYS_INLINE bool operator==(void* ptr) const { return ptr == m_ptr; }
+		GRIZZLY_ALWAYS_INLINE bool operator!=(NonNull<void> ptr) const { return ptr.m_ptr != m_ptr; }
+		GRIZZLY_ALWAYS_INLINE bool operator!=(void* ptr) const { return ptr != m_ptr; }
 
 		// Casting
 		template <typename T>
-		OP_ALWAYS_INLINE NonNull<T> as() const {
+		GRIZZLY_ALWAYS_INLINE NonNull<T> as() const {
 			return static_cast<T*>(m_ptr);
 		}
 
@@ -52,8 +52,8 @@ namespace op::core {
 	class NonNull<void const> {
 	public:
 		// Only way to initialize NonNull is by a valid ptr
-		OP_ALWAYS_INLINE constexpr NonNull(void const* ptr) : m_ptr(ptr) {
-			OP_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
+		GRIZZLY_ALWAYS_INLINE constexpr NonNull(void const* ptr) : m_ptr(ptr) {
+			GRIZZLY_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
 		}
 
 		// Prevent default and nullptr initialization
@@ -61,19 +61,19 @@ namespace op::core {
 		NonNull(NullPtr) = delete;
 
 		// Accessor
-		OP_ALWAYS_INLINE operator void const*() const { return m_ptr; }
-		OP_ALWAYS_INLINE void const* operator*() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE operator void const*() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE void const* operator*() const { return m_ptr; }
 
 		// Compare ops
-		OP_ALWAYS_INLINE bool operator==(NonNull<void const> ptr) const { return ptr.m_ptr == m_ptr; }
-		OP_ALWAYS_INLINE bool operator==(void const* ptr) const { return ptr == m_ptr; }
-		OP_ALWAYS_INLINE bool operator!=(NonNull<void const> ptr) const { return ptr.m_ptr != m_ptr; }
-		OP_ALWAYS_INLINE bool operator!=(void const* ptr) const { return ptr != m_ptr; }
+		GRIZZLY_ALWAYS_INLINE bool operator==(NonNull<void const> ptr) const { return ptr.m_ptr == m_ptr; }
+		GRIZZLY_ALWAYS_INLINE bool operator==(void const* ptr) const { return ptr == m_ptr; }
+		GRIZZLY_ALWAYS_INLINE bool operator!=(NonNull<void const> ptr) const { return ptr.m_ptr != m_ptr; }
+		GRIZZLY_ALWAYS_INLINE bool operator!=(void const* ptr) const { return ptr != m_ptr; }
 
 		// Casting
 		template <typename T>
 			requires is_const<T>
-		OP_ALWAYS_INLINE NonNull<T> as() const {
+		GRIZZLY_ALWAYS_INLINE NonNull<T> as() const {
 			return static_cast<T*>(m_ptr);
 		}
 
@@ -86,8 +86,8 @@ namespace op::core {
 	class NonNull {
 	public:
 		// Only way to initialize NonNull is by a valid ptr
-		OP_ALWAYS_INLINE constexpr NonNull(T* ptr) : m_ptr(ptr) {
-			OP_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
+		GRIZZLY_ALWAYS_INLINE constexpr NonNull(T* ptr) : m_ptr(ptr) {
+			GRIZZLY_ASSERT(m_ptr != nullptr, "NonNull only accepts pointers that are not nullptr");
 		}
 
 		// Prevent default and nullptr initialization
@@ -95,18 +95,18 @@ namespace op::core {
 		NonNull(NullPtr) = delete;
 
 		// Accessors
-		OP_ALWAYS_INLINE operator T*() const { return m_ptr; }
-		OP_ALWAYS_INLINE operator NonNull<void>() const { return m_ptr; }
-		OP_ALWAYS_INLINE operator NonNull<void const>() const { return m_ptr; }
-		OP_ALWAYS_INLINE T* operator->() const { return m_ptr; }
-		OP_ALWAYS_INLINE T& operator*() const { return *m_ptr; }
-		OP_ALWAYS_INLINE T& operator[](usize index) const { return m_ptr[index]; }
+		GRIZZLY_ALWAYS_INLINE operator T*() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE operator NonNull<void>() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE operator NonNull<void const>() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE T* operator->() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE T& operator*() const { return *m_ptr; }
+		GRIZZLY_ALWAYS_INLINE T& operator[](usize index) const { return m_ptr[index]; }
 
 		// Compare ops
-		OP_ALWAYS_INLINE bool operator==(NonNull<T> ptr) const { return ptr.m_ptr == m_ptr; }
-		OP_ALWAYS_INLINE bool operator==(T* ptr) const { return ptr == m_ptr; }
-		OP_ALWAYS_INLINE bool operator!=(NonNull<T> ptr) const { return ptr.m_ptr != m_ptr; }
-		OP_ALWAYS_INLINE bool operator!=(T* ptr) const { return ptr != m_ptr; }
+		GRIZZLY_ALWAYS_INLINE bool operator==(NonNull<T> ptr) const { return ptr.m_ptr == m_ptr; }
+		GRIZZLY_ALWAYS_INLINE bool operator==(T* ptr) const { return ptr == m_ptr; }
+		GRIZZLY_ALWAYS_INLINE bool operator!=(NonNull<T> ptr) const { return ptr.m_ptr != m_ptr; }
+		GRIZZLY_ALWAYS_INLINE bool operator!=(T* ptr) const { return ptr != m_ptr; }
 
 	private:
 		T* m_ptr;
@@ -114,8 +114,8 @@ namespace op::core {
 
 
 
-} // namespace op::core
+} // namespace grizzly::core
 
-namespace op {
+namespace grizzly {
 	using core::NonNull;
-} // namespace op
+} // namespace grizzly

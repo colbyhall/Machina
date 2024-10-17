@@ -6,23 +6,23 @@
 
 #pragma once
 
-#include "core/containers/array.h"
-#include "core/hash.h"
+#include <core/containers/array.h>
+#include <core/hash.h>
 
-namespace op::core {
+namespace grizzly::core {
 	template <typename Key, typename Value>
 		requires Copyable<Key> && EqualityComparable<Key>
 	class HashMap {
 	public:
 		constexpr HashMap() = default;
 
-		OP_NO_DISCARD OP_ALWAYS_INLINE usize len() const { return m_buckets.len(); }
-		OP_NO_DISCARD OP_ALWAYS_INLINE usize cap() const { return m_buckets.cap(); }
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize len() const { return m_buckets.len(); }
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize cap() const { return m_buckets.cap(); }
 
 		void insert(const Key& key, Value&& value)
 			requires Movable<Value>
 		{
-			m_buckets.push(Bucket{ .key = key, .value = op::forward<Value>(value) });
+			m_buckets.push(Bucket{ .key = key, .value = grizzly::forward<Value>(value) });
 			refresh_layout();
 		}
 		void insert(const Key& key, const Value& value)
@@ -152,4 +152,4 @@ namespace op::core {
 		Array<Bucket> m_buckets;
 		Array<Option<usize>> m_layout;
 	};
-} // namespace op::core
+} // namespace grizzly::core

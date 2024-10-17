@@ -4,10 +4,10 @@
  * This software is released under the MIT License.
  */
 
-#include "core/containers/wstring_view.h"
-#include "core/debug/test.h"
+#include <core/containers/wstring_view.h>
+#include <core/debug/test.h>
 
-namespace op::core {
+namespace grizzly::core {
 	bool WStringView::operator==(const WStringView& rhs) const {
 		if (len() != rhs.len()) {
 			return false;
@@ -21,15 +21,15 @@ namespace op::core {
 
 		return true;
 	}
-} // namespace op::core
+} // namespace grizzly::core
 
-#if OP_ENABLE_TEST
-OP_TEST_SUITE("containers") {
-	using namespace op::core;
+#if GRIZZLY_ENABLE_TEST
+GRIZZLY_TEST_SUITE("containers") {
+	using namespace grizzly::core;
 
-	OP_TEST_CASE("WStringView") {
+	GRIZZLY_TEST_CASE("WStringView") {
 		WStringView view = L"Hello World";
-		OP_CHECK(view.len() == 11);
+		GRIZZLY_CHECK(view.len() == 11);
 	}
 }
-#endif // OP_ENABLE_TEST
+#endif // GRIZZLY_ENABLE_TEST

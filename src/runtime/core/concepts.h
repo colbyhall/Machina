@@ -10,7 +10,7 @@
 
 // Aliasing concepts found in the C++20 standard library to match our naming conventions
 // https://en.cppreference.com/w/cpp/concepts
-namespace op::core {
+namespace grizzly::core {
 	// https://en.cppreference.com/w/cpp/concepts/same_as
 	template <typename A, typename B>
 	concept SameAs = std::same_as<A, B>;
@@ -134,4 +134,4 @@ namespace op::core {
 	// https://en.cppreference.com/w/cpp/concepts/strict_weak_order
 	template <typename R, typename T, typename U>
 	concept StrictWeakOrder = std::strict_weak_order<R, T, U>;
-} // namespace op::core
+} // namespace grizzly::core

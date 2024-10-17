@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include "core/math/quaternion.h"
-#include "core/math/vector4.h"
+#include <core/math/quaternion.h>
+#include <core/math/vector4.h>
 
-namespace op::core::math {
+namespace grizzly::core::math {
 	/**
 	 * @class Matrix4
 	 * @brief A template class for creating and manipulating column major 4x4 matrices.
@@ -23,7 +23,7 @@ namespace op::core::math {
 		/**
 		 * @brief Default constructor. Initializes the matrix to the 0 matrix.
 		 */
-		OP_ALWAYS_INLINE constexpr Matrix4() : x{}, y{}, z{}, w{} {}
+		GRIZZLY_ALWAYS_INLINE constexpr Matrix4() : x{}, y{}, z{}, w{} {}
 
 		/**
 		 * @brief Constructs a matrix from its columns.
@@ -51,7 +51,7 @@ namespace op::core::math {
 		 * @brief Creates an identity matrix.
 		 * @return An identity matrix of type Matrix4.
 		 */
-		static constexpr OP_ALWAYS_INLINE Matrix4 identity();
+		static constexpr GRIZZLY_ALWAYS_INLINE Matrix4 identity();
 
 		/**
 		 * @brief Creates an orthographic projection matrix.
@@ -86,14 +86,14 @@ namespace op::core::math {
 		 * @brief Attempts to calculate the inverse of the matrix.
 		 * @return An optional Matrix4 containing the inverse if it exists, otherwise an empty option.
 		 */
-		OP_NO_DISCARD Option<Matrix4> inverse() const;
+		GRIZZLY_NO_DISCARD Option<Matrix4> inverse() const;
 
 		/**
 		 * @brief Retrieves a row of the matrix as a Vector4.
 		 * @param index Index of the row to retrieve.
 		 * @return The requested row as a Vector4.
 		 */
-		OP_NO_DISCARD Vector4<T> row(usize index) const;
+		GRIZZLY_NO_DISCARD Vector4<T> row(usize index) const;
 
 		/**
 		 * @brief Multiplies this matrix by another matrix.
@@ -110,7 +110,7 @@ namespace op::core::math {
 		Vector4<T> operator*(const Vector4<T>& rhs) const;
 
 	private:
-		OP_ALWAYS_INLINE constexpr explicit Matrix4(
+		GRIZZLY_ALWAYS_INLINE constexpr explicit Matrix4(
 			const Vector4<T>& _x,
 			const Vector4<T>& _y,
 			const Vector4<T>& _z,
@@ -138,7 +138,7 @@ namespace op::core::math {
 	}
 
 	template <FloatingPoint T>
-	constexpr OP_ALWAYS_INLINE Matrix4<T> Matrix4<T>::identity() {
+	constexpr GRIZZLY_ALWAYS_INLINE Matrix4<T> Matrix4<T>::identity() {
 		return Matrix4{ Vector4<T>{ 1, 0, 0, 0 },
 						Vector4<T>{ 0, 1, 0, 0 },
 						Vector4<T>{ 0, 0, 1, 0 },
@@ -264,7 +264,7 @@ namespace op::core::math {
 
 	template <FloatingPoint T>
 	Vector4<T> Matrix4<T>::row(usize index) const {
-		OP_ASSERT(index < 4);
+		GRIZZLY_ASSERT(index < 4);
 		switch (index) {
 		case 0:
 			return { x.x, y.x, z.x, w.x };
@@ -320,8 +320,8 @@ namespace op::core::math {
 
 		return { _x, _y, _z, _w };
 	}
-} // namespace op::core::math
+} // namespace grizzly::core::math
 
-namespace op {
-	using op::core::math::Matrix4;
-} // namespace op
+namespace grizzly {
+	using core::math::Matrix4;
+} // namespace grizzly

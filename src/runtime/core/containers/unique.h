@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include "core/concepts.h"
-#include "core/memory.h"
+#include <core/concepts.h>
+#include <core/memory.h>
 
-namespace op::core {
+namespace grizzly::core {
 	template <typename Base>
 	class Unique {
 	public:
@@ -18,7 +18,7 @@ namespace op::core {
 			: Unique{ Base{} } {}
 
 		template <typename... Args>
-		static OP_ALWAYS_INLINE Unique<Base> create(Args&&... args)
+		static GRIZZLY_ALWAYS_INLINE Unique<Base> create(Args&&... args)
 			requires ConstructibleFrom<Base, Args...>
 		{
 			return Unique<Base>{ Base(std::forward<Args>(args)...) };
@@ -58,24 +58,24 @@ namespace op::core {
 		~Unique() {
 			if (m_ptr) {
 				m_ptr->~Base();
-				op::core::free(m_ptr);
+				grizzly::core::free(m_ptr);
 				m_ptr = nullptr;
 			}
 		}
 
-		OP_ALWAYS_INLINE explicit operator Base*() { return m_ptr; }
-		OP_ALWAYS_INLINE explicit operator Base const*() const { return m_ptr; }
-		OP_ALWAYS_INLINE Base* operator->() { return m_ptr; }
-		OP_ALWAYS_INLINE Base const* operator->() const { return m_ptr; }
-		OP_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
-		OP_ALWAYS_INLINE Base const& operator*() const { return *m_ptr; }
+		GRIZZLY_ALWAYS_INLINE explicit operator Base*() { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE explicit operator Base const*() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE Base* operator->() { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE Base const* operator->() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
+		GRIZZLY_ALWAYS_INLINE Base const& operator*() const { return *m_ptr; }
 
 	private:
-		OP_ALWAYS_INLINE explicit Unique(Base&& base)
+		GRIZZLY_ALWAYS_INLINE explicit Unique(Base&& base)
 			requires MoveConstructible<Base>
 		{
 			const auto ptr = alloc(Layout::single<Base>());
-			m_ptr = new (ptr) Base{ op::forward<Base>(base) };
+			m_ptr = new (ptr) Base{ grizzly::forward<Base>(base) };
 		}
 
 		template <typename Derived>
@@ -83,8 +83,8 @@ namespace op::core {
 
 		Base* m_ptr;
 	};
-} // namespace op::core
+} // namespace grizzly::core
 
-namespace op {
+namespace grizzly {
 	using core::Unique;
-} // namespace op
+} // namespace grizzly

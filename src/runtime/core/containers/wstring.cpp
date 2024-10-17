@@ -4,9 +4,9 @@
  * This software is released under the MIT License.
  */
 
-#include "core/containers/wstring.h"
+#include <core/containers/wstring.h>
 
-namespace op::core {
+namespace grizzly::core {
 	WChar utf32_to_utf16(Char c) {
 		u32 h;
 		u32 l;
@@ -89,34 +89,35 @@ namespace op::core {
 
 		return *this;
 	}
-} // namespace op::core
+} // namespace grizzly::core
 
-#include "core/debug/test.h"
+#include <core/debug/test.h>
 
-OP_TEST_SUITE("containers") {
-	using namespace op::core;
+#if GRIZZLY_ENABLE_TEST
+GRIZZLY_TEST_SUITE("containers") {
+	using namespace grizzly::core;
 
-	OP_TEST_CASE("WString") {
-		OP_SUBCASE("default constructor") {
+	GRIZZLY_TEST_CASE("WString") {
+		GRIZZLY_SUBCASE("default constructor") {
 			const WString string;
-			OP_CHECK(string.len() == 0);
+			GRIZZLY_CHECK(string.len() == 0);
 		}
 
-		OP_SUBCASE("from WStringView") {
+		GRIZZLY_SUBCASE("from WStringView") {
 			const WStringView view = L"Hello, World!";
 			const WString string = WString::from(view);
-			OP_CHECK(string.len() == view.len());
-			OP_CHECK(string == view);
+			GRIZZLY_CHECK(string.len() == view.len());
+			GRIZZLY_CHECK(string == view);
 		}
 
-		OP_SUBCASE("from StringView") {
+		GRIZZLY_SUBCASE("from StringView") {
 			const StringView view = u8"Hello, World!";
 			const WString string = WString::from(view);
-			OP_CHECK(string.len() == view.len());
-			OP_CHECK(string == L"Hello, World!");
+			GRIZZLY_CHECK(string.len() == view.len());
+			GRIZZLY_CHECK(string == L"Hello, World!");
 		}
 
-		OP_SUBCASE("push") {
+		GRIZZLY_SUBCASE("push") {
 			WString string;
 			string.reserve(13);
 			string.push(L'H');
@@ -132,24 +133,25 @@ OP_TEST_SUITE("containers") {
 			string.push(L'l');
 			string.push(L'd');
 			string.push(L'!');
-			OP_CHECK(string.len() == 13);
-			OP_CHECK(string == L"Hello, World!");
+			GRIZZLY_CHECK(string.len() == 13);
+			GRIZZLY_CHECK(string == L"Hello, World!");
 		}
 
-		OP_SUBCASE("append WStringView") {
+		GRIZZLY_SUBCASE("append WStringView") {
 			WString string;
 			string.append(L"Hello, ");
 			string.append(L"World!");
-			OP_CHECK(string.len() == 13);
-			OP_CHECK(string == L"Hello, World!");
+			GRIZZLY_CHECK(string.len() == 13);
+			GRIZZLY_CHECK(string == L"Hello, World!");
 		}
 
-		OP_SUBCASE("append StringView") {
+		GRIZZLY_SUBCASE("append StringView") {
 			WString string;
 			string.append(u8"Hello, ");
 			string.append(u8"World!");
-			OP_CHECK(string.len() == 13);
-			OP_CHECK(string == L"Hello, World!");
+			GRIZZLY_CHECK(string.len() == 13);
+			GRIZZLY_CHECK(string == L"Hello, World!");
 		}
 	}
 }
+#endif

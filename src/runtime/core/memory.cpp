@@ -4,12 +4,12 @@
  * This software is released under the MIT License.
  */
 
-#include "core/memory.h"
+#include <core/memory.h>
 
 #include <cstdlib>
 #include <cstring>
 
-namespace op::core {
+namespace grizzly::core {
 	NonNull<void> alloc(const Layout& layout) {
 		// TODO: Alignment
 		void* result = std::malloc(static_cast<std::size_t>(layout.size));
@@ -17,7 +17,7 @@ namespace op::core {
 	}
 
 	NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout, const Layout& new_layout) {
-		OP_UNUSED(old_layout);
+		GRIZZLY_UNUSED(old_layout);
 
 		// TODO: Alignment
 		void* result = std::realloc(old_ptr, static_cast<std::size_t>(new_layout.size));
@@ -50,4 +50,4 @@ namespace op::core {
 #undef B4
 #undef B6
 #undef COUNT_BITS
-} // namespace op::core
+} // namespace grizzly::core

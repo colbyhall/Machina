@@ -4,9 +4,9 @@
  * This software is released under the MIT License.
  */
 
-#include "core/hash.h"
+#include <core/hash.h>
 
-namespace op::core {
+namespace grizzly::core {
 	const u64 FNV1Hasher::offset_basic = 0xcbf29ce484222325ULL;
 	const u64 FNV1Hasher::prime = 0x100000001b3ULL;
 
@@ -20,4 +20,4 @@ namespace op::core {
 		}
 		m_result |= hash;
 	}
-} // namespace op::core
+} // namespace grizzly::core

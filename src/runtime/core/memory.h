@@ -6,11 +6,10 @@
 
 #pragma once
 
-#include "core/containers/non_null.h"
-#include "core/type_traits.h"
-#include <new>
+#include <core/containers/non_null.h>
+#include <core/type_traits.h>
 
-namespace op::core {
+namespace grizzly::core {
 	struct Layout {
 		usize size;
 		usize alignment;
@@ -29,9 +28,9 @@ namespace op::core {
 	NonNull<void> alloc(const Layout& layout);
 
 	template <typename T>
-	OP_ALWAYS_INLINE NonNull<T> alloc(usize len = 1) {
-		static_assert(op::core::is_trivial<T>, "Value must be a trivial type to malloc");
-		return op::core::alloc(Layout::array<T>(len)).template as<T>();
+	GRIZZLY_ALWAYS_INLINE NonNull<T> alloc(usize len = 1) {
+		static_assert(grizzly::core::is_trivial<T>, "Value must be a trivial type to malloc");
+		return grizzly::core::alloc(Layout::array<T>(len)).template as<T>();
 	}
 
 	void free(NonNull<void> ptr);
@@ -43,7 +42,7 @@ namespace op::core {
 	u8 count_ones(u8 byte);
 
 	template <typename T>
-	OP_ALWAYS_INLINE u32 count_ones(T t) {
+	GRIZZLY_ALWAYS_INLINE u32 count_ones(T t) {
 		const usize size = sizeof(T);
 		void* ptr = &t;
 		u8 const* u8_casted = (u8 const*)ptr;
@@ -55,4 +54,4 @@ namespace op::core {
 
 		return result;
 	}
-} // namespace op::core
+} // namespace grizzly::core

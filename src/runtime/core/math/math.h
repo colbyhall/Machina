@@ -6,27 +6,28 @@
 
 #pragma once
 
-#include "core/concepts.h"
-#include "core/primitives.h"
+#include <core/concepts.h>
+#include <core/core.h>
+#include <core/primitives.h>
 
 #include <limits>
 
-namespace op::core::math {
+namespace grizzly::core::math {
 	template <typename T>
 	concept Number = FloatingPoint<T> || Integral<T>;
 
 	template <Number T>
-	constexpr OP_ALWAYS_INLINE T min(T a, T b) {
+	constexpr GRIZZLY_ALWAYS_INLINE T min(T a, T b) {
 		return a < b ? a : b;
 	}
 
 	template <Number T>
-	constexpr OP_ALWAYS_INLINE T max(T a, T b) {
+	constexpr GRIZZLY_ALWAYS_INLINE T max(T a, T b) {
 		return a > b ? a : b;
 	}
 
 	template <Number T>
-	constexpr OP_ALWAYS_INLINE T clamp(T value, T min, T max) {
+	constexpr GRIZZLY_ALWAYS_INLINE T clamp(T value, T min, T max) {
 		return math::min<T>(math::max<T>(value, min), max);
 	}
 
@@ -75,63 +76,63 @@ namespace op::core::math {
 	template <FloatingPoint T>
 	inline constexpr T nan = std::numeric_limits<T>::signaling_NaN();
 
-	OP_NO_DISCARD f32 cos(f32 x);
-	OP_NO_DISCARD f64 cos(f64 x);
+	GRIZZLY_NO_DISCARD f32 cos(f32 x);
+	GRIZZLY_NO_DISCARD f64 cos(f64 x);
 
-	OP_NO_DISCARD f32 sin(f32 x);
-	OP_NO_DISCARD f64 sin(f64 x);
+	GRIZZLY_NO_DISCARD f32 sin(f32 x);
+	GRIZZLY_NO_DISCARD f64 sin(f64 x);
 
-	OP_NO_DISCARD f32 tan(f32 x);
-	OP_NO_DISCARD f64 tan(f64 x);
+	GRIZZLY_NO_DISCARD f32 tan(f32 x);
+	GRIZZLY_NO_DISCARD f64 tan(f64 x);
 
-	OP_NO_DISCARD f32 acos(f32 x);
-	OP_NO_DISCARD f64 acos(f64 x);
+	GRIZZLY_NO_DISCARD f32 acos(f32 x);
+	GRIZZLY_NO_DISCARD f64 acos(f64 x);
 
-	OP_NO_DISCARD f32 asin(f32 x);
-	OP_NO_DISCARD f64 asin(f64 x);
+	GRIZZLY_NO_DISCARD f32 asin(f32 x);
+	GRIZZLY_NO_DISCARD f64 asin(f64 x);
 
-	OP_NO_DISCARD f32 atan(f32 x);
-	OP_NO_DISCARD f64 atan(f64 x);
+	GRIZZLY_NO_DISCARD f32 atan(f32 x);
+	GRIZZLY_NO_DISCARD f64 atan(f64 x);
 
-	OP_NO_DISCARD f32 atan2(f32 y, f32 x);
-	OP_NO_DISCARD f64 atan2(f64 y, f64 x);
+	GRIZZLY_NO_DISCARD f32 atan2(f32 y, f32 x);
+	GRIZZLY_NO_DISCARD f64 atan2(f64 y, f64 x);
 
-	OP_NO_DISCARD f32 sqrt(f32 x);
-	OP_NO_DISCARD f64 sqrt(f64 x);
+	GRIZZLY_NO_DISCARD f32 sqrt(f32 x);
+	GRIZZLY_NO_DISCARD f64 sqrt(f64 x);
 
-	OP_NO_DISCARD f32 fmod(f32 numerator, f32 denominator);
-	OP_NO_DISCARD f64 fmod(f64 numerator, f64 denominator);
+	GRIZZLY_NO_DISCARD f32 fmod(f32 numerator, f32 denominator);
+	GRIZZLY_NO_DISCARD f64 fmod(f64 numerator, f64 denominator);
 
-	OP_NO_DISCARD f32 powf(f32 x, f32 y);
-	OP_NO_DISCARD f64 pow(f64 x, f64 y);
+	GRIZZLY_NO_DISCARD f32 powf(f32 x, f32 y);
+	GRIZZLY_NO_DISCARD f64 pow(f64 x, f64 y);
 
 	template <Number T>
-	constexpr OP_ALWAYS_INLINE T abs(T x) {
+	constexpr GRIZZLY_ALWAYS_INLINE T abs(T x) {
 		return x < 0 ? -x : x;
 	}
 
 	template <FloatingPoint T>
-	constexpr OP_ALWAYS_INLINE bool is_near_zero(T a) {
+	constexpr GRIZZLY_ALWAYS_INLINE bool is_near_zero(T a) {
 		return abs<T>(a) <= small_number<T>;
 	}
 
 	template <FloatingPoint T>
-	constexpr OP_ALWAYS_INLINE T lerp(T a, T b, T t) {
+	constexpr GRIZZLY_ALWAYS_INLINE T lerp(T a, T b, T t) {
 		return (T{ 1 } - t) * a + t * b;
 	}
 
 	template <Number T>
-	constexpr OP_ALWAYS_INLINE T square(T value) {
+	constexpr GRIZZLY_ALWAYS_INLINE T square(T value) {
 		return value * value;
 	}
 
 	template <Number T>
-	constexpr OP_ALWAYS_INLINE T equals(T a, T b, T tolerance = kinda_small_number<T>) {
+	constexpr GRIZZLY_ALWAYS_INLINE T equals(T a, T b, T tolerance = kinda_small_number<T>) {
 		return abs<T>(a - b) <= tolerance;
 	}
-} // namespace op::core::math
+} // namespace grizzly::core::math
 
-namespace op::math {
+namespace grizzly::math {
 	using core::math::Number;
 
 	using core::math::abs;
@@ -171,4 +172,4 @@ namespace op::math {
 
 	template <Number T>
 	inline constexpr T nan = core::math::nan<T>;
-} // namespace op::math
+} // namespace grizzly::math

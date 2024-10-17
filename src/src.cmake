@@ -1,5 +1,5 @@
 # Set the src root
-set(SRC_ROOT ${OPAL_ROOT}/src)
+set(SRC_ROOT ${GRIZZLY_ROOT}/src)
 
 # Set the programs root
 set(PROGRAMS_ROOT ${SRC_ROOT}/programs)
