@@ -170,7 +170,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Enable link time optimizations for static libraries
     # https://learn.microsoft.com/en-us/cpp/build/reference/ltcg-link-time-code-generation
     set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "/LTCG")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CONFIGURATION_TYPES "Debug;Release;ReleaseASAN;ReleaseUBSAN;ReleaseCoverage;Distribution")
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++20")
