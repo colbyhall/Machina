@@ -5,7 +5,7 @@
  */
 
 #include <gui/application.h>
-#include <gui/macos_window.h>
+#include <gui/macos/window.h>
 
 #import <AppKit/AppKit.h>
 

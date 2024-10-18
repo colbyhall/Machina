@@ -4,7 +4,7 @@
  * This software is released under the MIT License.
  */
 
-#include <gui/macos_window.h>
+#include <gui/macos/window.h>
 
 namespace grizzly::gui {
 	MacOSWindow::~MacOSWindow() {

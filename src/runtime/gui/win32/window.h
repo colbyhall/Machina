@@ -1,0 +1,33 @@
+/**
+ * Copyright (c) 2024 Colby Hall <me@cobeh.com>
+ *
+ * This software is released under the MIT License.
+ */
+
+#pragma once
+
+#include <gui/window.h>
+
+#include <windows.h>
+
+namespace grizzly::gui {
+	class Win32Window final : public Window {
+	public:
+		explicit Win32Window(HWND handle) : m_handle{ handle } {}
+		Win32Window(const Win32Window&) = delete;
+		Win32Window& operator=(const Win32Window&) = delete;
+		Win32Window(Win32Window&& move) : m_handle{ move.m_handle } {}
+		Win32Window& operator=(Win32Window&& move) {
+			auto to_destroy = grizzly::move(*this);
+			GRIZZLY_UNUSED(to_destroy);
+
+			m_handle = move.m_handle;
+
+			return *this;
+		}
+		~Win32Window() final;
+
+	private:
+		HWND m_handle;
+	};
+} // namespace grizzly::gui
