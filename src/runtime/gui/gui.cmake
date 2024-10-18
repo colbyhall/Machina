@@ -25,4 +25,9 @@ elseif(WIN32)
 endif()
 
 add_runtime_library(gui ${GUI_ROOT} ${GUI_SRC_FILES})
+
+if (APPLE)
 target_link_libraries(gui core "-framework AppKit")
+elseif(WIN32)
+target_link_libraries(gui core user32)
+endif()

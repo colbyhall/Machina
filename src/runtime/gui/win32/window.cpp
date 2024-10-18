@@ -5,3 +5,31 @@
  */
 
 #include <gui/win32/window.h>
+
+namespace grizzly::gui {
+	Win32Window::~Win32Window() {
+		if (m_handle != nullptr) {
+			::DestroyWindow(m_handle);
+		}
+	}
+
+	bool Win32Window::close() { return ::CloseWindow(m_handle) > 0; }
+
+	bool Win32Window::show(Visibility visibility) {
+		int input = SW_SHOW;
+		switch (visibility) {
+		case Visibility::Maximized:
+			input = SW_SHOWMAXIMIZED;
+			break;
+		case Visibility::Minimized:
+			input = SW_SHOWMINIMIZED;
+			break;
+		case Visibility::Invisible:
+			input = SW_HIDE;
+			break;
+		default:
+			break;
+		}
+		return ::ShowWindow(m_handle, input) > 0;
+	}
+} // namespace grizzly::gui

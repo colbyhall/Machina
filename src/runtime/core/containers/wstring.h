@@ -50,5 +50,8 @@ namespace grizzly::core {
 	private:
 		Array<WChar> m_chars;
 	};
-
 } // namespace grizzly::core
+
+namespace grizzly {
+	using core::WString;
+} // namespace grizzly
