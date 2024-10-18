@@ -58,7 +58,7 @@ namespace grizzly::core {
 		~Unique() {
 			if (m_ptr) {
 				m_ptr->~Base();
-				grizzly::core::free(m_ptr);
+				mem::free(m_ptr);
 				m_ptr = nullptr;
 			}
 		}
@@ -74,8 +74,8 @@ namespace grizzly::core {
 		GRIZZLY_ALWAYS_INLINE explicit Unique(Base&& base)
 			requires MoveConstructible<Base>
 		{
-			const auto ptr = alloc(Layout::single<Base>());
-			m_ptr = new (ptr) Base{ grizzly::forward<Base>(base) };
+			const auto ptr = mem::alloc(mem::Layout::single<Base>());
+			m_ptr = mem::emplace<Base>(grizzly::forward<Base>(base));
 		}
 
 		template <typename Derived>

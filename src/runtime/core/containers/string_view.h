@@ -74,5 +74,8 @@ namespace grizzly::core {
 		u32 m_decoder_state;
 		Char m_codepoint;
 	};
-
 } // namespace grizzly::core
+
+namespace grizzly {
+	using core::StringView;
+} // namespace grizzly

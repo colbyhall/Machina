@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <cstring>
 
-namespace grizzly::core {
+namespace grizzly::core::mem {
 	NonNull<void> alloc(const Layout& layout) {
 		// TODO: Alignment
 		void* result = std::malloc(static_cast<std::size_t>(layout.size));
@@ -50,4 +50,4 @@ namespace grizzly::core {
 #undef B4
 #undef B6
 #undef COUNT_BITS
-} // namespace grizzly::core
+} // namespace grizzly::core::mem

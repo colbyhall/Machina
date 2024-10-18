@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "core/concepts.h"
 #include <core/memory.h>
 #include <core/sync/atomic.h>
 
@@ -138,13 +139,13 @@ namespace grizzly::core {
 					// to account for this
 					if constexpr (is_base_of<SharedFromThisBase, Base>) {
 						if (weak_count == 1) {
-							core::free(m_counter);
+							mem::free(m_counter);
 						}
 					}
 					// Free the memory if we have no weak references
 					else {
 						if (weak_count == 0) {
-							core::free(m_counter);
+							mem::free(m_counter);
 						}
 					}
 
@@ -179,14 +180,17 @@ namespace grizzly::core {
 
 	private:
 		explicit Shared(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
-		explicit Shared(Base&& base) {
+		explicit Shared(Base&& base)
+			requires Movable<Base>
+		{
 			struct Combined {
 				SharedCounter<Type> counter;
 				Base base;
 			};
 
-			const auto layout = core::Layout::single<Combined>();
-			auto* ptr = new (core::alloc(layout)) Combined{ SharedCounter<Type>{}, grizzly::forward<Base>(base) };
+			const auto layout = mem::Layout::single<Combined>();
+			Combined* ptr =
+				mem::emplace<Combined>(mem::alloc(layout), SharedCounter<Type>{}, grizzly::forward<Base>(base));
 
 			m_counter = &ptr->counter;
 			m_base = &ptr->base;
@@ -266,7 +270,7 @@ namespace grizzly::core {
 				const auto weak_count = c.remove_weak();
 
 				if (strong_count == 0 && weak_count == 0) {
-					core::free(m_counter);
+					mem::free(m_counter);
 					m_counter = nullptr;
 				}
 			}

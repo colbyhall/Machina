@@ -119,7 +119,7 @@ namespace grizzly::core {
 
 		// Fast path for trivially copyable types
 		if constexpr (is_trivially_copyable<T>) {
-			core::copy(m_storage.data(), initializer_list.begin(), count * sizeof(Element));
+			mem::copy(m_storage.data(), initializer_list.begin(), count * sizeof(Element));
 			m_len = count;
 		}
 		// Otherwise call the copy constructor
@@ -142,7 +142,7 @@ namespace grizzly::core {
 
 		// Fast path for trivially copyable types
 		if constexpr (is_trivially_copyable<T>) {
-			core::copy(m_storage.data(), slice.begin(), count * sizeof(Element));
+			mem::copy(m_storage.data(), slice.begin(), count * sizeof(Element));
 			m_len = count;
 		}
 		// Otherwise call the copy constructor
@@ -162,7 +162,7 @@ namespace grizzly::core {
 			reserve(m_len);
 		}
 		for (usize i = 0; i < m_len; ++i) {
-			new (m_storage.data() + i) Element(copy[i]);
+			mem::emplace<Element>(m_storage.data() + i, copy[i]);
 		}
 	}
 
@@ -178,7 +178,7 @@ namespace grizzly::core {
 			reserve(m_len);
 		}
 		for (usize i = 0; i < m_len; ++i) {
-			new (m_storage.data() + i) Element(copy[i]);
+			mem::emplace<Element>(m_storage.data() + i, copy[i]);
 		}
 
 		return *this;
@@ -279,8 +279,10 @@ namespace grizzly::core {
 
 		auto* src = m_storage.data() + index;
 		if (index != len()) {
-			core::move(src + 1, src, (len() - index) * sizeof(Element));
-			core::set(src, 0, sizeof(Element));
+			mem::move(src + 1, src, (len() - index) * sizeof(Element));
+#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
+			mem::set(src, 0, sizeof(Element));
+#endif
 		}
 
 		new (src) Element{ grizzly::forward<Element>(item) };
@@ -302,8 +304,10 @@ namespace grizzly::core {
 
 		auto* src = m_storage.data() + index;
 		if (index != len()) {
-			core::move(src + 1, src, (len() - index) * sizeof(Element));
-			core::set(src, 0, sizeof(Element));
+			mem::move(src + 1, src, (len() - index) * sizeof(Element));
+#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
+			mem::set(src, 0, sizeof(Element));
+#endif
 		}
 
 		new (src) Element{ item };
@@ -341,14 +345,16 @@ namespace grizzly::core {
 			result = m_storage.data()[index];
 		}
 
+#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
 		// Set memory that element used to occupy to 0
 		void* clear = &m_storage.data()[index];
-		core::set(clear, 0, sizeof(Element));
+		mem::set(src, 0, sizeof(Element));
+#endif
 
 		// If not removed from the end of the vector copy entire array over
 		if (index < m_len - 1) {
 			auto* src = m_storage.data() + index;
-			grizzly::core::move(src, src + 1, (len() - index) * sizeof(Element));
+			grizzly::move(src, src + 1, (len() - index) * sizeof(Element));
 		}
 
 		// Decrement length
@@ -456,7 +462,7 @@ namespace grizzly::core {
 			}
 			~Storage() {
 				if (m_ptr) {
-					core::free(m_ptr);
+					mem::free(m_ptr);
 					m_ptr = nullptr;
 				}
 			}
@@ -470,11 +476,11 @@ namespace grizzly::core {
 				}
 
 				if (m_ptr == nullptr) {
-					m_ptr = core::alloc(Layout::array<T>(m_cap)).template as<T>();
+					m_ptr = mem::alloc(mem::Layout::array<T>(m_cap)).template as<T>();
 				} else {
-					const auto new_ptr = core::alloc(Layout::array<T>(m_cap));
-					core::copy(new_ptr, m_ptr, old_cap * sizeof(T));
-					core::free(m_ptr);
+					const auto new_ptr = mem::alloc(mem::Layout::array<T>(m_cap));
+					mem::copy(new_ptr, m_ptr, old_cap * sizeof(T));
+					mem::free(m_ptr);
 					m_ptr = new_ptr.template as<T>();
 				}
 			}
@@ -501,12 +507,16 @@ namespace grizzly::core {
 			Storage(const Storage& copy) noexcept = delete;
 			Storage& operator=(const Storage& copy) noexcept = delete;
 			Storage(Storage&& move) noexcept {
-				core::copy(m_bytes, move.m_bytes, sizeof(m_bytes));
-				core::set(move.m_bytes, 0, sizeof(move.m_bytes));
+				mem::copy(m_bytes, move.m_bytes, sizeof(m_bytes));
+#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
+				mem::set(move.m_bytes, 0, sizeof(move.m_bytes));
+#endif
 			}
 			Storage& operator=(Storage&& move) noexcept {
-				core::copy(m_bytes, move.m_bytes, sizeof(m_bytes));
-				core::set(move.m_bytes, 0, sizeof(move.m_bytes));
+				mem::copy(m_bytes, move.m_bytes, sizeof(m_bytes));
+#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
+				mem::set(move.m_bytes, 0, sizeof(move.m_bytes));
+#endif
 
 				return *this;
 			}

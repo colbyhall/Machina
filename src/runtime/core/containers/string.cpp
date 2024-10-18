@@ -49,7 +49,7 @@ namespace grizzly::core {
 		}
 
 		m_bytes.set_len_uninitialized(len() + char_len + 1);
-		core::copy(m_bytes.begin() + m_bytes.len() - char_len - 1, local, char_len);
+		mem::copy(m_bytes.begin() + m_bytes.len() - char_len - 1, local, char_len);
 
 		// Set the null terminator
 		m_bytes.last().unwrap() = 0;
@@ -67,7 +67,7 @@ namespace grizzly::core {
 		// Increase the length of the string by the length of the string to append and then copy the contents of
 		// the string over.
 		m_bytes.set_len_uninitialized(len() + string.len() + 1);
-		core::copy(m_bytes.begin() + m_bytes.len() - string.len() - 1, *string, string.len());
+		mem::copy(m_bytes.begin() + m_bytes.len() - string.len() - 1, *string, string.len());
 
 		// Set the null terminator
 		m_bytes.last().unwrap() = 0;

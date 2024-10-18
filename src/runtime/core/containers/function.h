@@ -133,15 +133,15 @@ namespace grizzly::core {
 				if (m_ptr) {
 					auto* f = static_cast<FunctorWrapperBase*>(m_ptr);
 					f->~FunctorWrapperBase();
-					core::free(m_ptr);
+					mem::free(m_ptr);
 					m_ptr = nullptr;
 				}
 			}
 
 			template <typename F>
 			RemoveReference<F>* bind(F&& f) {
-				void* memory = core::alloc(core::Layout::single<FunctorWrapper<F>>());
-				m_ptr = new (memory) FunctorWrapper<F>{ grizzly::forward<F>(f) };
+				void* memory = mem::alloc(mem::Layout::single<FunctorWrapper<F>>());
+				m_ptr = mem::emplace<FunctorWrapper<F>>(memory, grizzly::forward<F>(f));
 
 				return static_cast<RemoveReference<F>*>(m_ptr->ptr());
 			}

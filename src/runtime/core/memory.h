@@ -8,8 +8,9 @@
 
 #include <core/containers/non_null.h>
 #include <core/type_traits.h>
+#include <new>
 
-namespace grizzly::core {
+namespace grizzly::core::mem {
 	struct Layout {
 		usize size;
 		usize alignment;
@@ -25,12 +26,17 @@ namespace grizzly::core {
 		}
 	};
 
-	NonNull<void> alloc(const Layout& layout);
+	template <typename T, typename... Args>
+	NonNull<T> emplace(void* memory, Args&&... args) {
+		return new (memory) T{ grizzly::forward<Args>(args)... };
+	}
+
+	GRIZZLY_NO_DISCARD NonNull<void> alloc(const Layout& layout);
 
 	template <typename T>
 	GRIZZLY_ALWAYS_INLINE NonNull<T> alloc(usize len = 1) {
 		static_assert(grizzly::core::is_trivial<T>, "Value must be a trivial type to malloc");
-		return grizzly::core::alloc(Layout::array<T>(len)).template as<T>();
+		return mem::alloc(Layout::array<T>(len)).template as<T>();
 	}
 
 	void free(NonNull<void> ptr);
@@ -54,4 +60,8 @@ namespace grizzly::core {
 
 		return result;
 	}
-} // namespace grizzly::core
+} // namespace grizzly::core::mem
+
+namespace grizzly::mem {
+	using namespace grizzly::core::mem;
+} // namespace grizzly::mem

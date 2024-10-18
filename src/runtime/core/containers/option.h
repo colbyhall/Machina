@@ -39,7 +39,7 @@ namespace grizzly::core {
 			: m_set(true)
 			, m_data() {
 			auto* p = m_data;
-			new (p) T(grizzly::forward<T>(t));
+			mem::emplace<T>(p, grizzly::forward<T>(t));
 		}
 		GRIZZLY_ALWAYS_INLINE Option& operator=(T&& t)
 			requires MoveConstructible<T>
@@ -50,7 +50,7 @@ namespace grizzly::core {
 			}
 			auto* p = m_data;
 			m_set = true;
-			new (p) T(grizzly::forward<T>(t));
+			mem::emplace<T>(p, grizzly::forward<T>(t));
 			return *this;
 		}
 
@@ -59,7 +59,7 @@ namespace grizzly::core {
 			: m_set(true)
 			, m_data() {
 			auto* p = m_data;
-			new (p) T(t);
+			mem::emplace<T>(p, t);
 		}
 		GRIZZLY_ALWAYS_INLINE Option& operator=(const T& t)
 			requires CopyConstructible<T>
@@ -70,7 +70,7 @@ namespace grizzly::core {
 			}
 			auto* p = m_data;
 			m_set = true;
-			new (p) T(t);
+			mem::emplace<T>(p, t);
 			return *this;
 		}
 
@@ -80,7 +80,7 @@ namespace grizzly::core {
 			m_set = copy.m_set;
 			if (m_set) {
 				auto* p = m_data;
-				new (p) T(copy.as_const_ref().unwrap());
+				mem::emplace<T>(p, copy.as_const_ref().unwrap());
 			}
 		}
 
@@ -93,7 +93,7 @@ namespace grizzly::core {
 			m_set = copy.m_set;
 			if (m_set) {
 				auto* p = m_data;
-				new (p) T(copy.as_const_ref().unwrap());
+				mem::emplace<T>(p, copy.as_const_ref().unwrap());
 			}
 
 			return *this;
@@ -101,8 +101,8 @@ namespace grizzly::core {
 
 		GRIZZLY_ALWAYS_INLINE Option(Option<T>&& move) noexcept : m_set(move.m_set) {
 			if (m_set) {
-				core::copy(m_data, move.m_data, sizeof(T));
-				core::set(move.m_data, 0, sizeof(T));
+				mem::copy(m_data, move.m_data, sizeof(T));
+				mem::set(move.m_data, 0, sizeof(T));
 			}
 			move.m_set = false;
 		}
@@ -115,8 +115,10 @@ namespace grizzly::core {
 			move.m_set = false;
 
 			if (m_set) {
-				core::copy(m_data, move.m_data, sizeof(T));
-				core::set(move.m_data, 0, sizeof(T));
+				mem::copy(m_data, move.m_data, sizeof(T));
+#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
+				mem::set(move.m_data, 0, sizeof(T));
+#endif
 			}
 			return *this;
 		}
@@ -126,7 +128,7 @@ namespace grizzly::core {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				p->~T();
 				m_set = false;
-				core::set(m_data, 0, sizeof(T));
+				mem::set(m_data, 0, sizeof(T));
 			}
 		}
 
@@ -142,7 +144,7 @@ namespace grizzly::core {
 			auto* p = reinterpret_cast<T*>(&m_data[0]);
 
 			if constexpr (Movable<T>) {
-				return move(*p);
+				return grizzly::move(*p);
 			} else {
 				return *p;
 			}
@@ -163,7 +165,7 @@ namespace grizzly::core {
 			if (is_set()) {
 				return unwrap();
 			}
-			return move(t);
+			return grizzly::move(t);
 		}
 
 		GRIZZLY_ALWAYS_INLINE T unwrap_or(const T& t)
@@ -206,7 +208,7 @@ namespace grizzly::core {
 		GRIZZLY_ALWAYS_INLINE constexpr Option(NullOpt) : m_set(false), m_data() {}
 		GRIZZLY_ALWAYS_INLINE Option(const T& t) : m_set(true), m_data() {
 			auto* p = m_data;
-			new (p) T(t);
+			mem::emplace<T>(p, t);
 		}
 
 		GRIZZLY_ALWAYS_INLINE Option& operator=(const T& t) {
@@ -216,19 +218,19 @@ namespace grizzly::core {
 			} else {
 				auto* p = m_data;
 				m_set = true;
-				new (p) T(t);
+				mem::emplace<T>(p, t);
 			}
 
 			return *this;
 		}
 
 		GRIZZLY_ALWAYS_INLINE Option(const Option<T>& copy) {
-			core::copy(m_data, copy.m_data, sizeof(m_data));
+			mem::copy(m_data, copy.m_data, sizeof(m_data));
 			m_set = copy.m_set;
 		}
 
 		GRIZZLY_ALWAYS_INLINE Option& operator=(const Option<T>& copy) {
-			core::copy(m_data, copy.m_data, sizeof(m_data));
+			mem::copy(m_data, copy.m_data, sizeof(m_data));
 			m_set = copy.m_set;
 
 			return *this;
