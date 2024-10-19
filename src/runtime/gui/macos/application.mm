@@ -9,8 +9,39 @@
 
 #import <AppKit/AppKit.h>
 
+@interface GrizzlyApplicationDelegate : NSObject <NSApplicationDelegate>
+@end
+
+@implementation GrizzlyApplicationDelegate
+
+@end // GrizzlyApplicationDelegate
+
 namespace grizzly::gui {
-	Application::Application(int argc, char** argv) { [NSApplication sharedApplication]; }
+	Application::Application(int argc, char** argv) {
+		@autoreleasepool {
+			[NSApplication sharedApplication];
+
+			NSMenu* bar = [[NSMenu alloc] init];
+			[NSApp setMainMenu:bar];
+
+			NSMenuItem* app_menu_item = [bar addItemWithTitle:@"" action:NULL keyEquivalent:@""];
+			NSMenu* app_menu = [[NSMenu alloc] initWithTitle:@"Sandbox"];
+			[app_menu_item setSubmenu:app_menu];
+
+			NSMenuItem* window_menu_item = [bar addItemWithTitle:@"" action:NULL keyEquivalent:@""];
+			[bar release];
+			NSMenu* window_menu = [[NSMenu alloc] initWithTitle:@"Window"];
+			[NSApp setWindowsMenu:window_menu];
+			[window_menu_item setSubmenu:window_menu];
+
+			[window_menu addItemWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
+			[window_menu addItemWithTitle:@"Zoom" action:@selector(performZoom:) keyEquivalent:@""];
+			[window_menu addItem:[NSMenuItem separatorItem]];
+			[window_menu addItemWithTitle:@"Bring All to Front" action:@selector(arrangeInFront:) keyEquivalent:@""];
+
+			[NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+		};
+	}
 
 	Shared<Window> Application::spawn_window(const Window::SpawnInfo& spawn_info) {
 		@autoreleasepool {
@@ -22,7 +53,9 @@ namespace grizzly::gui {
 											  backing:NSBackingStoreBuffered
 												defer:NO];
 
-			[window setTitle:@"Foo"];
+			const char* ctitle = (const char*)*spawn_info.title;
+			NSString* title = [NSString stringWithUTF8String:ctitle];
+			[window setTitle:title];
 			[window makeKeyAndOrderFront:nil];
 
 			return Shared<MacOSWindow>::create(window);

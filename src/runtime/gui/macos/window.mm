@@ -12,4 +12,14 @@ namespace grizzly::gui {
 			[m_window release];
 		}
 	}
+
+	bool MacOSWindow::close() {
+		// TODO: IMPLEMENT ME
+		return false;
+	}
+
+	bool MacOSWindow::show(Visibility) {
+		// TODO: IMPLEMENT ME
+		return false;
+	}
 } // namespace grizzly::gui

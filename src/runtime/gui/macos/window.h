@@ -7,13 +7,12 @@
 #pragma once
 
 #include <gui/window.h>
-
 #import <AppKit/AppKit.h>
 
 namespace grizzly::gui {
 	class MacOSWindow final : public Window {
 	public:
-		explicit MacOSWindow(NonNull<NSWindow> window) : m_window{ window } {}
+		explicit MacOSWindow(NSWindow* window) : m_window{ window } {}
 		MacOSWindow(const MacOSWindow&) = delete;
 		MacOSWindow& operator=(const MacOSWindow&) = delete;
 		MacOSWindow(MacOSWindow&& move) : m_window{ move.m_window } {}
@@ -25,9 +24,11 @@ namespace grizzly::gui {
 
 			return *this;
 		}
+		bool close() final;
+		bool show(Visibility) final;
 		~MacOSWindow() final;
 
 	private:
-		NonNull<NSWindow> m_window;
+		NSWindow* m_window;
 	};
 } // namespace grizzly::gui
