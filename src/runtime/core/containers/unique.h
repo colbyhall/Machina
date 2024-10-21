@@ -75,7 +75,7 @@ namespace grizzly::core {
 			requires MoveConstructible<Base>
 		{
 			const auto ptr = mem::alloc(mem::Layout::single<Base>());
-			m_ptr = mem::emplace<Base>(grizzly::forward<Base>(base));
+			m_ptr = mem::emplace<Base>(ptr, grizzly::forward<Base>(base));
 		}
 
 		template <typename Derived>

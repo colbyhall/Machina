@@ -348,13 +348,13 @@ namespace grizzly::core {
 #if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
 		// Set memory that element used to occupy to 0
 		void* clear = &m_storage.data()[index];
-		mem::set(src, 0, sizeof(Element));
+		mem::set(clear, 0, sizeof(Element));
 #endif
 
 		// If not removed from the end of the vector copy entire array over
 		if (index < m_len - 1) {
 			auto* src = m_storage.data() + index;
-			grizzly::move(src, src + 1, (len() - index) * sizeof(Element));
+			mem::move(src, src + 1, (len() - index) * sizeof(Element));
 		}
 
 		// Decrement length

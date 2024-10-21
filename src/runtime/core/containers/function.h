@@ -40,7 +40,7 @@ namespace grizzly::core {
 				requires(!grizzly::core::is_same<FunctionBase, grizzly::core::Decay<F>>)
 			{
 				if (auto* binding = m_storage.bind(grizzly::forward<F>(f))) {
-					OP_UNUSED(binding);
+					GRIZZLY_UNUSED(binding);
 					using DecayedFunctor = RemovePointer<decltype(binding)>;
 					m_callable = &FunctionRefCaller<DecayedFunctor, R(Param...)>::call;
 				}
@@ -64,7 +64,7 @@ namespace grizzly::core {
 			}
 
 			R operator()(Param... params) const {
-				OP_ASSERT(m_callable != nullptr);
+				GRIZZLY_ASSERT(m_callable != nullptr);
 				return (m_callable)(m_storage.ptr(), params...);
 			}
 
