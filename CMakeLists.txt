@@ -215,5 +215,5 @@ set(GRIZZLY_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 enable_testing()
 
 # Include the source directory cmake file
-include(${GRIZZLY_ROOT}/src/src.cmake)
+include(${GRIZZLY_ROOT}/Source/Source.cmake)
 
