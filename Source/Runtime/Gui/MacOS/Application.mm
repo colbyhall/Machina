@@ -4,8 +4,8 @@
  * This software is released under the MIT License.
  */
 
-#include <Gui/Application.h>
-#include <Gui/MacOS/Window.h>
+#include <Gui/Application.hpp>
+#include <Gui/MacOS/Window.hpp>
 
 #import <AppKit/AppKit.h>
 

@@ -4,7 +4,7 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Memory.h>
+#include <Core/Memory.hpp>
 
 #include <cstdlib>
 #include <cstring>

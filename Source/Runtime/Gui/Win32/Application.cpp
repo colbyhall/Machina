@@ -4,9 +4,9 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Containers/WString.h>
-#include <Gui/Application.h>
-#include <Gui/Win32/Window.h>
+#include <Core/Containers/WString.hpp>
+#include <Gui/Application.hpp>
+#include <Gui/Win32/Window.hpp>
 
 namespace Grizzly::Gui {
 

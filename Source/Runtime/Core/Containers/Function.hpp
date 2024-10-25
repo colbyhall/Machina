@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Core/Memory.h>
+#include <Core/Memory.hpp>
 
 namespace Grizzly::Core {
 	namespace hidden {

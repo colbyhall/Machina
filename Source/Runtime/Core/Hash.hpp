@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Core/Containers/Slice.h>
+#include <Core/Containers/Slice.hpp>
 
 namespace Grizzly::Core {
 	class Hasher {

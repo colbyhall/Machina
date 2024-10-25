@@ -4,7 +4,7 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Containers/StringView.h>
+#include <Core/Containers/StringView.hpp>
 
 namespace Grizzly::Core {
 	CharsIterator StringView::chars() const { return CharsIterator(*this); }
@@ -101,7 +101,7 @@ namespace Grizzly::Core {
 	}
 } // namespace Grizzly::Core
 
-#include <Core/Debug/Test.h>
+#include <Core/Debug/Test.hpp>
 
 #if GRIZZLY_ENABLE_TEST
 GRIZZLY_TEST_SUITE("Containers") {

@@ -4,7 +4,7 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Hash.h>
+#include <Core/Hash.hpp>
 
 namespace Grizzly::Core {
 	const u64 FNV1Hasher::offset_basic = 0xcbf29ce484222325ULL;

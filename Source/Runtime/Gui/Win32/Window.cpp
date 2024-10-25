@@ -4,7 +4,7 @@
  * This software is released under the MIT License.
  */
 
-#include <Gui/Win32/Window.h>
+#include <Gui/Win32/Window.hpp>
 
 namespace Grizzly::Gui {
 	Win32Window::~Win32Window() {

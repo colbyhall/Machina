@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Core/Containers/Option.h>
+#include <Core/Containers/Option.hpp>
 #include <atomic>
 
 namespace Grizzly::Core {

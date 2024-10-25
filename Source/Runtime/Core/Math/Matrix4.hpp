@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Core/Math/Quaternion.h>
-#include <Core/Math/Vector4.h>
+#include <Core/Math/Quaternion.hpp>
+#include <Core/Math/Vector4.hpp>
 
 namespace Grizzly::Core::Math {
 	/**

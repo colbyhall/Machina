@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Core/Concepts.h>
-#include <Core/Memory.h>
+#include <Core/Concepts.hpp>
+#include <Core/Memory.hpp>
 
 #define TRY(expression)                                                                                                \
 	({                                                                                                                 \

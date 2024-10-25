@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Core/Containers/NonNull.h>
-#include <Core/TypeTraits.h>
+#include <Core/Containers/NonNull.hpp>
+#include <Core/TypeTraits.hpp>
 #include <new>
 
 namespace Grizzly::Core::Memory {

@@ -190,10 +190,10 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR "${CMAKE_CXX_COMPILE
     # Set compiler flag for disabling exception-handling
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
 
-    # Do not use -ffast-math since it cannot be turned off in a single compilation unit under clang, see Core.h
+    # Do not use -ffast-math since it cannot be turned off in a single compilation unit under clang, see Core.hpp
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffp-model=fast")
 
-    # On clang 14 and later we can turn off float contraction through a pragma, older versions and deterministic versions need it off always, see Core.h
+    # On clang 14 and later we can turn off float contraction through a pragma, older versions and deterministic versions need it off always, see Core.hpp
     if (CMAKE_CXX_COMPILER_VERSION LESS 14 OR CROSS_PLATFORM_DETERMINISTIC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffp-contract=off")
     endif ()

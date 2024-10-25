@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Gui/Window.h>
+#include <Gui/Window.hpp>
 
 #include <windows.h>
 

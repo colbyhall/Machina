@@ -4,9 +4,9 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Containers/Function.h>
-#include <Core/Containers/Unique.h>
-#include <Core/Debug/Test.h>
+#include <Core/Containers/Function.hpp>
+#include <Core/Containers/Unique.hpp>
+#include <Core/Debug/Test.hpp>
 
 #if GRIZZLY_ENABLE_TEST
 GRIZZLY_TEST_SUITE("Containers") {

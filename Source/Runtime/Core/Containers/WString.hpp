@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Core/Containers/Array.h>
-#include <Core/Containers/WStringView.h>
+#include <Core/Containers/Array.hpp>
+#include <Core/Containers/WStringView.hpp>
 
 namespace Grizzly::Core {
 	WChar utf32_to_utf16(Char c);

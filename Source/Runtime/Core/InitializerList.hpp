@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Core/Core.h>
+#include <Core/Core.hpp>
 #include <initializer_list>
 
 namespace Grizzly {

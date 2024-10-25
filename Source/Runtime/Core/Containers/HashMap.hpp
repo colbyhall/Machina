@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Core/Containers/Array.h>
-#include <Core/Hash.h>
+#include <Core/Containers/Array.hpp>
+#include <Core/Hash.hpp>
 
 namespace Grizzly::Core {
 	template <typename Key, typename Value>

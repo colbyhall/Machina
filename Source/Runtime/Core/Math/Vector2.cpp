@@ -4,8 +4,8 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Debug/Test.h>
-#include <Core/Math/Vector2.h>
+#include <Core/Debug/Test.hpp>
+#include <Core/Math/Vector2.hpp>
 
 #if GRIZZLY_ENABLE_TEST
 GRIZZLY_TEST_SUITE("Math") {

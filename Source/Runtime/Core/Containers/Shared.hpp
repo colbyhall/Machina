@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <Core/Atomic.h>
-#include <Core/Concepts.h>
-#include <Core/Memory.h>
+#include <Core/Atomic.hpp>
+#include <Core/Concepts.hpp>
+#include <Core/Memory.hpp>
 
 namespace Grizzly::Core {
 	enum class SharedType { NonAtomic, Atomic };

@@ -4,8 +4,8 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Containers/Unique.h>
-#include <Core/Debug/Test.h>
+#include <Core/Containers/Unique.hpp>
+#include <Core/Debug/Test.hpp>
 
 GRIZZLY_TEST_SUITE("Containers") {
 	using namespace Grizzly::Core;

@@ -4,7 +4,7 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Math/Math.h>
+#include <Core/Math/Math.hpp>
 #include <cmath>
 
 namespace Grizzly::Core::Math {
@@ -39,7 +39,7 @@ namespace Grizzly::Core::Math {
 	f64 pow(f64 x, f64 y) { return std::pow(x, y); }
 } // namespace Grizzly::Core::Math
 
-#include <Core/Debug/Test.h>
+#include <Core/Debug/Test.hpp>
 
 GRIZZLY_TEST_SUITE("Math") {
 	using namespace Grizzly;

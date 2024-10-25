@@ -6,13 +6,13 @@
 
 #pragma once
 
-#include <Core/Concepts.h>
-#include <Core/Containers/Option.h>
-#include <Core/Containers/Slice.h>
-#include <Core/Debug/Assertions.h>
-#include <Core/InitializerList.h>
-#include <Core/Memory.h>
-#include <Core/Primitives.h>
+#include <Core/Concepts.hpp>
+#include <Core/Containers/Option.hpp>
+#include <Core/Containers/Slice.hpp>
+#include <Core/Debug/Assertions.hpp>
+#include <Core/InitializerList.hpp>
+#include <Core/Memory.hpp>
+#include <Core/Primitives.hpp>
 
 namespace Grizzly::Core {
 	template <typename T>

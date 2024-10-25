@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Core/Containers/StringView.h>
+#include <Core/Containers/StringView.hpp>
 
 namespace Grizzly::Core {
 	using WChar = wchar_t;

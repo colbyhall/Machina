@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Core/Core.h>
+#include <Core/Core.hpp>
 
 // Only allow asserts in debug builds
 #if GRIZZLY_BUILD_DEBUG

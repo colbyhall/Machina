@@ -4,7 +4,7 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Containers/String.h>
+#include <Core/Containers/String.hpp>
 
 namespace Grizzly::Core {
 	constexpr u32 utf8_reject = 12;
@@ -76,7 +76,7 @@ namespace Grizzly::Core {
 	}
 } // namespace Grizzly::Core
 
-#include <Core/Debug/Test.h>
+#include <Core/Debug/Test.hpp>
 
 #if GRIZZLY_ENABLE_TEST
 GRIZZLY_TEST_SUITE("Containers") {

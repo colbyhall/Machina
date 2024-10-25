@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Core/Containers/Option.h>
-#include <Core/Math/Math.h>
+#include <Core/Containers/Option.hpp>
+#include <Core/Math/Math.hpp>
 
 namespace Grizzly::Core::Math {
 	template <Number T>

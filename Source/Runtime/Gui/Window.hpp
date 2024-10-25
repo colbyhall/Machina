@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Core/Containers/StringView.h>
-#include <Core/Math/Vector2.h>
+#include <Core/Containers/StringView.hpp>
+#include <Core/Math/Vector2.hpp>
 
 namespace Grizzly::Gui {
 	class Window {

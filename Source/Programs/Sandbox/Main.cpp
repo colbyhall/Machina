@@ -1,6 +1,6 @@
-#include <Core/Core.h>
-#include <Gui/Application.h>
-#include <Gui/Window.h>
+#include <Core/Core.hpp>
+#include <Gui/Application.hpp>
+#include <Gui/Window.hpp>
 
 using namespace Grizzly;
 

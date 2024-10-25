@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <Core/Debug/Assertions.h>
-#include <Core/InitializerList.h>
-#include <Core/Primitives.h>
-#include <Core/TypeTraits.h>
+#include <Core/Debug/Assertions.hpp>
+#include <Core/InitializerList.hpp>
+#include <Core/Primitives.hpp>
+#include <Core/TypeTraits.hpp>
 
 namespace Grizzly::Core {
 	template <typename T>

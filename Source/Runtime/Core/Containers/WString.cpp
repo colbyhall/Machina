@@ -4,7 +4,7 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Containers/WString.h>
+#include <Core/Containers/WString.hpp>
 
 namespace Grizzly::Core {
 	WChar utf32_to_utf16(Char c) {
@@ -91,7 +91,7 @@ namespace Grizzly::Core {
 	}
 } // namespace Grizzly::Core
 
-#include <Core/Debug/Test.h>
+#include <Core/Debug/Test.hpp>
 
 #if GRIZZLY_ENABLE_TEST
 GRIZZLY_TEST_SUITE("Containers") {

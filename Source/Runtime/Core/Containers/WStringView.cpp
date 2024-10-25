@@ -4,8 +4,8 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Containers/WStringView.h>
-#include <Core/Debug/Test.h>
+#include <Core/Containers/WStringView.hpp>
+#include <Core/Debug/Test.hpp>
 
 namespace Grizzly::Core {
 	bool WStringView::operator==(const WStringView& rhs) const {

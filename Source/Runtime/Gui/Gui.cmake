@@ -3,23 +3,23 @@ set(GUI_ROOT ${RUNTIME_ROOT}/Gui)
 
 # Source files
 set(GUI_SRC_FILES
-	${GUI_ROOT}/Application.h
+	${GUI_ROOT}/Application.hpp
 	${GUI_ROOT}/Gui.cmake
-	${GUI_ROOT}/Window.h
+	${GUI_ROOT}/Window.hpp
 )
 
 if (APPLE)
 	set(GUI_SRC_FILES
 		${GUI_SRC_FILES}
 		${GUI_ROOT}/MacOS/Application.mm
-		${GUI_ROOT}/MacOS/Window.h
+		${GUI_ROOT}/MacOS/Window.hpp
 		${GUI_ROOT}/MacOS/Window.mm
 	)
 elseif(WIN32)
 	set(GUI_SRC_FILES
 		${GUI_SRC_FILES}
 		${GUI_ROOT}/Win32/Application.cpp
-		${GUI_ROOT}/Win32/Window.h
+		${GUI_ROOT}/Win32/Window.hpp
 		${GUI_ROOT}/Win32/Window.cpp
 	)
 endif()

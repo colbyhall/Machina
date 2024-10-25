@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <Core/Concepts.h>
-#include <Core/Core.h>
-#include <Core/Primitives.h>
+#include <Core/Concepts.hpp>
+#include <Core/Core.hpp>
+#include <Core/Primitives.hpp>
 
 #include <limits>
 

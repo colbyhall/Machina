@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Core/Containers/Array.h>
-#include <Core/Containers/StringView.h>
+#include <Core/Containers/Array.hpp>
+#include <Core/Containers/StringView.hpp>
 
 namespace Grizzly::Core {
 	class String {

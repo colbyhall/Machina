@@ -7,7 +7,7 @@
 #pragma once
 
 #import <AppKit/AppKit.h>
-#include <Gui/Window.h>
+#include <Gui/Window.hpp>
 
 namespace Grizzly::Gui {
 	class MacOSWindow final : public Window {

@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Core/Containers/Option.h>
-#include <Core/Containers/Slice.h>
+#include <Core/Containers/Option.hpp>
+#include <Core/Containers/Slice.hpp>
 
 namespace Grizzly::Core {
 	class CharsIterator;

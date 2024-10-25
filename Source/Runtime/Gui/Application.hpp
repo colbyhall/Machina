@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Core/Containers/Shared.h>
-#include <Gui/Window.h>
+#include <Core/Containers/Shared.hpp>
+#include <Gui/Window.hpp>
 
 namespace Grizzly::Gui {
 	class Application {

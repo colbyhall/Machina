@@ -4,8 +4,8 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Containers/Shared.h>
-#include <Core/Debug/Test.h>
+#include <Core/Containers/Shared.hpp>
+#include <Core/Debug/Test.hpp>
 
 #if GRIZZLY_ENABLE_TEST
 GRIZZLY_TEST_SUITE("Containers") {

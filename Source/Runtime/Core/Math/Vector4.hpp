@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Core/Math/Vector3.h>
+#include <Core/Math/Vector3.hpp>
 
 namespace Grizzly::Core::Math {
 	template <typename T>
