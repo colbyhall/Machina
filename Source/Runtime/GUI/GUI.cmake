@@ -25,9 +25,10 @@ elseif(WIN32)
 endif()
 
 add_runtime_library(GUI ${GUI_ROOT} ${GUI_SRC_FILES})
+target_link_libraries(GUI Core GPU)
 
 if (APPLE)
-	target_link_libraries(GUI Core "-framework AppKit")
+	target_link_libraries(GUI "-framework AppKit")
 elseif(WIN32)
-	target_link_libraries(GUI Core user32)
+	target_link_libraries(GUI user32)
 endif()

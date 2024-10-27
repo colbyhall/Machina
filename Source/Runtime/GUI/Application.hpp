@@ -7,14 +7,11 @@
 #pragma once
 
 #include <Core/Containers/Shared.hpp>
-#include <GUI/Window.hpp>
 
 namespace Grizzly::GUI {
 	class Application {
 	public:
 		explicit Application(int argc, char** argv);
-
-		Shared<Window> spawn_window(const Window::SpawnInfo& spawn_info);
 
 		int run();
 

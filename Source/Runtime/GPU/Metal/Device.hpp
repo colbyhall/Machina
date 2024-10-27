@@ -18,13 +18,18 @@ namespace Grizzly::GPU {
 		MetalDevice(MetalDevice&& move) : m_device(move.m_device) { move.m_device = nil; }
 		MetalDevice& operator=(MetalDevice&& move) {
 			auto to_destroy = Grizzly::move(*this);
+			GRIZZLY_UNUSED(to_destroy);
+
 			m_device = move.m_device;
 			move.m_device = nil;
 			return *this;
 		}
 
+		// Device Interace
 		~MetalDevice() final;
+		Unique<Swapchain> create_swapchain(SwapchainOwner owner) final;
 		Backend backend() const final { return Backend::Metal; }
+		// ~Device Interface
 
 	private:
 		id<MTLDevice> m_device;

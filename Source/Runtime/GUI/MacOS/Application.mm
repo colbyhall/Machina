@@ -46,27 +46,6 @@ namespace Grizzly::GUI {
 		};
 	}
 
-	Shared<Window> Application::spawn_window(const Window::SpawnInfo& spawn_info) {
-		@autoreleasepool {
-			const NSRect size = NSMakeRect(0.f, 0.f, spawn_info.size.as<f32>().x, spawn_info.size.as<f32>().y);
-			NSWindow* window =
-				[[NSWindow alloc] initWithContentRect:size
-											styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable |
-													   NSWindowStyleMaskResizable | NSWindowStyleMaskMiniaturizable)
-											  backing:NSBackingStoreBuffered
-												defer:NO];
-
-			const char* ctitle = (const char*)*spawn_info.title;
-			NSString* title = [NSString stringWithUTF8String:ctitle];
-			[window setTitle:title];
-			[window center];
-			[window setTabbingMode:NSWindowTabbingModeDisallowed];
-			[window retain];
-
-			return Shared<MacOSWindow>::create(window);
-		}
-	}
-
 	int Application::run() {
 		while (m_running) {
 			poll_input();
