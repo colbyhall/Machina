@@ -1,4 +1,5 @@
 #include <Core/Core.hpp>
+#include <GPU/Device.hpp>
 #include <GUI/Application.hpp>
 #include <GUI/Window.hpp>
 
@@ -11,6 +12,10 @@ int main(int argc, char** argv) {
 		.size = { 1280, 720 },
 	});
 	window->show();
+
+	auto device = GPU::Device::create({
+		.backend = GPU::Backend::Metal,
+	});
 
 	return application.run();
 }

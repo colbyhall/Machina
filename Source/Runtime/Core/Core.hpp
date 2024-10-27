@@ -10,6 +10,7 @@
 #define GRIZZLY_PLATFORM_UNKNOWN 0
 #define GRIZZLY_PLATFORM_WINDOWS 1
 #define GRIZZLY_PLATFORM_MACOS	 2
+#define GRIZZLY_PLATFORM_LINUX	 3
 
 // Determine platform
 #if defined(_WIN32) || defined(_WIN64)
