@@ -6,19 +6,20 @@
 
 #pragma once
 
+#include <Core/Containers/Shared.hpp>
 #include <Core/Containers/StringView.hpp>
 #include <Core/Math/Vector2.hpp>
 
-namespace Grizzly::Gui {
-	class Window {
+namespace Grizzly::GUI {
+	class Window : public SharedFromThis<Window> {
 	public:
 		struct SpawnInfo {
 			StringView title;
 			Vector2<u32> size;
 
-			bool resizable	 : 1 = true;
-			bool minimizable : 1 = true;
-			bool maximizable : 1 = true;
+			bool resizable = true;
+			bool minimizable = true;
+			bool maximizable = true;
 		};
 
 		/**
@@ -28,17 +29,11 @@ namespace Grizzly::Gui {
 		 * @return false if the window was already closed.
 		 */
 		virtual bool close() = 0;
-
-		enum class Visibility : u8 {
-			Visible,
-			Maximized,
-			Minimized,
-			Invisible,
-		};
-		virtual bool show(Visibility visibility) = 0;
+		virtual bool show() = 0;
+		virtual bool hide() = 0;
+		virtual bool maximize() = 0;
+		virtual bool minimize() = 0;
 
 		virtual ~Window() {}
-
-	protected:
 	};
-} // namespace Grizzly::Gui
+} // namespace Grizzly::GUI

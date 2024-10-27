@@ -6,9 +6,9 @@
 
 #pragma once
 
-namespace Grizzly::Gui {
+namespace Grizzly::GUI {
 	class View {
 	public:
 		virtual ~View() {}
 	};
-} // namespace Grizzly::Gui
+} // namespace Grizzly::GUI

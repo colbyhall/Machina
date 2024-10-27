@@ -4,9 +4,9 @@
  * This software is released under the MIT License.
  */
 
-#include <Gui/Win32/Window.hpp>
+#include <GUI/Win32/Window.hpp>
 
-namespace Grizzly::Gui {
+namespace Grizzly::GUI {
 	Win32Window::~Win32Window() {
 		if (m_handle != nullptr) {
 			::DestroyWindow(m_handle);
@@ -32,4 +32,4 @@ namespace Grizzly::Gui {
 		}
 		return ::ShowWindow(m_handle, input) > 0;
 	}
-} // namespace Grizzly::Gui
+} // namespace Grizzly::GUI

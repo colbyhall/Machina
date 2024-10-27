@@ -30,4 +30,4 @@ function(test_runtime_library target)
 endfunction()
 
 include(${RUNTIME_ROOT}/Core/Core.cmake)
-include(${RUNTIME_ROOT}/Gui/Gui.cmake)
+include(${RUNTIME_ROOT}/GUI/GUI.cmake)

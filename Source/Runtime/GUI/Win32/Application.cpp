@@ -5,10 +5,10 @@
  */
 
 #include <Core/Containers/WString.hpp>
-#include <Gui/Application.hpp>
-#include <Gui/Win32/Window.hpp>
+#include <GUI/Application.hpp>
+#include <GUI/Win32/Window.hpp>
 
-namespace Grizzly::Gui {
+namespace Grizzly::GUI {
 
 	static LRESULT CALLBACK window_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		return DefWindowProcW(hwnd, msg, wparam, lparam);
@@ -90,4 +90,4 @@ namespace Grizzly::Gui {
 	}
 
 	void Application::tick() {}
-} // namespace Grizzly::Gui
+} // namespace Grizzly::GUI

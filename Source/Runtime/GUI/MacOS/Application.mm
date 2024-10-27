@@ -4,8 +4,8 @@
  * This software is released under the MIT License.
  */
 
-#include <Gui/Application.hpp>
-#include <Gui/MacOS/Window.hpp>
+#include <GUI/Application.hpp>
+#include <GUI/MacOS/Window.hpp>
 
 #import <AppKit/AppKit.h>
 
@@ -15,10 +15,14 @@
 @implementation GrizzlyApplicationDelegate
 
 @end // GrizzlyApplicationDelegate
-namespace Grizzly::Gui {
+namespace Grizzly::GUI {
 	Application::Application(int argc, char** argv) {
 		@autoreleasepool {
+			// Create the shared application
 			[NSApplication sharedApplication];
+
+			// Applications need to be activated so their window shows above others.
+			[NSApp activate];
 
 			NSMenu* bar = [[NSMenu alloc] init];
 			[NSApp setMainMenu:bar];
@@ -55,7 +59,9 @@ namespace Grizzly::Gui {
 			const char* ctitle = (const char*)*spawn_info.title;
 			NSString* title = [NSString stringWithUTF8String:ctitle];
 			[window setTitle:title];
-			[window makeKeyAndOrderFront:nil];
+			[window center];
+			[window setTabbingMode:NSWindowTabbingModeDisallowed];
+			[window retain];
 
 			return Shared<MacOSWindow>::create(window);
 		}
@@ -83,4 +89,4 @@ namespace Grizzly::Gui {
 	}
 
 	void Application::tick() {}
-} // namespace Grizzly::Gui
+} // namespace Grizzly::GUI

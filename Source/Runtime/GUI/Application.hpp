@@ -7,9 +7,9 @@
 #pragma once
 
 #include <Core/Containers/Shared.hpp>
-#include <Gui/Window.hpp>
+#include <GUI/Window.hpp>
 
-namespace Grizzly::Gui {
+namespace Grizzly::GUI {
 	class Application {
 	public:
 		explicit Application(int argc, char** argv);
@@ -24,4 +24,4 @@ namespace Grizzly::Gui {
 
 		bool m_running = true;
 	};
-} // namespace Grizzly::Gui
+} // namespace Grizzly::GUI

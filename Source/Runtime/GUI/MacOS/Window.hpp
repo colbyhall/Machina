@@ -7,9 +7,9 @@
 #pragma once
 
 #import <AppKit/AppKit.h>
-#include <Gui/Window.hpp>
+#include <GUI/Window.hpp>
 
-namespace Grizzly::Gui {
+namespace Grizzly::GUI {
 	class MacOSWindow final : public Window {
 	public:
 		explicit MacOSWindow(NSWindow* window) : m_window{ window } {}
@@ -24,11 +24,15 @@ namespace Grizzly::Gui {
 
 			return *this;
 		}
-		bool close() final;
-		bool show(Visibility) final;
 		~MacOSWindow() final;
+
+		bool close() final;
+		bool show() final;
+		bool hide() final;
+		bool maximize() final;
+		bool minimize() final;
 
 	private:
 		NSWindow* m_window;
 	};
-} // namespace Grizzly::Gui
+} // namespace Grizzly::GUI

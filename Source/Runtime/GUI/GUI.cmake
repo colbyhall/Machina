@@ -1,10 +1,10 @@
 # Set the root
-set(GUI_ROOT ${RUNTIME_ROOT}/Gui)
+set(GUI_ROOT ${RUNTIME_ROOT}/GUI)
 
 # Source files
 set(GUI_SRC_FILES
 	${GUI_ROOT}/Application.hpp
-	${GUI_ROOT}/Gui.cmake
+	${GUI_ROOT}/GUI.cmake
 	${GUI_ROOT}/Window.hpp
 )
 
@@ -24,10 +24,10 @@ elseif(WIN32)
 	)
 endif()
 
-add_runtime_library(Gui ${GUI_ROOT} ${GUI_SRC_FILES})
+add_runtime_library(GUI ${GUI_ROOT} ${GUI_SRC_FILES})
 
 if (APPLE)
-target_link_libraries(Gui Core "-framework AppKit")
+	target_link_libraries(GUI Core "-framework AppKit")
 elseif(WIN32)
-target_link_libraries(Gui Core user32)
+	target_link_libraries(GUI Core user32)
 endif()

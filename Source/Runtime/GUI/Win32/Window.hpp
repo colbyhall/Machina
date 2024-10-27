@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include <Gui/Window.hpp>
+#include <GUI/Window.hpp>
 
 #include <windows.h>
 
-namespace Grizzly::Gui {
+namespace Grizzly::GUI {
 	class Win32Window final : public Window {
 	public:
 		explicit Win32Window(HWND handle) : m_handle{ handle } {}
@@ -34,4 +34,4 @@ namespace Grizzly::Gui {
 	private:
 		HWND m_handle;
 	};
-} // namespace Grizzly::Gui
+} // namespace Grizzly::GUI
