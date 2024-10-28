@@ -5,17 +5,16 @@
 using namespace Grizzly;
 
 int main(int argc, char** argv) {
-	GUI::Application application{ argc, argv };
 	auto device = GPU::Device::create({
 		.backend = GPU::Backend::Metal,
 	});
+	auto application = GUI::Application::create(*device);
 
 	auto window = GUI::Window::create({
 		.title = u8"Foo Bar",
 		.size = { 1280, 720 },
-		.device = *device,
 	});
 	window->show();
 
-	return application.run();
+	return application->run();
 }

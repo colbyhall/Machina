@@ -17,7 +17,6 @@ namespace Grizzly::GUI {
 		struct CreateInfo {
 			StringView title;
 			Vector2<u32> size;
-			GPU::Device& device;
 
 			bool resizable = true;
 			bool minimizable = true;

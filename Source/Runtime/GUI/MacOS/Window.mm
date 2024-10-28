@@ -5,6 +5,7 @@
  */
 
 #include <GPU/Device.hpp>
+#include <GUI/Application.hpp>
 #include <GUI/MacOS/Window.hpp>
 #include <GUI/Window.hpp>
 
@@ -25,7 +26,7 @@ namespace Grizzly::GUI {
 			[window center];
 			[window setTabbingMode:NSWindowTabbingModeDisallowed];
 
-			auto swapchain = create_info.device.create_swapchain(window);
+			auto swapchain = Application::the().device().create_swapchain(window);
 
 			// Result will take ownership of window
 			[window retain];

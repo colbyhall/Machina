@@ -4,6 +4,7 @@
  * This software is released under the MIT License.
  */
 
+#include "Core/Debug/Assertions.hpp"
 #include <GUI/Application.hpp>
 #include <GUI/MacOS/Window.hpp>
 
@@ -16,7 +17,12 @@
 
 @end // GrizzlyApplicationDelegate
 namespace Grizzly::GUI {
-	Application::Application(int argc, char** argv) {
+	Application* Application::s_instance = nullptr;
+
+	Unique<Application> Application::create(const GPU::Device& device) {
+		// Allow only one instance of Application
+		GRIZZLY_ASSERT(s_instance == nullptr);
+
 		@autoreleasepool {
 			// Create the shared application
 			[NSApplication sharedApplication];
@@ -43,7 +49,17 @@ namespace Grizzly::GUI {
 			[window_menu addItemWithTitle:@"Bring All to Front" action:@selector(arrangeInFront:) keyEquivalent:@""];
 
 			[NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+
+			Application app(device);
+			auto result = Unique<Application>::create(Grizzly::move(app));
+			s_instance = result;
+			return result;
 		};
+	}
+
+	Application& Application::the() {
+		GRIZZLY_ASSERT(s_instance != nullptr);
+		return *s_instance;
 	}
 
 	int Application::run() {

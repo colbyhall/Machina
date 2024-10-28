@@ -63,8 +63,8 @@ namespace Grizzly::Core {
 			}
 		}
 
-		GRIZZLY_ALWAYS_INLINE explicit operator Base*() { return m_ptr; }
-		GRIZZLY_ALWAYS_INLINE explicit operator Base const*() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE operator Base*() { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE operator Base const*() const { return m_ptr; }
 		GRIZZLY_ALWAYS_INLINE Base* operator->() { return m_ptr; }
 		GRIZZLY_ALWAYS_INLINE Base const* operator->() const { return m_ptr; }
 		GRIZZLY_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
