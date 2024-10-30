@@ -35,6 +35,7 @@ namespace Grizzly::Core {
 		GRIZZLY_ALWAYS_INLINE void reserve(usize amount) { m_bytes.reserve(amount + 1); }
 		String& push(Char c);
 		String& append(const StringView& string);
+		GRIZZLY_ALWAYS_INLINE const UTF8Char* operator*() const { return &m_bytes[0]; }
 
 	private:
 		Array<UTF8Char> m_bytes;

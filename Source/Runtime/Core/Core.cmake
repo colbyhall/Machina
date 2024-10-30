@@ -42,6 +42,15 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Debug/Assertions.hpp
         ${CORE_ROOT}/Debug/Test.hpp
 
+		${CORE_ROOT}/IO/File.hpp
+		${CORE_ROOT}/IO/Directory.hpp
+		${CORE_ROOT}/IO/Reader.hpp
+		${CORE_ROOT}/IO/Writer.hpp
+		${CORE_ROOT}/IO/Posix/File.hpp
+		${CORE_ROOT}/IO/Posix/File.cpp
+		${CORE_ROOT}/IO/Posix/Directory.hpp
+		${CORE_ROOT}/IO/Posix/Directory.cpp
+
         ${CORE_ROOT}/Math/Math.hpp
         ${CORE_ROOT}/Math/Math.cpp
         ${CORE_ROOT}/Math/Matrix4.hpp

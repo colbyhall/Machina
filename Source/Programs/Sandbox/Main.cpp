@@ -4,23 +4,15 @@
  * This software is released under the MIT License.
  */
 
-#include <GPU/Device.hpp>
-#include <GUI/Application.hpp>
-#include <GUI/Window.hpp>
+#include <Core/IO/File.hpp>
 
 using namespace Grizzly;
+using namespace Core;
 
 int main(int argc, char** argv) {
-	auto device = GPU::Device::create({
-		.backend = GPU::Backend::Metal,
-	});
-	auto application = GUI::Application::create(*device);
-
-	auto window = GUI::Window::create({
-		.title = u8"Foo Bar",
-		.size = { 1280, 720 },
-	});
-	window->show();
-
-	return application->run();
+	const auto text = StringView(u8"Hello World\n");
+	const auto bytes = Slice<u8 const>((const u8*)*text, text.len());
+	auto& stderr = File::stderr;
+	stderr.write(bytes);
+	return 0;
 }

@@ -20,7 +20,7 @@ namespace Grizzly::GPU {
 		}
 	}
 
-	Unique<Swapchain> MetalDevice::create_swapchain(SwapchainOwner owner) {
+	Unique<Swapchain> MetalDevice::create_swapchain(Swapchain::Owner owner) {
 		@autoreleasepool {
 			CAMetalLayer* layer = [CAMetalLayer layer];
 			layer.device = m_device;

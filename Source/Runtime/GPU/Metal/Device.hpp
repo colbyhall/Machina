@@ -27,7 +27,7 @@ namespace Grizzly::GPU {
 
 		// Device Interace
 		~MetalDevice() final;
-		Unique<Swapchain> create_swapchain(SwapchainOwner owner) final;
+		Unique<Swapchain> create_swapchain(Swapchain::Owner owner) final;
 		Backend backend() const final { return Backend::Metal; }
 		// ~Device Interface
 
