@@ -48,9 +48,6 @@ namespace Grizzly::GPU {
 		 */
 		virtual Unique<Swapchain> create_swapchain(Swapchain::Owner owner) = 0;
 
-		virtual Shared<Buffer> create_buffer(Buffer::CreateInfo const& create_info) = 0;
-		virtual Shared<Texture> create_texture(Texture::CreateInfo const& create_info) = 0;
-
 		/**
 		 * @brief Get the backend of the device.
 		 *
