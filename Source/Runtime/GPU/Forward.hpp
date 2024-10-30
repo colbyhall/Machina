@@ -13,7 +13,8 @@ namespace Grizzly::GPU {
 	enum class Backend : u8;
 	class Device;
 	class Swapchain;
-	using SwapchainOwner = void*;
+	class Buffer;
+	class Texture;
 
 	class MetalDevice;
 	class MetalSwapchain;

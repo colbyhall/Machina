@@ -1,14 +1,15 @@
 /**
- * Copyright (c) 2024 Colby Hall <me@cobeh.com>
+ * copyright (c) 2024 colby hall <me@cobeh.com>
  *
- * This software is released under the MIT License.
+ * this software is released under the mit license.
  */
 
 #pragma once
 
-#include <Core/Containers/Shared.hpp>
 #include <Core/Containers/Unique.hpp>
-#include <GPU/Forward.hpp>
+#include <GPU/Buffer.hpp>
+#include <GPU/Swapchain.hpp>
+#include <GPU/Texture.hpp>
 
 namespace Grizzly::GPU {
 	/**
@@ -45,7 +46,10 @@ namespace Grizzly::GPU {
 		 * @param owner The owner of the swapchain.
 		 * @return Unique<Swapchain> The created swapchain.
 		 */
-		virtual Unique<Swapchain> create_swapchain(SwapchainOwner owner) = 0;
+		virtual Unique<Swapchain> create_swapchain(Swapchain::Owner owner) = 0;
+
+		virtual Shared<Buffer> create_buffer(Buffer::CreateInfo const& create_info) = 0;
+		virtual Shared<Texture> create_texture(Texture::CreateInfo const& create_info) = 0;
 
 		/**
 		 * @brief Get the backend of the device.
