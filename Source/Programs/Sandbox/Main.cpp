@@ -4,15 +4,15 @@
  * This software is released under the MIT License.
  */
 
+#include <Core/Debug/StackTrace.hpp>
+#include <Core/Format.hpp>
 #include <Core/IO/File.hpp>
 
 using namespace Grizzly;
 using namespace Core;
 
 int main(int argc, char** argv) {
-	const auto text = StringView(u8"Hello World\n");
-	const auto bytes = Slice<u8 const>((const u8*)*text, text.len());
-	auto& stderr = File::stderr;
-	stderr.write(bytes);
+	const auto stack_trace = StackTrace::capture();
+	format(File::stderr, u8"\033[5;4;31mHello World {}\n", 145);
 	return 0;
 }

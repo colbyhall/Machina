@@ -37,6 +37,11 @@ namespace Grizzly::Core {
 		GRIZZLY_ALWAYS_INLINE explicit operator Slice<UTF8Char const>() const { return m_bytes; }
 		GRIZZLY_ALWAYS_INLINE const UTF8Char* operator*() const { return &m_bytes[0]; }
 
+		GRIZZLY_ALWAYS_INLINE StringView substring(usize start, usize end) const {
+			GRIZZLY_ASSERT(start <= end);
+			return StringView{ &m_bytes[start], end - start };
+		}
+
 		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize len() const { return m_bytes.len(); }
 		GRIZZLY_NO_DISCARD CharsIterator chars() const;
 		bool operator==(const StringView& right) const;
@@ -62,6 +67,7 @@ namespace Grizzly::Core {
 		}
 		GRIZZLY_ALWAYS_INLINE Char operator*() const { return get(); }
 		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize index() const { return m_char_index; }
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize byte_offset() const { return m_byte_index; }
 
 	private:
 		GRIZZLY_NO_DISCARD bool should_continue() const;

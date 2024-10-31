@@ -4,13 +4,13 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Debug/CallStack.hpp>
+#include <Core/Debug/StackTrace.hpp>
 #include <execinfo.h>
 
-namespace Grizzly::Core {
-	Array<StackFrame> capture_stack_trace() {
+namespace Grizzly::Core::StackTrace {
+	Array<Frame> capture() {
 		constexpr int max_frames = 128;
-		Array<StackFrame> result;
+		Array<Frame> result;
 
 		void* stack_frames[max_frames];
 		const int frame_count = backtrace(stack_frames, max_frames);
@@ -28,4 +28,4 @@ namespace Grizzly::Core {
 
 		return result;
 	}
-} // namespace Grizzly::Core
+} // namespace Grizzly::Core::StackTrace
