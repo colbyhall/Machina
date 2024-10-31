@@ -14,7 +14,7 @@
 
 // Determine platform
 #if defined(_WIN32) || defined(_WIN64)
-	#include <winapifamily.hpp>
+	#include <winapifamily.h>
 	#if WINAPI_FAMILY == WINAPI_FAMILY_APP
 		#error UWP is not supported
 	#endif

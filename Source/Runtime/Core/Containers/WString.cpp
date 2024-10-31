@@ -23,72 +23,83 @@ namespace Grizzly::Core {
 		return static_cast<WChar>(ret);
 	}
 
-	WString WString::from(const WStringView& view) {
-		WString string;
-		string.append(view);
-		return string;
-	}
-
-	WString WString::from(const StringView& string) {
-		WString result;
-		result.reserve(string.len());
-
-		for (auto iter = string.chars(); iter; ++iter) {
-			const Char c = *iter;
-			result.push(utf32_to_utf16(c));
+	Char utf16_to_utf32(WChar c) {
+		if (c < 0xD800 || c > 0xDFFF) {
+			return static_cast<Char>(c);
 		}
-
-		return result;
+		Char h = (c & 0xFFFF0000) >> 16;
+		Char l = (c & 0x0000FFFF);
+		return static_cast<Char>(((h - 0xD800) << 10) + (l - 0xDC00) + 0x10000);
 	}
 
-	WString::operator WStringView() const {
-		const Slice<WChar const> bytes = m_chars.as_const_slice();
+}
 
-		// Exclude the null terminator
-		return bytes.shrink(m_chars.len() - len());
+WString WString::from(const WStringView& view) {
+	WString string;
+	string.append(view);
+	return string;
+}
+
+WString WString::from(const StringView& string) {
+	WString result;
+	result.reserve(string.len());
+
+	for (auto iter = string.chars(); iter; ++iter) {
+		const Char c = *iter;
+		result.push(utf32_to_utf16(c));
 	}
 
-	WString& WString::push(WChar w) {
-		const auto start_len = m_chars.len();
+	return result;
+}
 
-		if (start_len == 0) {
-			m_chars.push(0);
-		}
+WString::operator WStringView() const {
+	const Slice<WChar const> bytes = m_chars.as_const_slice();
 
-		// Append the null terminator and then replace the old one
+	// Exclude the null terminator
+	return bytes.shrink(m_chars.len() - len());
+}
+
+WString& WString::push(WChar w) {
+	const auto start_len = m_chars.len();
+
+	if (start_len == 0) {
 		m_chars.push(0);
-		m_chars[m_chars.len() - 2] = w;
-
-		return *this;
 	}
 
-	WString& WString::append(const WStringView& string) {
-		const usize slag = m_chars.cap() - m_chars.len();
-		if (slag < string.len()) {
-			m_chars.reserve(string.len());
-		}
+	// Append the null terminator and then replace the old one
+	m_chars.push(0);
+	m_chars[m_chars.len() - 2] = w;
 
-		if (m_chars.len() == 0) {
-			m_chars.push(0);
-		}
-		for (WChar w : string)
-			m_chars.insert(m_chars.len() - 1, w);
+	return *this;
+}
 
-		return *this;
+WString& WString::append(const WStringView& string) {
+	const usize slag = m_chars.cap() - m_chars.len();
+	if (slag < string.len()) {
+		m_chars.reserve(string.len());
 	}
 
-	WString& WString::append(const StringView& string) {
-		const usize slag = m_chars.cap() - m_chars.len();
-		if (slag < string.len()) {
-			m_chars.reserve(string.len());
-		}
-
-		for (auto iter = string.chars(); iter; ++iter) {
-			push(utf32_to_utf16(*iter));
-		}
-
-		return *this;
+	if (m_chars.len() == 0) {
+		m_chars.push(0);
 	}
+	for (WChar w : string)
+		m_chars.insert(m_chars.len() - 1, w);
+
+	return *this;
+}
+
+WString& WString::append(const StringView& string) {
+	const usize slag = m_chars.cap() - m_chars.len();
+	if (slag < string.len()) {
+		m_chars.reserve(string.len());
+	}
+
+	for (auto iter = string.chars(); iter; ++iter) {
+		push(utf32_to_utf16(*iter));
+	}
+
+	return *this;
+}
 } // namespace Grizzly::Core
 
 #include <Core/Debug/Test.hpp>

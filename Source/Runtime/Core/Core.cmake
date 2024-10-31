@@ -46,10 +46,6 @@ set(CORE_SRC_FILES
 		${CORE_ROOT}/IO/Directory.hpp
 		${CORE_ROOT}/IO/Reader.hpp
 		${CORE_ROOT}/IO/Writer.hpp
-		${CORE_ROOT}/IO/Posix/File.hpp
-		${CORE_ROOT}/IO/Posix/File.cpp
-		${CORE_ROOT}/IO/Posix/Directory.hpp
-		${CORE_ROOT}/IO/Posix/Directory.cpp
 
         ${CORE_ROOT}/Math/Math.hpp
         ${CORE_ROOT}/Math/Math.cpp
@@ -64,6 +60,24 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Math/Vector4.hpp
         ${CORE_ROOT}/Math/Vector4.cpp
 )
+
+if (APPLE)
+	set(CORE_SRC_FILES
+		${CORE_SRC_FILES}
+		${CORE_ROOT}/IO/Posix/File.hpp
+		${CORE_ROOT}/IO/Posix/File.cpp
+		${CORE_ROOT}/IO/Posix/Directory.hpp
+		${CORE_ROOT}/IO/Posix/Directory.cpp
+	)
+elseif(WIN32)
+	set(CORE_SRC_FILES
+		${CORE_SRC_FILES}
+		${CORE_ROOT}/IO/Win32/File.hpp
+		${CORE_ROOT}/IO/Win32/File.cpp
+		${CORE_ROOT}/IO/Win32/Directory.hpp
+		${CORE_ROOT}/IO/Win32/Directory.cpp
+	)
+endif()
 
 add_runtime_library(Core ${CORE_ROOT} ${CORE_SRC_FILES})
 test_runtime_library(Core ${CORE_SRC_FILES})

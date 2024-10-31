@@ -11,12 +11,7 @@
 #include <Core/IO/Writer.hpp>
 
 namespace Grizzly::Core {
-	enum class OpenFlags {
-		Read = (1 << 0),
-		Write = (1 << 1),
-		Create = (1 << 2),
-	};
-	GRIZZLY_ENUM_CLASS_BITFIELD(OpenFlags);
+	enum class OpenFlags : u8;
 
 	class PosixFile final : public Reader, public Writer {
 	public:

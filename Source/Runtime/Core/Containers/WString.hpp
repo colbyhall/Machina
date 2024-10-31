@@ -11,6 +11,7 @@
 
 namespace Grizzly::Core {
 	WChar utf32_to_utf16(Char c);
+	Char utf16_to_utf32(WChar c);
 
 	class WString {
 	public:
@@ -19,7 +20,7 @@ namespace Grizzly::Core {
 		static WString from(const WStringView& view);
 		static WString from(const StringView& string);
 
-		explicit operator WStringView() const;
+		operator WStringView() const;
 		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE const WChar* operator*() const { return m_chars.begin(); }
 
 		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize len() const { return m_chars.len() > 0 ? m_chars.len() - 1 : 0; }
@@ -46,6 +47,7 @@ namespace Grizzly::Core {
 		WString& push(WChar w);
 		WString& append(const WStringView& string);
 		WString& append(const StringView& string);
+		GRIZZLY_ALWAYS_INLINE void set_len(usize len) { m_chars.set_len(len + 1); }
 
 	private:
 		Array<WChar> m_chars;
