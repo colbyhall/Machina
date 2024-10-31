@@ -95,6 +95,7 @@
 #endif
 
 #define GRIZZLY_NO_DISCARD [[nodiscard]]
+#define GRIZZLY_NO_RETURN  [[noreturn]]
 
 // Cache line size (used for aligning to cache line)
 #ifndef GRIZZLY_CACHE_LINE_SIZE
@@ -106,14 +107,6 @@
 	#define GRIZZLY_FUNCTION_NAME __FUNCTION__
 #else
 	#error Undefined function name
-#endif
-
-#if GRIZZLY_COMPILER == GRIZZLY_COMPILER_MSVC
-	#define GRIZZLY_DEBUGBREAK __debugbreak()
-#elif GRIZZLY_COMPILER == GRIZZLY_COMPILER_CLANG
-	#define GRIZZLY_DEBUGBREAK __builtin_trap()
-#else
-	#error Unknown debug break
 #endif
 
 #define GRIZZLY_BUILD_RELEASE 0
@@ -129,9 +122,8 @@
 // Macro to indicate that a parameter / variable is unused
 #define GRIZZLY_UNUSED(x) (void)x
 
-// Macro that will crash the program
-#define GRIZZLY_CRASH                                                                                                  \
-	do {                                                                                                               \
-		int* _ptr = nullptr;                                                                                           \
-		*_ptr = 0;                                                                                                     \
-	} while (false)
+namespace Grizzly::Core {
+	void trap();
+	GRIZZLY_NO_RETURN void abort();
+	GRIZZLY_NO_RETURN void exit(int status);
+} // namespace Grizzly::Core

@@ -20,16 +20,14 @@
 	// ASSERT(condition) or ASSERT(condition, message)
 	#define GRIZZLY_ASSERT(expression, ...)                                                                            \
 		do {                                                                                                           \
-			if (!(expression)) {                                                                                       \
-				GRIZZLY_CRASH;                                                                                         \
-			}                                                                                                          \
+			if (!(expression)) Grizzly::Core::abort();                                                                 \
 		} while (false)
 
 	// Halts application if expression evaluates to false but can resume. Usage:
 	// ENSURE(condition) or ENSURE(condition, message)
 	#define GRIZZLY_ENSURE(expression, ...)                                                                            \
 		do {                                                                                                           \
-			if (!(expression)) GRIZZLY_DEBUGBREAK;                                                                     \
+			if (!(expression)) Grizzly::Core::trap();                                                                  \
 		} while (false)
 #else
 	#define GRIZZLY_ASSERT(...) ((void)0)

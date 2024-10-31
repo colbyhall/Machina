@@ -4,7 +4,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Atomic.cpp
         ${CORE_ROOT}/Concepts.hpp
         ${CORE_ROOT}/Core.cmake
-        ${CORE_ROOT}/Core.hpp
+		${CORE_ROOT}/Core.hpp
+        ${CORE_ROOT}/Core.cpp
         ${CORE_ROOT}/Core.natvis
         ${CORE_ROOT}/Hash.hpp
         ${CORE_ROOT}/Hash.cpp
