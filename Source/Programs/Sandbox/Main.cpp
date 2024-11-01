@@ -11,7 +11,7 @@ using namespace Grizzly;
 using namespace Core;
 
 int main(int argc, char** argv) {
-	const auto foo = String::format(u8"Hello, World! {}", 42);
+	const auto foo = String::format(u8"{red}Hello, World! {}", 42);
 	dbgln(u8"Hello, World! {}", foo);
 	return 0;
 }

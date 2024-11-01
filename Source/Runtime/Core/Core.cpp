@@ -24,20 +24,22 @@ namespace Grizzly::Core {
 #endif
 
 #if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
-		Core::format(File::stderr, u8"\n{red}Abort Triggered:\n\n{yellow}CallStack:{default}\n");
+		Formatter formatter{ File::stderr };
+		formatter.format(u8"\n{red}Abort Triggered:\n\n{yellow}CallStack:{default}\n");
 		const auto stack_trace = StackTrace::capture();
 		for (u32 i = 1; i < stack_trace.len(); i++) {
-			Core::format(File::stderr, u8"{}\n", stack_trace[i]);
+			formatter.format(u8"{}\n", stack_trace[i]);
 		}
 #endif
 	}
 
 	void abort() {
 #if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
-		Core::format(File::stderr, u8"\n{red}Abort Triggered{default}\n\n{yellow}CallStack:{default}\n");
+		Formatter formatter{ File::stderr };
+		formatter.format(u8"\n{red}Abort Triggered{default}\n\n{yellow}CallStack:{default}\n");
 		const auto stack_trace = StackTrace::capture();
 		for (u32 i = 1; i < stack_trace.len(); i++) {
-			Core::format(File::stderr, u8"{}\n", stack_trace[i]);
+			formatter.format(u8"{}\n", stack_trace[i]);
 		}
 #endif
 		std::abort();

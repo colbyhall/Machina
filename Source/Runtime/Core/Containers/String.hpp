@@ -19,10 +19,10 @@ namespace Grizzly::Core {
 		template <typename... Args>
 		GRIZZLY_NO_DISCARD static String format(const StringView& fmt, const Args&... args) {
 			NullWriter null_writer{};
-			const auto amount_to_reserve = Core::format(null_writer, fmt, args...);
+			const auto amount_to_reserve = Formatter{ null_writer, false }.format(fmt, args...).bytes_written();
 			String string;
 			string.reserve(amount_to_reserve);
-			Core::format(string, fmt, args...);
+			Formatter{ string, false }.format(fmt, args...);
 			return string;
 		}
 
@@ -61,7 +61,7 @@ namespace Grizzly {
 	using Core::String;
 
 	template <>
-	struct Formatter<String> {
+	struct TypeFormatter<String> {
 		void parse(const String& fmt) {}
 
 		usize format(Core::Writer& writer, const String& value) {
