@@ -43,7 +43,7 @@ namespace Grizzly::Core {
 				if (m_buffer.len() == m_buffer.cap()) {
 					flush();
 				}
-				m_buffer[m_buffer.len()] = bytes[i];
+				m_buffer.push(bytes[i]);
 			}
 			return bytes.len();
 		}

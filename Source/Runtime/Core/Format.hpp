@@ -7,7 +7,7 @@
 #pragma once
 
 #include <Core/Containers/Function.hpp>
-#include <Core/Containers/String.hpp>
+#include <Core/Containers/StringView.hpp>
 #include <Core/Debug/Assertions.hpp>
 #include <Core/IO/Writer.hpp>
 
@@ -127,15 +127,6 @@ namespace Grizzly {
 		void parse(const StringView& fmt) {}
 
 		usize format(Core::Writer& writer, const StringView& value) {
-			return writer.write(Slice<u8 const>{ (const u8*)*value, value.len() });
-		}
-	};
-
-	template <>
-	struct Formatter<String> {
-		void parse(const String& fmt) {}
-
-		usize format(Core::Writer& writer, const String& value) {
 			return writer.write(Slice<u8 const>{ (const u8*)*value, value.len() });
 		}
 	};

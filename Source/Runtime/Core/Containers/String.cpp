@@ -74,6 +74,15 @@ namespace Grizzly::Core {
 
 		return *this;
 	}
+
+	usize String::write(Slice<u8 const> bytes) {
+		usize written = 0;
+		for (usize i = 0; i < bytes.len(); ++i) {
+			push(static_cast<Char>(bytes[i]));
+			written += 1;
+		}
+		return written;
+	}
 } // namespace Grizzly::Core
 
 #include <Core/Debug/Test.hpp>
