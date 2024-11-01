@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include "Core/Core.hpp"
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/StringView.hpp>
 #include <Core/Debug/Assertions.hpp>
