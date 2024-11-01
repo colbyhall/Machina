@@ -43,6 +43,7 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Containers/WStringView.cpp
 
         ${CORE_ROOT}/Debug/Assertions.hpp
+        ${CORE_ROOT}/Debug/Log.hpp
 		${CORE_ROOT}/Debug/StackTrace.hpp
 		${CORE_ROOT}/Debug/StackTrace.cpp
         ${CORE_ROOT}/Debug/Test.hpp
