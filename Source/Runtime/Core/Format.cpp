@@ -1,0 +1,191 @@
+/**
+ * Copyright (c) 2024 Colby Hall <me@cobeh.com>
+ *
+ * This software is released under the MIT License.
+ */
+
+#include <Core/Format.hpp>
+#include <cstdio>
+
+namespace Grizzly::Core {
+	struct ANSIIdentifier {
+		enum Code : u8 {
+			Default = 0,
+			Bold = 1,
+			Dim = 2,
+			Italic = 3,
+			Underline = 4,
+			Blink = 5,
+			Inverse = 7,
+			Hidden = 8,
+			Strikethrough = 9,
+			Black = 30,
+			Red = 31,
+			Green = 32,
+			Yellow = 33,
+			Blue = 34,
+			Magenta = 35,
+			Cyan = 36,
+			White = 37,
+		};
+
+		StringView identifier;
+		Code code;
+	};
+	static const Array<ANSIIdentifier, InlineAllocator<32>> g_ansi_identifiers = {
+		{
+			.identifier = u8"default",
+			.code = ANSIIdentifier::Default,
+		},
+		{
+			.identifier = u8"bold",
+			.code = ANSIIdentifier::Bold,
+		},
+		{
+			.identifier = u8"dim",
+			.code = ANSIIdentifier::Dim,
+		},
+		{
+			.identifier = u8"italic",
+			.code = ANSIIdentifier::Italic,
+		},
+		{
+			.identifier = u8"underline",
+			.code = ANSIIdentifier::Underline,
+		},
+		{
+			.identifier = u8"blink",
+			.code = ANSIIdentifier::Blink,
+		},
+		{
+			.identifier = u8"inverse",
+			.code = ANSIIdentifier::Inverse,
+		},
+		{
+			.identifier = u8"hidden",
+			.code = ANSIIdentifier::Hidden,
+		},
+		{
+			.identifier = u8"strikethrough",
+			.code = ANSIIdentifier::Strikethrough,
+		},
+		{
+			.identifier = u8"black",
+			.code = ANSIIdentifier::Black,
+		},
+		{
+			.identifier = u8"red",
+			.code = ANSIIdentifier::Red,
+		},
+		{
+			.identifier = u8"green",
+			.code = ANSIIdentifier::Green,
+		},
+		{
+			.identifier = u8"yellow",
+			.code = ANSIIdentifier::Yellow,
+		},
+		{
+			.identifier = u8"blue",
+			.code = ANSIIdentifier::Blue,
+		},
+		{
+			.identifier = u8"magenta",
+			.code = ANSIIdentifier::Magenta,
+		},
+		{
+			.identifier = u8"cyan",
+			.code = ANSIIdentifier::Cyan,
+		},
+		{
+			.identifier = u8"white",
+			.code = ANSIIdentifier::White,
+		},
+	};
+
+	u32 format_lambda(Writer& writer, const StringView& fmt, Option<FunctionRef<u32(StringView)>> f) {
+		u32 bytes_written = 0;
+
+		auto base = 0;
+		for (auto iter = fmt.chars(); iter; ++iter) {
+			auto c = *iter;
+			if (c == '{') {
+				if (base != iter.byte_offset()) {
+					bytes_written += writer.write(fmt.substring(base, iter.byte_offset()));
+				}
+
+				++iter;
+
+				const auto start = iter.index();
+				for (; iter; ++iter) {
+					c = *iter;
+
+					if (c == '{') {
+						const u8 byte = '{';
+						bytes_written += writer.write(Slice<u8 const>{ &byte, 1 });
+					} else if (c == '}') {
+						base = iter.byte_offset() + 1;
+
+						const auto substring = fmt.substring(start, iter.byte_offset());
+						if (substring.len() > 0) {
+							bool found = false;
+							for (auto const& identifier : g_ansi_identifiers) {
+								if (substring == identifier.identifier) {
+									const StringView prefix = u8"\033[";
+									bytes_written += writer.write(prefix);
+									Formatter<u8> formatter;
+									bytes_written += formatter.format(writer, static_cast<u8>(identifier.code));
+									const StringView postfix = u8"m";
+									bytes_written += writer.write(postfix);
+									found = true;
+									break;
+								}
+							}
+							if (!found) {
+								GRIZZLY_PANIC("Unknown ANSI identifier");
+							}
+							break;
+						} else if (f) {
+							const auto rest = fmt.substring(base, fmt.len());
+							bytes_written += (f.as_ref().unwrap())(rest);
+							return bytes_written;
+						} else {
+							GRIZZLY_PANIC("Not enough arguments were provided");
+						}
+					}
+				}
+			}
+		}
+
+		GRIZZLY_ASSERT(!f.is_set(), "Too many arguments were provided");
+
+		if (base != fmt.len()) {
+			bytes_written += writer.write(fmt.substring(base, fmt.len()));
+		}
+
+		return bytes_written;
+	}
+
+	u32 format_one(Writer& writer, const StringView& fmt) { return format_lambda(writer, fmt, nullopt); }
+
+	usize print_unsigned_integer(Writer& writer, u64 value, u8 base) {
+		char buffer[32];
+		const auto written = std::snprintf(buffer, 32, "%llu", value);
+		return writer.write(Slice<u8 const>{ (const u8*)buffer, static_cast<usize>(written) });
+	}
+	usize print_signed_integer(Writer& writer, i64 value, u8 base) {
+		char buffer[32];
+		const auto written = std::snprintf(buffer, 32, "%lld", value);
+		return writer.write(Slice<u8 const>{ (const u8*)buffer, static_cast<usize>(written) });
+	}
+	usize print_float(Writer& writer, f32 value) {
+		char buffer[32];
+		const auto written = std::snprintf(buffer, 32, "%f", value);
+		return writer.write(Slice<u8 const>{ (const u8*)buffer, static_cast<usize>(written) });
+	}
+	usize print_double(Writer& writer, f64 value) {
+		char buffer[32];
+		const auto written = std::snprintf(buffer, 32, "%f", value);
+		return writer.write(Slice<u8 const>{ (const u8*)buffer, static_cast<usize>(written) });
+	}
+} // namespace Grizzly::Core

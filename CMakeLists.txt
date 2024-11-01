@@ -202,6 +202,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR "${CMAKE_CXX_COMPILE
     set(CMAKE_CXX_FLAGS_RELEASEASAN "-fsanitize=address")
     set(CMAKE_CXX_FLAGS_RELEASEUBSAN "-fsanitize=undefined,implicit-conversion,float-divide-by-zero,local-bounds -fno-sanitize-recover=all")
     set(CMAKE_CXX_FLAGS_RELEASECOVERAGE "-O0 -DJPH_NO_FORCE_INLINE -fprofile-instr-generate -fcoverage-mapping")
+    set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG")
 else ()
     message(FATAL_ERROR, "Compiler not supported.")
 endif ()

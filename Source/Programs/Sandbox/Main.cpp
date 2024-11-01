@@ -12,7 +12,6 @@ using namespace Grizzly;
 using namespace Core;
 
 int main(int argc, char** argv) {
-	const auto stack_trace = StackTrace::capture();
-	format(File::stderr, u8"\033[5;4;31mHello World {}\n", 145);
+	Core::format(File::stderr, u8"{}\n", 1, 2, 3, 4, 5);
 	return 0;
 }

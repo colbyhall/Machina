@@ -15,7 +15,7 @@ namespace Grizzly::Core {
 		String() = default;
 		GRIZZLY_NO_DISCARD static String from(const StringView& s);
 
-		GRIZZLY_ALWAYS_INLINE operator StringView() const;
+		operator StringView() const;
 
 		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE CharsIterator chars() const {
 			return CharsIterator(m_bytes.as_const_slice());

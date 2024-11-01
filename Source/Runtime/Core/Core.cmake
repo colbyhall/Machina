@@ -7,6 +7,8 @@ set(CORE_SRC_FILES
 		${CORE_ROOT}/Core.hpp
         ${CORE_ROOT}/Core.cpp
         ${CORE_ROOT}/Core.natvis
+		${CORE_ROOT}/Format.hpp
+		${CORE_ROOT}/Format.cpp
         ${CORE_ROOT}/Hash.hpp
         ${CORE_ROOT}/Hash.cpp
         ${CORE_ROOT}/InitializerList.hpp

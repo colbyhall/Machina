@@ -13,7 +13,9 @@ namespace Grizzly::Core {
 	public:
 		virtual ~Writer() = default;
 		virtual usize write(Slice<u8 const> bytes) = 0;
-		usize write(StringView string) { return write(Slice<u8 const>((const u8*)*string, string.len())); }
+		GRIZZLY_ALWAYS_INLINE usize write(StringView string) {
+			return write(Slice<u8 const>((const u8*)*string, string.len()));
+		}
 	};
 
 	class NullWriter final : public Writer {
