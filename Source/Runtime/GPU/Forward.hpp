@@ -15,6 +15,7 @@ namespace Grizzly::GPU {
 	class Swapchain;
 	class Buffer;
 	class Texture;
+	class GraphicsPipeline;
 
 	class MetalDevice;
 	class MetalSwapchain;

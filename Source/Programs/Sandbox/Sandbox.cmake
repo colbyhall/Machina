@@ -8,4 +8,4 @@ set(SANDBOX_SRC_FILES
 )
 
 add_grizzly_executable(Sandbox ${SANDBOX_ROOT} ${SANDBOX_SRC_FILES})
-target_link_libraries(Sandbox Core)
+target_link_libraries(Sandbox GUI)

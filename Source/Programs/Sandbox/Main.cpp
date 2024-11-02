@@ -6,12 +6,32 @@
 
 #include <Core/Containers/String.hpp>
 #include <Core/Debug/Log.hpp>
+#include <GPU/Device.hpp>
+#include <GUI/Application.hpp>
+#include <GUI/Window.hpp>
 
 using namespace Grizzly;
 using namespace Core;
 
 int main(int argc, char** argv) {
-	const auto foo = String::format(u8"{red}Hello, World! {}", 42);
-	dbgln(u8"Hello, World! {}", foo);
+	auto device = GPU::Device::create({
+		.backend = GPU::Backend::Metal,
+	});
+	auto application = GUI::Application::create(*device);
+	auto window = GUI::Window::create({
+		.title = u8"Sandbox",
+		.size = { 1280, 720 },
+	});
+	window->show();
+
+	const auto command_list = device->record([](auto& c) {
+		// f
+		c.render_pass({}, [](auto& rg) {
+			// c
+			rg.clear_color(1);
+		});
+	});
+
+	application->run();
 	return 0;
 }
