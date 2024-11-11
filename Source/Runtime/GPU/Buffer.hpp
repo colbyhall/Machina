@@ -41,8 +41,15 @@ namespace Grizzly::GPU {
 		GRIZZLY_ALWAYS_INLINE usize stride() const { return m_stride; }
 
 		virtual void map(FunctionRef<void(Slice<u8>)> f) const = 0;
+		virtual ~Buffer() {}
 
 	protected:
+		explicit Buffer(CreateInfo const& create_info)
+			: m_usage(create_info.usage)
+			, m_heap(create_info.heap)
+			, m_len(create_info.len)
+			, m_stride(create_info.stride) {}
+
 		Usage m_usage;
 		Heap m_heap;
 		usize m_len;

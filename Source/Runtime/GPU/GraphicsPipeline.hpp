@@ -74,8 +74,8 @@ namespace Grizzly::GPU {
 		};
 
 		struct CreateInfo {
-			Shared<VertexShader> vertex_shader;
-			Shared<PixelShader> pixel_shader;
+			VertexShader const& vertex_shader;
+			PixelShader const& pixel_shader;
 
 			Array<Texture::Format, InlineAllocator<8>> color_attachments;
 			Option<Texture::Format> depth_attachment = nullopt;

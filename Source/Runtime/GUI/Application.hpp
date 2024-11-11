@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <Core/Containers/Function.hpp>
 #include <Core/Containers/Shared.hpp>
 #include <Core/Containers/Unique.hpp>
 #include <GPU/Device.hpp>
@@ -13,18 +14,19 @@
 namespace Grizzly::GUI {
 	class Application {
 	public:
-		static Unique<Application> create(GPU::Device const& device);
-		static Application& the();
+		static Application create(GPU::Device const& device);
+
+		template <typename T>
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Shared<T> create(T::CreateInfo const& info) {
+			return T::create(*this, info);
+		}
 
 		GRIZZLY_ALWAYS_INLINE GPU::Device& device() { return *m_device; }
-		int run();
+		int run(FunctionRef<void()> tick);
 
 	private:
 		explicit Application(GPU::Device const& device) : m_device(device.to_shared()) {}
 		void poll_input();
-		void tick();
-
-		static Application* s_instance;
 
 		bool m_running = true;
 		Shared<GPU::Device> m_device;

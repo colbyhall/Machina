@@ -6,30 +6,19 @@
 
 #pragma once
 
-#include <GPU/Swapchain.hpp>
 #import <QuartzCore/CAMetalLayer.h>
+
+#include <Core/ObjectiveC/Interface.hpp>
+#include <GPU/Swapchain.hpp>
 
 namespace Grizzly::GPU {
 	class MetalSwapchain final : public Swapchain {
 	public:
 		explicit MetalSwapchain(CAMetalLayer* layer) : m_layer(layer) {}
-		MetalSwapchain(const MetalSwapchain&) = delete;
-		MetalSwapchain& operator=(const MetalSwapchain&) = delete;
-		MetalSwapchain(MetalSwapchain&& move) : m_layer(move.m_layer) { move.m_layer = nullptr; }
-		MetalSwapchain& operator=(MetalSwapchain&& move) {
-			auto to_destroy = Grizzly::move(*this);
-			GRIZZLY_UNUSED(to_destroy);
 
-			m_layer = move.m_layer;
-			move.m_layer = nullptr;
-			return *this;
-		}
-
-		// Swapchain interace
-		~MetalSwapchain() final;
-		// ~Swapchain interface
+		Shared<Texture> next_back_buffer() final;
 
 	private:
-		CAMetalLayer* m_layer;
+		Core::Interface<CAMetalLayer> m_layer;
 	};
 } // namespace Grizzly::GPU

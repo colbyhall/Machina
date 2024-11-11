@@ -9,7 +9,6 @@
 #include <GUI/Win32/Window.hpp>
 
 namespace Grizzly::GUI {
-
 	static LRESULT CALLBACK window_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		return DefWindowProcW(hwnd, msg, wparam, lparam);
 	}

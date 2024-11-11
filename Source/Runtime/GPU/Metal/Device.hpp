@@ -6,33 +6,30 @@
 
 #pragma once
 
-#include <GPU/Device.hpp>
 #import <Metal/Metal.h>
+
+#include <Core/ObjectiveC/Protocol.hpp>
+#include <GPU/Device.hpp>
 
 namespace Grizzly::GPU {
 	class MetalDevice final : public Device {
 	public:
-		explicit MetalDevice(id<MTLDevice> device) : m_device(device) {}
-		MetalDevice(const MetalDevice&) = delete;
-		MetalDevice& operator=(const MetalDevice&) = delete;
-		MetalDevice(MetalDevice&& move) : m_device(move.m_device) { move.m_device = nil; }
-		MetalDevice& operator=(MetalDevice&& move) {
-			auto to_destroy = Grizzly::move(*this);
-			GRIZZLY_UNUSED(to_destroy);
-
-			m_device = move.m_device;
-			move.m_device = nil;
-			return *this;
-		}
+		explicit MetalDevice(id<MTLDevice> device, id<MTLCommandQueue> command_queue)
+			: m_device(device)
+			, m_command_queue(command_queue) {}
 
 		// Device Interace
-		~MetalDevice() final;
 		Unique<Swapchain> create_swapchain(Swapchain::Owner owner) final;
+		Shared<Buffer> create_buffer(Buffer::CreateInfo const& info) final;
+		Shared<Texture> create_texture(Texture::CreateInfo const& info) final;
+		// Shared<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) final;
+		Shared<CommandList> record(FunctionRef<void(CommandRecorder&)> f) final;
 		Backend backend() const final { return Backend::Metal; }
 		// ~Device Interface
 
 	private:
-		id<MTLDevice> m_device;
+		Core::Protocol m_device;		// MTLDevice
+		Core::Protocol m_command_queue; // MTLCommandQueue
 	};
 
 	Shared<Device> create_metal_device(Device::CreateInfo const& create_info);

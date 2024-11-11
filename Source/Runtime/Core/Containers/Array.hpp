@@ -382,6 +382,7 @@ namespace Grizzly::Core {
 
 	template <typename T, ArrayAllocator Allocator>
 	void Array<T, Allocator>::reset() {
+		// TODO: Just reset the length if the type is trivially destructible
 		const i32 count = static_cast<i32>(len());
 		for (i32 i = count - 1; i >= 0; i -= 1) {
 			remove(static_cast<usize>(i));

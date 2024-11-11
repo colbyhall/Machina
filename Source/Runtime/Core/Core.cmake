@@ -43,6 +43,7 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Containers/WStringView.cpp
 
         ${CORE_ROOT}/Debug/Assertions.hpp
+        ${CORE_ROOT}/Debug/Log.hpp
 		${CORE_ROOT}/Debug/StackTrace.hpp
 		${CORE_ROOT}/Debug/StackTrace.cpp
         ${CORE_ROOT}/Debug/Test.hpp
@@ -64,6 +65,9 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Math/Vector3.cpp
         ${CORE_ROOT}/Math/Vector4.hpp
         ${CORE_ROOT}/Math/Vector4.cpp
+
+        ${CORE_ROOT}/ObjectiveC/Interface.hpp
+        ${CORE_ROOT}/ObjectiveC/Protocol.hpp
 )
 
 if (APPLE)

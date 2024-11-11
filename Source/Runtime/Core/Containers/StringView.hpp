@@ -38,6 +38,9 @@ namespace Grizzly::Core {
 		GRIZZLY_ALWAYS_INLINE const UTF8Char* operator*() const { return &m_bytes[0]; }
 
 		GRIZZLY_ALWAYS_INLINE StringView substring(usize start, usize end) const {
+			if (start == end) {
+				return StringView{};
+			}
 			GRIZZLY_ASSERT(start <= end);
 			return StringView{ &m_bytes[start], end - start };
 		}

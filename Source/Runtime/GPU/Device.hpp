@@ -7,7 +7,11 @@
 #pragma once
 
 #include <Core/Containers/Unique.hpp>
+
 #include <GPU/Buffer.hpp>
+#include <GPU/CommandList.hpp>
+#include <GPU/GraphicsPipeline.hpp>
+#include <GPU/Shader.hpp>
 #include <GPU/Swapchain.hpp>
 #include <GPU/Texture.hpp>
 
@@ -47,6 +51,11 @@ namespace Grizzly::GPU {
 		 * @return Unique<Swapchain> The created swapchain.
 		 */
 		virtual Unique<Swapchain> create_swapchain(Swapchain::Owner owner) = 0;
+
+		virtual Shared<Buffer> create_buffer(Buffer::CreateInfo const& info) = 0;
+		virtual Shared<Texture> create_texture(Texture::CreateInfo const& info) = 0;
+		// virtual Shared<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) = 0;
+		virtual Shared<CommandList> record(FunctionRef<void(CommandRecorder&)> f) = 0;
 
 		/**
 		 * @brief Get the backend of the device.

@@ -103,15 +103,13 @@ namespace Grizzly::Core {
 		},
 	};
 
-	u32 format_lambda(Writer& writer, const StringView& fmt, Option<FunctionRef<u32(StringView)>> f) {
-		u32 bytes_written = 0;
-
+	void Formatter::format_lambda(const StringView& fmt, Option<FunctionRef<void(StringView)>> f) {
 		auto base = 0;
 		for (auto iter = fmt.chars(); iter; ++iter) {
 			auto c = *iter;
 			if (c == '{') {
 				if (base != iter.byte_offset()) {
-					bytes_written += writer.write(fmt.substring(base, iter.byte_offset()));
+					m_bytes_written += m_writer.write(fmt.substring(base, iter.byte_offset()));
 				}
 
 				++iter;
@@ -122,21 +120,23 @@ namespace Grizzly::Core {
 
 					if (c == '{') {
 						const u8 byte = '{';
-						bytes_written += writer.write(Slice<u8 const>{ &byte, 1 });
+						m_bytes_written += m_writer.write(Slice<u8 const>{ &byte, 1 });
 					} else if (c == '}') {
 						base = iter.byte_offset() + 1;
 
 						const auto substring = fmt.substring(start, iter.byte_offset());
 						if (substring.len() > 0) {
+							if (!m_accepts_ansi) break;
+
 							bool found = false;
 							for (auto const& identifier : g_ansi_identifiers) {
 								if (substring == identifier.identifier) {
 									const StringView prefix = u8"\033[";
-									bytes_written += writer.write(prefix);
-									Formatter<u8> formatter;
-									bytes_written += formatter.format(writer, static_cast<u8>(identifier.code));
+									m_bytes_written += m_writer.write(prefix);
+									TypeFormatter<u8> formatter;
+									m_bytes_written += formatter.format(m_writer, static_cast<u8>(identifier.code));
 									const StringView postfix = u8"m";
-									bytes_written += writer.write(postfix);
+									m_bytes_written += m_writer.write(postfix);
 									found = true;
 									break;
 								}
@@ -147,8 +147,8 @@ namespace Grizzly::Core {
 							break;
 						} else if (f) {
 							const auto rest = fmt.substring(base, fmt.len());
-							bytes_written += (f.as_ref().unwrap())(rest);
-							return bytes_written;
+							(f.as_ref().unwrap())(rest);
+							return;
 						} else {
 							GRIZZLY_PANIC("Not enough arguments were provided");
 						}
@@ -160,13 +160,11 @@ namespace Grizzly::Core {
 		GRIZZLY_ASSERT(!f.is_set(), "Too many arguments were provided");
 
 		if (base != fmt.len()) {
-			bytes_written += writer.write(fmt.substring(base, fmt.len()));
+			m_bytes_written += m_writer.write(fmt.substring(base, fmt.len()));
 		}
-
-		return bytes_written;
 	}
 
-	u32 format_one(Writer& writer, const StringView& fmt) { return format_lambda(writer, fmt, nullopt); }
+	void Formatter::format_one(const StringView& fmt) { format_lambda(fmt, nullopt); }
 
 	usize print_unsigned_integer(Writer& writer, u64 value, u8 base) {
 		char buffer[32];

@@ -1,2 +1,4 @@
-InlayHints:
-  AddUsing: Never
+CompileFlags:
+    Add:
+        - "-std=c++20"
+        - "Wall"
