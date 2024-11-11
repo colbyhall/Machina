@@ -32,13 +32,6 @@ int main(int argc, char** argv) {
 		.stride = 4,
 	});
 
-	app.run([&]() {
-		const auto command_list = device->record([&](auto& recorder) {
-			const auto back_buffer = window->swapchain().next_back_buffer();
-			recorder.copy_buffer_to_buffer(*buffer, *buffer)
-				.copy_buffer_to_buffer(*buffer, *buffer)
-				.render_pass({}, [&](auto& rp) { rp.clear_color({ 0.0f, 0.0f, 0.0f, 1.0f }).draw(*buffer, 0, 0); });
-		});
-	});
+	app.run([&]() {});
 	return 0;
 }

@@ -31,8 +31,6 @@ namespace Grizzly::GPU {
 
 	class RenderPassRecorder {
 	public:
-		virtual RenderPassRecorder& clear_color(Vector4<f32> const& color) = 0;
-		virtual RenderPassRecorder& clear_depth_stencil(f32 depth, u8 stencil) = 0;
 		virtual RenderPassRecorder& set_pipeline(GraphicsPipeline const& pipeline) = 0;
 		virtual RenderPassRecorder& set_vertices(Buffer const& buffer) = 0;
 		virtual RenderPassRecorder& set_indices(Buffer const& buffer) = 0;
@@ -43,16 +41,42 @@ namespace Grizzly::GPU {
 		virtual ~RenderPassRecorder() {}
 	};
 
+	enum class LoadAction : u8 {
+		DontCare,
+		Load,
+		Clear,
+	};
+
+	enum class StoreAction : u8 {
+		DontCare,
+		Store,
+	};
+
+	struct ColorAttachment {
+		Texture const& texture;
+		LoadAction load_action;
+		StoreAction store_action;
+		Vector4<f32> clear_color = { 0.f, 0.f, 0.f, 1.f };
+	};
+
+	struct DepthAttachment {
+		Texture const& texture;
+		LoadAction load_action;
+		StoreAction store_action;
+		f32 clear_depth = 1.f;
+	};
+
+	struct RenderPass {
+		Slice<ColorAttachment> color_attachments;
+		Option<DepthAttachment> depth_attachment = nullopt;
+	};
+
 	class CommandRecorder {
 	public:
 		virtual CommandRecorder& copy_buffer_to_texture(Texture const& dst, Buffer const& src) = 0;
 		virtual CommandRecorder& copy_buffer_to_buffer(Buffer const& dst, Buffer const& src) = 0;
 		virtual CommandRecorder& texture_barrier(Texture const& texture, Layout before, Layout after) = 0;
 
-		struct RenderPass {
-			Slice<Texture const&> color_attachments;
-			Option<Texture const&> depth_attachment = nullopt;
-		};
 		virtual CommandRecorder& render_pass(RenderPass const& info, FunctionRef<void(RenderPassRecorder&)> f) = 0;
 
 		virtual ~CommandRecorder() {}
