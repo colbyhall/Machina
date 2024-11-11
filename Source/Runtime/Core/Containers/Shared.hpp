@@ -163,13 +163,13 @@ namespace Grizzly::Core {
 
 		// Accessors
 		GRIZZLY_ALWAYS_INLINE explicit operator Base*() { return &value(); }
-		GRIZZLY_ALWAYS_INLINE explicit operator Base const*() const { return &value(); }
+		GRIZZLY_ALWAYS_INLINE explicit operator Base*() const { return &value(); }
 		GRIZZLY_ALWAYS_INLINE explicit operator Base&() { return value(); }
-		GRIZZLY_ALWAYS_INLINE explicit operator Base const&() const { return value(); }
+		GRIZZLY_ALWAYS_INLINE explicit operator Base&() const { return value(); }
 		GRIZZLY_ALWAYS_INLINE Base* operator->() { return &value(); }
-		GRIZZLY_ALWAYS_INLINE Base const* operator->() const { return &value(); }
+		GRIZZLY_ALWAYS_INLINE Base* operator->() const { return &value(); }
 		GRIZZLY_ALWAYS_INLINE Base& operator*() { return value(); }
-		GRIZZLY_ALWAYS_INLINE Base const& operator*() const { return value(); }
+		GRIZZLY_ALWAYS_INLINE Base& operator*() const { return value(); }
 
 		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE u32 strong() const {
 			return m_counter != nullptr ? counter().strong() : 0;

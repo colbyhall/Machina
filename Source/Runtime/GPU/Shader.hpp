@@ -15,13 +15,13 @@ namespace Grizzly::GPU {
 		virtual ~Library() {}
 	};
 
-	class Shader : public SharedFromThis<Shader> {
+	class VertexShader : public SharedFromThis<VertexShader> {
 	public:
-		virtual ~Shader() {}
-		virtual Library const& library() const = 0;
+		virtual ~VertexShader() {}
 	};
 
-	class VertexShader : public Shader {};
-
-	class PixelShader : public Shader {};
+	class PixelShader : public SharedFromThis<PixelShader> {
+	public:
+		virtual ~PixelShader() {}
+	};
 } // namespace Grizzly::GPU

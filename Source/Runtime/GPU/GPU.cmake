@@ -19,10 +19,20 @@ set(GPU_SRC_FILES
 if (APPLE)
 	set(GPU_SRC_FILES
 		${GPU_SRC_FILES}
+		${GPU_ROOT}/Metal/Buffer.mm
+		${GPU_ROOT}/Metal/Buffer.hpp
+		${GPU_ROOT}/Metal/CommandList.mm
+		${GPU_ROOT}/Metal/CommandList.hpp
 		${GPU_ROOT}/Metal/Device.mm
 		${GPU_ROOT}/Metal/Device.hpp
+		${GPU_ROOT}/Metal/GraphicsPipeline.mm
+		${GPU_ROOT}/Metal/GraphicsPipeline.hpp
+		${GPU_ROOT}/Metal/Shader.mm
+		${GPU_ROOT}/Metal/Shader.hpp
 		${GPU_ROOT}/Metal/Swapchain.mm
 		${GPU_ROOT}/Metal/Swapchain.hpp
+		${GPU_ROOT}/Metal/Texture.mm
+		${GPU_ROOT}/Metal/Texture.hpp
 	)
 elseif(WIN32)
 endif()

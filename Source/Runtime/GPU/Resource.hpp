@@ -13,8 +13,9 @@ namespace Grizzly::GPU {
 	class Resource {
 	public:
 		using BindlessIndex = u32;
-		virtual Option<BindlessIndex> bindless() const = 0;
+		GRIZZLY_ALWAYS_INLINE Option<BindlessIndex> bindless() const { return m_bindless; }
 
-		virtual ~Resource() {}
+	protected:
+		Option<BindlessIndex> m_bindless = nullopt;
 	};
 } // namespace Grizzly::GPU

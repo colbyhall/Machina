@@ -17,12 +17,7 @@
 
 @end // GrizzlyApplicationDelegate
 namespace Grizzly::GUI {
-	Application* Application::s_instance = nullptr;
-
-	Unique<Application> Application::create(const GPU::Device& device) {
-		// Allow only one instance of Application
-		GRIZZLY_ASSERT(s_instance == nullptr);
-
+	Application Application::create(const GPU::Device& device) {
 		@autoreleasepool {
 			// Create the shared application
 			[NSApplication sharedApplication];
@@ -50,19 +45,11 @@ namespace Grizzly::GUI {
 
 			[NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
 
-			Application app(device);
-			auto result = Unique<Application>::create(Grizzly::move(app));
-			s_instance = result;
-			return result;
+			return Application(device);
 		};
 	}
 
-	Application& Application::the() {
-		GRIZZLY_ASSERT(s_instance != nullptr);
-		return *s_instance;
-	}
-
-	int Application::run() {
+	int Application::run(FunctionRef<void()> tick) {
 		while (m_running) {
 			poll_input();
 			tick();
@@ -82,6 +69,4 @@ namespace Grizzly::GUI {
 			} while (ev);
 		}
 	}
-
-	void Application::tick() {}
 } // namespace Grizzly::GUI

@@ -14,24 +14,31 @@ using namespace Grizzly;
 using namespace Core;
 
 int main(int argc, char** argv) {
-	auto device = GPU::Device::create({
+	const auto device = GPU::Device::create({
 		.backend = GPU::Backend::Metal,
 	});
-	auto application = GUI::Application::create(*device);
-	auto window = GUI::Window::create({
+	auto app = GUI::Application::create(*device);
+
+	const auto window = app.create<GUI::Window>({
 		.title = u8"Sandbox",
 		.size = { 1280, 720 },
 	});
 	window->show();
 
-	const auto command_list = device->record([](auto& c) {
-		// f
-		c.render_pass({}, [](auto& rg) {
-			// c
-			rg.clear_color(1);
-		});
+	const auto buffer = device->create_buffer({
+		.usage = GPU::Buffer::Usage::TransferSrc,
+		.heap = GPU::Buffer::Heap::Upload,
+		.len = 1024,
+		.stride = 4,
 	});
 
-	application->run();
+	app.run([&]() {
+		const auto command_list = device->record([&](auto& recorder) {
+			const auto back_buffer = window->swapchain().next_back_buffer();
+			recorder.copy_buffer_to_buffer(*buffer, *buffer)
+				.copy_buffer_to_buffer(*buffer, *buffer)
+				.render_pass({}, [&](auto& rp) { rp.clear_color({ 0.0f, 0.0f, 0.0f, 1.0f }).draw(*buffer, 0, 0); });
+		});
+	});
 	return 0;
 }

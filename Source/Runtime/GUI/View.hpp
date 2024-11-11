@@ -6,8 +6,10 @@
 
 #pragma once
 
+#include <Core/Containers/Shared.hpp>
+
 namespace Grizzly::GUI {
-	class View {
+	class View : public SharedFromThis<View> {
 	public:
 		virtual ~View() {}
 	};

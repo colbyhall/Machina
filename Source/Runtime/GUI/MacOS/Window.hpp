@@ -6,11 +6,12 @@
 
 #pragma once
 
+#import <AppKit/AppKit.h>
+
 #include <Core/Containers/Unique.hpp>
+#include <Core/ObjectiveC/Interface.hpp>
 #include <GPU/Swapchain.hpp>
 #include <GUI/Window.hpp>
-
-#import <AppKit/AppKit.h>
 
 namespace Grizzly::GUI {
 	class MacOSWindow final : public Window {
@@ -18,21 +19,8 @@ namespace Grizzly::GUI {
 		explicit MacOSWindow(NSWindow* window, Unique<GPU::Swapchain>&& swapchain)
 			: m_window{ window }
 			, m_swapchain(Grizzly::forward<Unique<GPU::Swapchain>>(swapchain)) {}
-		MacOSWindow(const MacOSWindow&) = delete;
-		MacOSWindow& operator=(const MacOSWindow&) = delete;
-		MacOSWindow(MacOSWindow&& move) : m_window{ move.m_window }, m_swapchain(Grizzly::move(move.m_swapchain)) {}
-		MacOSWindow& operator=(MacOSWindow&& move) {
-			auto to_destroy = Grizzly::move(*this);
-			GRIZZLY_UNUSED(to_destroy);
-
-			m_window = move.m_window;
-			m_swapchain = Grizzly::move(move.m_swapchain);
-
-			return *this;
-		}
 
 		// Window interface
-		~MacOSWindow() final;
 		bool close() final;
 		bool show() final;
 		bool hide() final;
@@ -42,7 +30,7 @@ namespace Grizzly::GUI {
 		// ~Window interface
 
 	private:
-		NSWindow* m_window;
+		Core::Interface<NSWindow> m_window;
 		Unique<GPU::Swapchain> m_swapchain;
 	};
 } // namespace Grizzly::GUI

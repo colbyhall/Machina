@@ -65,6 +65,9 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Math/Vector3.cpp
         ${CORE_ROOT}/Math/Vector4.hpp
         ${CORE_ROOT}/Math/Vector4.cpp
+
+        ${CORE_ROOT}/ObjectiveC/Interface.hpp
+        ${CORE_ROOT}/ObjectiveC/Protocol.hpp
 )
 
 if (APPLE)

@@ -6,13 +6,15 @@
 
 #pragma once
 
-#include <Core/Containers/Shared.hpp>
 #include <Core/Containers/StringView.hpp>
 #include <Core/Math/Vector2.hpp>
 #include <GPU/Forward.hpp>
+#include <GUI/View.hpp>
 
 namespace Grizzly::GUI {
-	class Window : public SharedFromThis<Window> {
+	class Application;
+
+	class Window : public View {
 	public:
 		struct CreateInfo {
 			StringView title;
@@ -22,7 +24,7 @@ namespace Grizzly::GUI {
 			bool minimizable = true;
 			bool maximizable = true;
 		};
-		static Shared<Window> create(CreateInfo const& create_info);
+		static Shared<Window> create(Application& app, CreateInfo const& create_info);
 
 		/**
 		 * @brief Closes the window so it may never be opened again.
@@ -36,7 +38,5 @@ namespace Grizzly::GUI {
 		virtual bool maximize() = 0;
 		virtual bool minimize() = 0;
 		virtual GPU::Swapchain& swapchain() = 0;
-
-		virtual ~Window() {}
 	};
 } // namespace Grizzly::GUI

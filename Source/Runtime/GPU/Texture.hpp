@@ -64,13 +64,20 @@ namespace Grizzly::GPU {
 			Usage usage;
 			Format format;
 			Vector3<u32> size;
+			u32 mip_levels = 1;
 		};
 
 		GRIZZLY_ALWAYS_INLINE Usage usage() const { return m_usage; }
 		GRIZZLY_ALWAYS_INLINE Format format() const { return m_format; }
 		GRIZZLY_ALWAYS_INLINE Vector3<u32> size() const { return m_size; }
+		virtual ~Texture() {}
 
 	protected:
+		explicit Texture(CreateInfo const& create_info)
+			: m_usage(create_info.usage)
+			, m_format(create_info.format)
+			, m_size(create_info.size) {}
+
 		Usage m_usage;
 		Format m_format;
 		Vector3<u32> m_size;
