@@ -18,6 +18,8 @@ namespace Grizzly::GPU {
 			: Texture(create_info)
 			, m_texture(texture) {}
 
+		Core::Protocol const& texture() const { return m_texture; }
+
 	private:
 		Core::Protocol m_texture; // MTLTexture
 	};

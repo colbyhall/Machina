@@ -37,8 +37,6 @@ namespace Grizzly::GPU {
 	public:
 		explicit MetalRenderPassRecorder(id<MTLRenderCommandEncoder> encoder) : m_encoder(encoder) {}
 
-		RenderPassRecorder& clear_color(Vector4<f32> const& color) final;
-		RenderPassRecorder& clear_depth_stencil(f32 depth, u8 stencil) final;
 		RenderPassRecorder& set_pipeline(GraphicsPipeline const& pipeline) final;
 		RenderPassRecorder& set_vertices(Buffer const& buffer) final;
 		RenderPassRecorder& set_indices(Buffer const& buffer) final;
