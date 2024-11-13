@@ -13,7 +13,15 @@
 namespace Grizzly::Core {
 	class Thread {
 	public:
-		static AtomicShared<Thread> spawn(Function<void()> f);
+		struct SpawnInfo {
+			using Function = Function<void()>;
+			Function f;
+
+			Option<StringView> name = nullopt;
+			Option<usize> stack_size = nullopt;
+			bool start_suspended = false;
+		};
+		static AtomicShared<Thread> spawn(SpawnInfo&& info);
 
 		using Id = u64;
 

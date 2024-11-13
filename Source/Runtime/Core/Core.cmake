@@ -17,6 +17,9 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Primitives.hpp
         ${CORE_ROOT}/TypeTraits.hpp
 
+        ${CORE_ROOT}/Async/Thread.hpp
+        ${CORE_ROOT}/Async/Fiber.hpp
+
         ${CORE_ROOT}/Containers/Array.hpp
         ${CORE_ROOT}/Containers/Array.cpp
         ${CORE_ROOT}/Containers/Function.hpp
@@ -81,6 +84,9 @@ if (APPLE)
 elseif(WIN32)
 	set(CORE_SRC_FILES
 		${CORE_SRC_FILES}
+		${CORE_ROOT}/Async/Win32/Thread.hpp
+		${CORE_ROOT}/Async/Win32/Thread.cpp
+
 		${CORE_ROOT}/IO/Win32/File.hpp
 		${CORE_ROOT}/IO/Win32/File.cpp
 		${CORE_ROOT}/IO/Win32/Directory.hpp
