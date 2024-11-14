@@ -3,3 +3,7 @@
  *
  * This software is released under the MIT License.
  */
+
+#include <Core/Async/Thread.hpp>
+
+namespace Grizzly::Core {} // namespace Grizzly::Core

@@ -4,6 +4,7 @@
  * This software is released under the MIT License.
  */
 
+#include <Core/Async/Thread.hpp>
 #include <Core/Containers/String.hpp>
 #include <Core/Debug/Log.hpp>
 #include <GPU/Device.hpp>
@@ -24,6 +25,9 @@ int main(int argc, char** argv) {
 		.size = { 1280, 720 },
 	});
 	window->show();
+
+	const auto thread = Thread::spawn({ .f = []() { dbgln(u8"Hello World"); } });
+	thread->join();
 
 	const auto buffer = device->create_buffer({
 		.usage = GPU::Buffer::Usage::TransferSrc,
