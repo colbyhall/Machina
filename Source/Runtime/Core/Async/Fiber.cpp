@@ -19,8 +19,7 @@ namespace Grizzly::Core {
 
 	AtomicShared<Fiber> Fiber::spawn(Function&& f, SpawnInfo const& spawn_info) {
 		const auto stack_size = spawn_info.stack_size;
-		auto stack_memory = Memory::alloc(Memory::Layout::array<u8>(stack_size));
-		auto stack = Slice<u8>{ static_cast<u8*>(*stack_memory), stack_size };
+		auto stack = Unique<u8[]>::create(stack_size);
 
 		auto param = Memory::alloc(Memory::Layout::single<Function>());
 		Memory::emplace<Function>(param, Grizzly::move(f));
@@ -31,13 +30,13 @@ namespace Grizzly::Core {
 		registers.pc = reinterpret_cast<u64>(&fiber_entry);
 		registers.x[0] = reinterpret_cast<u64>(*param);
 
-		Fiber fiber{ Grizzly::move(registers), stack };
+		Fiber fiber{ Grizzly::move(registers), Grizzly::move(stack) };
 		return AtomicShared<Fiber>::create(Grizzly::move(fiber));
 	}
 
 	AtomicShared<Fiber> Fiber::current() {
 		if (!g_current_fiber.is_set()) {
-			Fiber fiber{ Registers{}, Slice<u8>{} };
+			Fiber fiber{ Registers{} };
 			g_current_fiber = AtomicShared<Fiber>::create(Grizzly::move(fiber));
 		}
 		return g_current_fiber.as_ref().unwrap();

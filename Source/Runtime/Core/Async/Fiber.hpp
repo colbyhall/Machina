@@ -9,7 +9,7 @@
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/Option.hpp>
 #include <Core/Containers/Shared.hpp>
-#include <Core/Containers/Slice.hpp>
+#include <Core/Containers/Unique.hpp>
 
 namespace Grizzly::Core {
 	class Fiber final : public AtomicSharedFromThis<Fiber> {
@@ -39,11 +39,12 @@ namespace Grizzly::Core {
 	#error Unsupported CPU architecture
 #endif
 		};
-		explicit Fiber(Registers&& registers, Slice<u8> stack)
+		explicit Fiber(Registers&& registers) : m_registers(Grizzly::move(registers)) {}
+		explicit Fiber(Registers&& registers, Unique<u8[]>&& stack)
 			: m_registers(Grizzly::move(registers))
-			, m_stack(stack) {}
+			, m_stack(Grizzly::move(stack)) {}
 
 		Registers m_registers;
-		Slice<u8> m_stack;
+		Option<Unique<u8[]>> m_stack;
 	};
 } // namespace Grizzly::Core

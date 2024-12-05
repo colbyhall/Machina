@@ -83,6 +83,104 @@ namespace Grizzly::Core {
 
 		Base* m_ptr;
 	};
+
+	template <DefaultInitializable T>
+	class Unique<T[]> {
+	public:
+		static GRIZZLY_ALWAYS_INLINE Unique create(usize len) {
+			GRIZZLY_ASSERT(len > 0);
+			const auto memory = Memory::alloc(Memory::Layout::array<T>(len));
+			T* const ptr = reinterpret_cast<T*>(*memory);
+			for (usize i = 0; i < len; ++i) {
+				new (ptr + i) T{};
+			}
+			return Unique{ ptr, len };
+		}
+
+		Unique(const Unique& copy) noexcept
+			requires CopyConstructible<T>
+		{
+			GRIZZLY_ASSERT(copy.len() > 0);
+			const auto memory = Memory::alloc(Memory::Layout::array<T>(copy.len()));
+			T* const ptr = reinterpret_cast<T*>(*memory);
+			for (usize i = 0; i < copy.len(); ++i) {
+				new (ptr + i) T{ copy[i] };
+			}
+			return Unique{ ptr, copy.len() };
+		}
+
+		Unique& operator=(const Unique& copy) noexcept
+			requires CopyConstructible<T>
+		{
+			this->~Unique();
+			GRIZZLY_ASSERT(copy.len() > 0);
+			const auto memory = Memory::alloc(Memory::Layout::array<T>(copy.len()));
+			T* const ptr = reinterpret_cast<T*>(*memory);
+			for (usize i = 0; i < copy.len(); ++i) {
+				new (ptr + i) T{ copy[i] };
+			}
+			m_ptr = ptr;
+			m_len = copy.len();
+			return *this;
+		}
+
+		Unique(Unique&& move) noexcept : m_ptr(move.m_ptr), m_len(move.m_len) {
+			move.m_ptr = nullptr;
+			move.m_len = 0;
+		}
+
+		Unique& operator=(Unique&& move) noexcept {
+			this->~Unique();
+
+			m_ptr = move.m_ptr;
+			m_len = move.m_len;
+			move.m_ptr = nullptr;
+			move.m_len = 0;
+
+			return *this;
+		}
+
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize len() const { return m_len; }
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE bool is_valid_index(usize index) const { return index < len(); }
+
+		GRIZZLY_ALWAYS_INLINE T* begin() { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE T* end() { return m_ptr + m_len; }
+		GRIZZLY_ALWAYS_INLINE const T* begin() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE const T* end() const { return m_ptr + m_len; }
+		GRIZZLY_ALWAYS_INLINE const T* cbegin() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE const T* cend() const { return m_ptr + m_len; }
+
+		GRIZZLY_ALWAYS_INLINE operator T*() { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE operator T*() const { return m_ptr; }
+		GRIZZLY_ALWAYS_INLINE T& operator[](usize index) {
+			GRIZZLY_ASSERT(is_valid_index(index), "Index out of bounds");
+			return m_ptr[index];
+		}
+		GRIZZLY_ALWAYS_INLINE T const& operator[](usize index) const {
+			GRIZZLY_ASSERT(is_valid_index(index), "Index out of bounds");
+			return m_ptr[index];
+		}
+
+		~Unique() {
+			if (m_ptr) {
+				if constexpr (!is_trivially_destructible<T>) {
+					for (usize i = 0; i < m_len; ++i) {
+						T& item = m_ptr[i];
+						item.~T();
+					}
+				}
+				Memory::free(m_ptr);
+				m_ptr = nullptr;
+				m_len = 0;
+			}
+		}
+
+	private:
+		GRIZZLY_ALWAYS_INLINE explicit Unique(T* ptr, usize len) : m_ptr(ptr), m_len(len) {}
+
+		T* m_ptr;
+		usize m_len;
+	};
 } // namespace Grizzly::Core
 
 namespace Grizzly {
