@@ -19,6 +19,7 @@ set(CORE_SRC_FILES
 
         ${CORE_ROOT}/Async/Thread.hpp
         ${CORE_ROOT}/Async/Fiber.hpp
+        ${CORE_ROOT}/Async/Fiber.cpp
 
         ${CORE_ROOT}/Containers/Array.hpp
         ${CORE_ROOT}/Containers/Array.cpp

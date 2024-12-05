@@ -9,16 +9,16 @@
 
 namespace Grizzly::Core {
 	static void* posix_thread_main(void* arg) {
-		auto* param = static_cast<Thread::SpawnInfo::Function*>(arg);
+		auto* param = static_cast<Thread::Function*>(arg);
 		(*param)();
 		param->~Function();
 		Memory::free(param);
 		return nullptr;
 	}
 
-	AtomicShared<Thread> Thread::spawn(SpawnInfo&& info) {
-		auto param = Memory::alloc(Memory::Layout::single<SpawnInfo::Function>());
-		Memory::emplace<SpawnInfo::Function>(param, Grizzly::move(info.f));
+	AtomicShared<Thread> Thread::spawn(Function&& f, SpawnInfo const& info) {
+		auto param = Memory::alloc(Memory::Layout::single<Function>());
+		Memory::emplace<Function>(param, Grizzly::move(f));
 
 		pthread_t thread;
 		const int result = pthread_create(&thread, nullptr, posix_thread_main, param);
