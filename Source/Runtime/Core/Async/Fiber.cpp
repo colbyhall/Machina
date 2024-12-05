@@ -15,8 +15,10 @@ namespace Grizzly::Core {
 		Memory::free(f);
 	}
 
+	AtomicShared<Fiber> Fiber::spawn(Function&& f) { return Fiber::spawn(Grizzly::move(f), SpawnInfo{}); }
+
 	AtomicShared<Fiber> Fiber::spawn(Function&& f, SpawnInfo const& spawn_info) {
-		const auto stack_size = spawn_info.stack_size.unwrap_or(1024 * 1024);
+		const auto stack_size = spawn_info.stack_size;
 		auto stack_memory = Memory::alloc(Memory::Layout::array<u8>(stack_size));
 		auto stack = Slice<u8>{ static_cast<u8*>(*stack_memory), stack_size };
 

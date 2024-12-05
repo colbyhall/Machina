@@ -16,13 +16,10 @@ namespace Grizzly::Core {
 	public:
 		using Function = Function<void()>;
 		struct SpawnInfo {
-			Option<usize> stack_size = nullopt;
+			usize stack_size = 1024 * 1024;
 		};
-		static AtomicShared<Fiber> spawn(
-			Function&& f,
-			SpawnInfo const& spawn_info = {
-				.stack_size = nullopt,
-			});
+		static AtomicShared<Fiber> spawn(Function&& f);
+		static AtomicShared<Fiber> spawn(Function&& f, SpawnInfo const& info);
 		static AtomicShared<Fiber> current();
 
 		Fiber(const Fiber&) = delete;
@@ -38,17 +35,6 @@ namespace Grizzly::Core {
 			u64 x[9];
 			u64 sp;
 			u64 pc;
-#elif GRIZZLY_CPU == GRIZZLY_CPU_X86
-			u64 rdi;
-			u64 rsi;
-			u64 rbx;
-			u64 rbp;
-			u64 r12;
-			u64 r13;
-			u64 r14;
-			u64 r15;
-			u64 rsp;
-			u64 rip;
 #else
 	#error Unsupported CPU architecture
 #endif
