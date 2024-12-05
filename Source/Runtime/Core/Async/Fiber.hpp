@@ -35,7 +35,7 @@ namespace Grizzly::Core {
 	private:
 		struct Registers {
 #if GRIZZLY_CPU == GRIZZLY_CPU_ARM
-			u64 regs[30];
+			u64 x[9];
 			u64 sp;
 			u64 pc;
 #elif GRIZZLY_CPU == GRIZZLY_CPU_X86

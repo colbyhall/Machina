@@ -27,7 +27,7 @@ namespace Grizzly::Core {
 		auto registers = Registers{};
 		registers.sp = reinterpret_cast<u64>(stack.begin()) + stack_size;
 		registers.pc = reinterpret_cast<u64>(&fiber_entry);
-		registers.regs[0] = reinterpret_cast<u64>(*param);
+		registers.x[0] = reinterpret_cast<u64>(*param);
 
 		Fiber fiber{ Grizzly::move(registers), stack };
 		return AtomicShared<Fiber>::create(Grizzly::move(fiber));
@@ -56,18 +56,18 @@ namespace Grizzly::Core {
 			stp x6, x7, [%0, #48]
 			str x8, [%0, #64]
 			mov x19, sp
-			str x19, [%0, #240]
+			str x19, [%0, #72]
 			adrp x19, next@PAGE
 			add x19, x19, next@PAGEOFF
-			str x19, [%0, #248]
+			str x19, [%0, #80]
 			ldp x0, x1, [%1, #0]
 			ldp x2, x3, [%1, #16]
 			ldp x4, x5, [%1, #32]
 			ldp x6, x7, [%1, #48]
 			ldr x8, [%1, #64]
-			ldr x19, [%1, #240]
+			ldr x19, [%1, #72]
 			mov sp, x19
-			ldr x30, [%1, #248]
+			ldr x30, [%1, #80]
 			br x30
 			next:
 			)"
