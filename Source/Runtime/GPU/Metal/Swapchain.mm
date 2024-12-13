@@ -4,15 +4,15 @@
  * This software is released under the MIT License.
  */
 
+#include <GPU/CommandList.hpp>
 #include <GPU/Metal/Swapchain.hpp>
 #include <GPU/Metal/Texture.hpp>
 
 namespace Grizzly::GPU {
-	Shared<Texture> MetalSwapchain::next_back_buffer() {
+	Unique<Backbuffer> MetalSwapchain::next_back_buffer() {
 		@autoreleasepool {
 			id<CAMetalDrawable> drawable = [m_layer nextDrawable];
-			id<MTLTexture> texture = drawable.texture;
-			return Shared<MetalTexture>::create(
+			auto texture = Shared<MetalTexture>::create(
 				Texture::CreateInfo{
 					.usage = Texture::Usage::Swapchain,
 					.format = Texture::Format::BGR_U8_SRGB,
@@ -20,7 +20,17 @@ namespace Grizzly::GPU {
 							  static_cast<u32>(drawable.texture.height),
 							  static_cast<u32>(drawable.texture.depth) },
 				},
-				texture);
+				drawable.texture);
+			return Unique<MetalBackbuffer>::create(Grizzly::move(texture), drawable);
+		}
+	}
+
+	Texture const& MetalBackbuffer::texture() const { return *m_texture; }
+
+	void MetalBackbuffer::present(Receipt const& wait_on) {
+		@autoreleasepool {
+			wait_on.wait_until_complete();
+			[m_drawable present];
 		}
 	}
 } // namespace Grizzly::GPU

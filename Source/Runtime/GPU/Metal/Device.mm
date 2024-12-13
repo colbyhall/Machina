@@ -84,6 +84,7 @@ namespace Grizzly::GPU {
 
 			MetalCommandRecorder recorder(command_buffer);
 			f(recorder);
+			[command_buffer retain];
 
 			return Shared<MetalCommandList>::create(command_buffer);
 		}

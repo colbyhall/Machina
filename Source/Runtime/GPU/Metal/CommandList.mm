@@ -8,6 +8,19 @@
 #include <GPU/Metal/Texture.hpp>
 
 namespace Grizzly::GPU {
+	void MetalReceipt::wait_until_complete() const {
+		@autoreleasepool {
+			[m_command_buffer waitUntilCompleted];
+		}
+	}
+
+	Unique<Receipt> MetalCommandList::submit() const {
+		@autoreleasepool {
+			[m_command_buffer commit];
+			return Unique<MetalReceipt>::create(m_command_buffer);
+		}
+	}
+
 	CommandRecorder& MetalCommandRecorder::copy_buffer_to_texture(Texture const& dst, Buffer const& src) {
 		return *this;
 	}
@@ -73,6 +86,8 @@ namespace Grizzly::GPU {
 
 			// Execute the callback to record the render pass
 			f(recorder);
+
+			[encoder endEncoding];
 		}
 		return *this;
 	}

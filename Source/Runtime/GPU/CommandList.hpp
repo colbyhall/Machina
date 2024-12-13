@@ -9,6 +9,7 @@
 #include <Core/Containers/Array.hpp>
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/Shared.hpp>
+#include <Core/Containers/Unique.hpp>
 #include <Core/Math/Vector4.hpp>
 #include <GPU/Forward.hpp>
 
@@ -24,8 +25,17 @@ namespace Grizzly::GPU {
 		Present,
 	};
 
+	class Receipt {
+	public:
+		virtual void wait_until_complete() const = 0;
+
+		virtual ~Receipt() {}
+	};
+
 	class CommandList : public SharedFromThis<CommandList> {
 	public:
+		GRIZZLY_NO_DISCARD virtual Unique<Receipt> submit() const = 0;
+
 		virtual ~CommandList() {}
 	};
 
@@ -67,8 +77,8 @@ namespace Grizzly::GPU {
 	};
 
 	struct RenderPass {
-		Slice<ColorAttachment> color_attachments;
-		Option<DepthAttachment> depth_attachment = nullopt;
+		Slice<ColorAttachment const> color_attachments;
+		Option<DepthAttachment const> depth_attachment = nullopt;
 	};
 
 	class CommandRecorder {
@@ -76,7 +86,6 @@ namespace Grizzly::GPU {
 		virtual CommandRecorder& copy_buffer_to_texture(Texture const& dst, Buffer const& src) = 0;
 		virtual CommandRecorder& copy_buffer_to_buffer(Buffer const& dst, Buffer const& src) = 0;
 		virtual CommandRecorder& texture_barrier(Texture const& texture, Layout before, Layout after) = 0;
-
 		virtual CommandRecorder& render_pass(RenderPass const& info, FunctionRef<void(RenderPassRecorder&)> f) = 0;
 
 		virtual ~CommandRecorder() {}

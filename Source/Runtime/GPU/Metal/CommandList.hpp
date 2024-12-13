@@ -12,9 +12,20 @@
 #include <GPU/CommandList.hpp>
 
 namespace Grizzly::GPU {
+	class MetalReceipt final : public Receipt {
+	public:
+		MetalReceipt(id<MTLCommandBuffer> command_buffer) : m_command_buffer(command_buffer) {}
+		void wait_until_complete() const final;
+
+	private:
+		Core::Protocol m_command_buffer;
+	};
+
 	class MetalCommandList final : public CommandList {
 	public:
 		MetalCommandList(id<MTLCommandBuffer> command_buffer) : m_command_buffer(command_buffer) {}
+
+		Unique<Receipt> submit() const final;
 
 	private:
 		Core::Protocol m_command_buffer; // MTLCommandBuffer

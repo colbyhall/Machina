@@ -4,24 +4,38 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Async/Fiber.hpp>
-#include <Core/Containers/String.hpp>
 #include <Core/Debug/Log.hpp>
+#include <GPU/Device.hpp>
+#include <GUI/Application.hpp>
+#include <GUI/Window.hpp>
 
 using namespace Grizzly;
 using namespace Core;
 
 int main(int argc, char** argv) {
-	dbgln(u8"Hello, World!");
-
-	const auto current = Fiber::current();
-	const auto fiber = Fiber::spawn([&] {
-		dbgln(u8"Hello, Fiber!");
-		current->switch_to();
+	const auto device = GPU::Device::create({ .backend = GPU::Backend::Metal });
+	auto app = GUI::Application::create(*device);
+	const auto window = app.create<GUI::Window>({
+		.title = u8"Hello World",
+		.size = { 1280, 720 },
 	});
-	fiber->switch_to();
-
-	dbgln(u8"Hello, Again!");
-
-	return 0;
+	window->show();
+	return app.run([&]() {
+		const auto backbuffer = window->swapchain().next_back_buffer();
+		const auto command_list = device->record([&](auto& cr) {
+			const auto triangle_pass = GPU::RenderPass{
+					.color_attachments = {
+						GPU::ColorAttachment{
+							.texture = backbuffer->texture(),
+							.load_action = GPU::LoadAction::Clear,
+							.store_action = GPU::StoreAction::Store,
+							.clear_color = { 1.f, 0.f, 1.f, 1.f},
+						},
+					},
+				};
+			cr.render_pass(triangle_pass, [&](auto& rpr) {});
+		});
+		const auto receipt = command_list->submit();
+		backbuffer->present(*receipt);
+	});
 }

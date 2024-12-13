@@ -17,6 +17,7 @@ namespace Grizzly::GPU {
 	class Texture;
 	class GraphicsPipeline;
 	class CommandList;
+	class Receipt;
 
 	class MetalDevice;
 	class MetalSwapchain;

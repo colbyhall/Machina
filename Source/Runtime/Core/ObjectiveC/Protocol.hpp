@@ -34,22 +34,18 @@ namespace Grizzly::Core {
 			}
 			return *this;
 		}
-		Protocol(Protocol&& move) : m_internal(move.m_internal) {}
+		Protocol(Protocol&& move) : m_internal(move.m_internal) { move.m_internal = nil; }
 		Protocol& operator=(Protocol&& move) {
 			@autoreleasepool {
-				auto to_destroy = Grizzly::move(*this);
-				GRIZZLY_UNUSED(to_destroy);
-
 				m_internal = move.m_internal;
 				move.m_internal = nil;
-				[m_internal retain];
 			}
 			return *this;
 		}
 		~Protocol() {
 			@autoreleasepool {
 				if (m_internal) {
-					[m_internal release];
+					[m_internal autorelease];
 					m_internal = nil;
 				}
 			}

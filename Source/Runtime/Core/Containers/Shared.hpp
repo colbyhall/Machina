@@ -84,7 +84,7 @@ namespace Grizzly::Core {
 		static GRIZZLY_ALWAYS_INLINE Shared<Base, Type> create(Args&&... args)
 			requires ConstructibleFrom<Base, Args...>
 		{
-			return Shared<Base, Type>{ Base{ Grizzly::forward<Args>(args)... } };
+			return Shared<Base, Type>{ Grizzly::move(Base{ Grizzly::forward<Args>(args)... }) };
 		}
 
 		Shared(const Shared& copy) noexcept : m_counter(copy.m_counter), m_base(copy.m_base) {
@@ -92,8 +92,6 @@ namespace Grizzly::Core {
 			c.add_strong();
 		}
 		Shared& operator=(const Shared& copy) noexcept {
-			this->~Shared();
-
 			m_counter = copy.m_counter;
 			m_base = copy.m_base;
 
@@ -114,8 +112,6 @@ namespace Grizzly::Core {
 		Shared& operator=(Shared<Derived, Type>&& move) noexcept
 			requires DerivedFrom<Derived, Base> || SameAs<Derived, Base>
 		{
-			this->~Shared();
-
 			m_counter = move.m_counter;
 			m_base = move.m_base;
 			move.m_counter = nullptr;

@@ -30,21 +30,17 @@ namespace Grizzly::Core {
 			}
 			return *this;
 		}
-		Interface(Interface&& move) : m_internal(move.m_internal) {}
+		Interface(Interface&& move) : m_internal(move.m_internal) { move.m_internal = nil; }
 		Interface& operator=(Interface&& move) {
 			@autoreleasepool {
-				auto to_destroy = Grizzly::move(*this);
-				GRIZZLY_UNUSED(to_destroy);
-
 				m_internal = move.m_internal;
 				move.m_internal = nil;
-				[m_internal retain];
 			}
 		}
 		~Interface() {
 			@autoreleasepool {
 				if (m_internal) {
-					[m_internal release];
+					[m_internal autorelease];
 					m_internal = nil;
 				}
 			}

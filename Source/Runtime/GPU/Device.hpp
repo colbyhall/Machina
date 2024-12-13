@@ -42,7 +42,7 @@ namespace Grizzly::GPU {
 		 * @param create_info The create info for the device.
 		 * @return Shared<Device> The created device.
 		 */
-		static Shared<Device> create(CreateInfo const& create_info);
+		GRIZZLY_NO_DISCARD static Shared<Device> create(CreateInfo const& create_info);
 
 		/**
 		 * @brief Create a swapchain for the given owner.
@@ -50,19 +50,19 @@ namespace Grizzly::GPU {
 		 * @param owner The owner of the swapchain.
 		 * @return Unique<Swapchain> The created swapchain.
 		 */
-		virtual Unique<Swapchain> create_swapchain(Swapchain::Owner owner) = 0;
+		GRIZZLY_NO_DISCARD virtual Unique<Swapchain> create_swapchain(Swapchain::Owner owner) = 0;
 
-		virtual Shared<Buffer> create_buffer(Buffer::CreateInfo const& info) = 0;
-		virtual Shared<Texture> create_texture(Texture::CreateInfo const& info) = 0;
+		GRIZZLY_NO_DISCARD virtual Shared<Buffer> create_buffer(Buffer::CreateInfo const& info) = 0;
+		GRIZZLY_NO_DISCARD virtual Shared<Texture> create_texture(Texture::CreateInfo const& info) = 0;
 		// virtual Shared<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) = 0;
-		virtual Shared<CommandList> record(FunctionRef<void(CommandRecorder&)> f) = 0;
+		GRIZZLY_NO_DISCARD virtual Shared<CommandList> record(FunctionRef<void(CommandRecorder&)> f) = 0;
 
 		/**
 		 * @brief Get the backend of the device.
 		 *
 		 * @return Backend The backend of the device.
 		 */
-		virtual Backend backend() const = 0;
+		GRIZZLY_NO_DISCARD virtual Backend backend() const = 0;
 
 		virtual ~Device() {}
 	};
