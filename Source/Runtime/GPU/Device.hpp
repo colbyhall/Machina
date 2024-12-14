@@ -7,6 +7,7 @@
 #pragma once
 
 #include <Core/Containers/Unique.hpp>
+#include <Core/Containers/StringView.hpp>
 
 #include <GPU/Buffer.hpp>
 #include <GPU/CommandList.hpp>
@@ -52,9 +53,26 @@ namespace Grizzly::GPU {
 		 */
 		GRIZZLY_NO_DISCARD virtual Unique<Swapchain> create_swapchain(Swapchain::Owner owner) = 0;
 
+        /**
+         * @brief Creates a buffer.
+         *
+         * @param info The data structure containg the immutable details of the buffer.
+         * @return Shared<Buffer> The created buffer.
+         */
 		GRIZZLY_NO_DISCARD virtual Shared<Buffer> create_buffer(Buffer::CreateInfo const& info) = 0;
+
+        /**
+         * @brief Creates a texture.
+         *
+         * @param info The data structure containg the immutable details of the texture.
+         * @return Shared<Texture> The created texture.
+         */
 		GRIZZLY_NO_DISCARD virtual Shared<Texture> create_texture(Texture::CreateInfo const& info) = 0;
-		// virtual Shared<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) = 0;
+
+        GRIZZLY_NO_DISCARD virtual Shared<Library> create_library_from_source(StringView source) = 0;
+
+        // GRIZZLY_NO_DISCARD virtual Shared<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) = 0;
+
 		GRIZZLY_NO_DISCARD virtual Shared<CommandList> record(FunctionRef<void(CommandRecorder&)> f) = 0;
 
 		/**

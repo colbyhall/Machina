@@ -10,6 +10,7 @@
 #include <GPU/Metal/CommandList.hpp>
 #include <GPU/Metal/Swapchain.hpp>
 #include <GPU/Metal/Texture.hpp>
+#include <GPU/Metal/Shader.hpp>
 
 #import <AppKit/AppKit.h>
 #import <Metal/Metal.h>
@@ -73,6 +74,23 @@ namespace Grizzly::GPU {
 			return Shared<MetalTexture>::create(create_info, texture);
 		}
 	}
+
+    Shared<Library> MetalDevice::create_library_from_source(StringView source) {
+        @autoreleasepool {
+            NSString* objc_source = [[NSString alloc] initWithBytesNoCopy: (void*)*source 
+                                                           length: static_cast<NSUInteger>(source.len())
+                                                         encoding: NSUTF8StringEncoding
+                                                     freeWhenDone: NO];
+
+            MTLCompileOptions* options = [[MTLCompileOptions alloc] init];
+            NSError* error = nil;
+            id<MTLLibrary> library = [m_device newLibraryWithSource: objc_source
+                                                           options: options
+                                                             error: &error];
+            GRIZZLY_ASSERT(error == nil);
+            return Shared<MetalLibrary>::create(library);
+        }
+    }
 
 	// Shared<GraphicsPipeline> MetalDevice::create_graphics_pipeline(GraphicsPipeline::CreateInfo const& create_info)
 	// {}
