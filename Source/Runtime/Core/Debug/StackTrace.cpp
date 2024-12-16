@@ -8,8 +8,8 @@
 #include <Core/Debug/StackTrace.hpp>
 
 #if GRIZZLY_PLATFORM == GRIZZLY_PLATFORM_WINDOWS
-	#include <Windows.h>
 	#include <DbgHelp.h>
+	#include <Windows.h>
 
 namespace Grizzly::Core::StackTrace {
 	Array<Frame> capture() {
@@ -55,7 +55,7 @@ namespace Grizzly::Core::StackTrace {
 			result.reserve(max_frames);
 
 			for (int i = 0; i < frame_count; ++i) {
-				const StringView as((const UTF8Char*)symbols[i]);
+				const StringView as((const UTF8Char*)symbols[i], strlen(symbols[i]));
 				result.push(String::from(as));
 			}
 			free(symbols);

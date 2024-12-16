@@ -14,9 +14,9 @@ namespace Grizzly {
 	void dbgln(const StringView& fmt, const Args&... args) {
 		Core::BufferedWriter writer{ Core::File::stderr };
 		Core::Formatter formatter{ writer };
-		formatter.format(u8"{yellow}");
+		formatter.format(u8"{yellow}"sv);
 		formatter.format(fmt, args...);
-		formatter.format(u8"\n{default}");
+		formatter.format(u8"\n{default}"sv);
 		writer.flush();
 	}
 } // namespace Grizzly

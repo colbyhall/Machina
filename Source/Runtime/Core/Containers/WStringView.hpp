@@ -15,7 +15,7 @@ namespace Grizzly::Core {
 	public:
 		GRIZZLY_ALWAYS_INLINE constexpr WStringView() : m_chars{} {}
 		GRIZZLY_ALWAYS_INLINE WStringView(const Slice<WChar const>& bytes) : m_chars{ bytes } {}
-		GRIZZLY_ALWAYS_INLINE constexpr WStringView(const WChar* ptr) : m_chars{ ptr, Core::constexpr_strlen(ptr) } {}
+		GRIZZLY_ALWAYS_INLINE constexpr WStringView(const WChar* ptr) : m_chars{ ptr, Core::strlen(ptr) } {}
 
 		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize len() const { return m_chars.len(); }
 		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE const WChar* operator*() const { return &m_chars[0]; }

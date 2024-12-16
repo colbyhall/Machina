@@ -108,7 +108,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 	using namespace Grizzly::Core;
 
 	GRIZZLY_TEST_CASE("StringView") {
-		const StringView foo = u8"aΠ1";
+		const StringView foo = u8"aΠ1"sv;
 		const Char chars[] = { 'a', 0x03A0, '1' };
 		for (auto iter = foo.chars(); iter; ++iter) {
 			const auto c = *iter;

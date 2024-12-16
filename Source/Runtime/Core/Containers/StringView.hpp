@@ -12,27 +12,29 @@
 namespace Grizzly::Core {
 	class CharsIterator;
 
-	template <typename T>
-	constexpr usize constexpr_strlen(const T* string) {
-		usize result = 0;
-		while (string[result] != 0) {
-			result += 1;
-		}
-		return result;
-	}
-
 	using Char = u32;
 	constexpr Char EOS = 0;
 	constexpr Char EOL = '\n';
 	constexpr Char UTF8_BOM = 0xfeff;
 	using UTF8Char = char8_t;
 
+	template <typename T>
+	constexpr usize strlen(const T* string) {
+		const T* current = string;
+		for (;;) {
+			if (current[0] == 0) {
+				break;
+			}
+			current += 1;
+		}
+		return current - string;
+	}
+
 	class StringView {
 	public:
 		GRIZZLY_ALWAYS_INLINE constexpr StringView() = default;
 		GRIZZLY_ALWAYS_INLINE StringView(const Slice<UTF8Char const>& bytes) : m_bytes(bytes) {}
-		GRIZZLY_ALWAYS_INLINE constexpr StringView(const UTF8Char* ptr) : m_bytes(ptr, constexpr_strlen(ptr)) {}
-		GRIZZLY_ALWAYS_INLINE constexpr explicit StringView(const UTF8Char* ptr, usize size) : m_bytes(ptr, size) {}
+		GRIZZLY_ALWAYS_INLINE constexpr StringView(const UTF8Char* ptr, usize size) : m_bytes(ptr, size) {}
 
 		GRIZZLY_ALWAYS_INLINE explicit operator Slice<UTF8Char const>() const { return m_bytes; }
 		GRIZZLY_ALWAYS_INLINE const UTF8Char* operator*() const { return &m_bytes[0]; }
@@ -53,6 +55,8 @@ namespace Grizzly::Core {
 	private:
 		Slice<UTF8Char const> m_bytes;
 	};
+
+	inline namespace Literals {} // namespace Literals
 
 	class CharsIterator {
 	public:
@@ -87,4 +91,7 @@ namespace Grizzly::Core {
 
 namespace Grizzly {
 	using Core::StringView;
+	constexpr StringView operator""sv(const Core::UTF8Char* literal, usize length) noexcept {
+		return StringView(literal, length);
+	}
 } // namespace Grizzly

@@ -34,71 +34,71 @@ namespace Grizzly::Core {
 	};
 	static const Array<ANSIIdentifier, InlineAllocator<32>> g_ansi_identifiers = {
 		{
-			.identifier = u8"default",
+			.identifier = u8"default"sv,
 			.code = ANSIIdentifier::Default,
 		},
 		{
-			.identifier = u8"bold",
+			.identifier = u8"bold"sv,
 			.code = ANSIIdentifier::Bold,
 		},
 		{
-			.identifier = u8"dim",
+			.identifier = u8"dim"sv,
 			.code = ANSIIdentifier::Dim,
 		},
 		{
-			.identifier = u8"italic",
+			.identifier = u8"italic"sv,
 			.code = ANSIIdentifier::Italic,
 		},
 		{
-			.identifier = u8"underline",
+			.identifier = u8"underline"sv,
 			.code = ANSIIdentifier::Underline,
 		},
 		{
-			.identifier = u8"blink",
+			.identifier = u8"blink"sv,
 			.code = ANSIIdentifier::Blink,
 		},
 		{
-			.identifier = u8"inverse",
+			.identifier = u8"inverse"sv,
 			.code = ANSIIdentifier::Inverse,
 		},
 		{
-			.identifier = u8"hidden",
+			.identifier = u8"hidden"sv,
 			.code = ANSIIdentifier::Hidden,
 		},
 		{
-			.identifier = u8"strikethrough",
+			.identifier = u8"strikethrough"sv,
 			.code = ANSIIdentifier::Strikethrough,
 		},
 		{
-			.identifier = u8"black",
+			.identifier = u8"black"sv,
 			.code = ANSIIdentifier::Black,
 		},
 		{
-			.identifier = u8"red",
+			.identifier = u8"red"sv,
 			.code = ANSIIdentifier::Red,
 		},
 		{
-			.identifier = u8"green",
+			.identifier = u8"green"sv,
 			.code = ANSIIdentifier::Green,
 		},
 		{
-			.identifier = u8"yellow",
+			.identifier = u8"yellow"sv,
 			.code = ANSIIdentifier::Yellow,
 		},
 		{
-			.identifier = u8"blue",
+			.identifier = u8"blue"sv,
 			.code = ANSIIdentifier::Blue,
 		},
 		{
-			.identifier = u8"magenta",
+			.identifier = u8"magenta"sv,
 			.code = ANSIIdentifier::Magenta,
 		},
 		{
-			.identifier = u8"cyan",
+			.identifier = u8"cyan"sv,
 			.code = ANSIIdentifier::Cyan,
 		},
 		{
-			.identifier = u8"white",
+			.identifier = u8"white"sv,
 			.code = ANSIIdentifier::White,
 		},
 	};
@@ -131,11 +131,11 @@ namespace Grizzly::Core {
 							bool found = false;
 							for (auto const& identifier : g_ansi_identifiers) {
 								if (substring == identifier.identifier) {
-									const StringView prefix = u8"\033[";
+									const StringView prefix = u8"\033["sv;
 									m_bytes_written += m_writer.write(prefix);
 									TypeFormatter<u8> formatter;
 									m_bytes_written += formatter.format(m_writer, static_cast<u8>(identifier.code));
-									const StringView postfix = u8"m";
+									const StringView postfix = u8"m"sv;
 									m_bytes_written += m_writer.write(postfix);
 									found = true;
 									break;
