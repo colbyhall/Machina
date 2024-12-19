@@ -22,7 +22,7 @@ namespace Grizzly::GPU {
 		Unique<Swapchain> create_swapchain(Swapchain::Owner owner) final;
 		Shared<Buffer> create_buffer(Buffer::CreateInfo const& info) final;
 		Shared<Texture> create_texture(Texture::CreateInfo const& info) final;
-		// Shared<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) final;
+		Shared<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) final;
 		Shared<Library> create_library_from_source(StringView info) final;
 		Shared<CommandList> record(FunctionRef<void(CommandRecorder&)> f) final;
 		Backend backend() const final { return Backend::Metal; }

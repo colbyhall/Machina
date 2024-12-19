@@ -4,8 +4,11 @@
  * this software is released under the mit license.
  */
 
+#include "GPU/Metal/Buffer.hpp"
+#include "GPU/Metal/GraphicsPipeline.hpp"
 #include <GPU/Metal/CommandList.hpp>
 #include <GPU/Metal/Texture.hpp>
+#include <Metal/Metal.h>
 
 namespace Grizzly::GPU {
 	void MetalReceipt::wait_until_complete() const {
@@ -92,10 +95,30 @@ namespace Grizzly::GPU {
 		return *this;
 	}
 
-	RenderPassRecorder& MetalRenderPassRecorder::set_pipeline(GraphicsPipeline const& pipeline) { return *this; }
-	RenderPassRecorder& MetalRenderPassRecorder::set_vertices(Buffer const& buffer) { return *this; }
+	RenderPassRecorder& MetalRenderPassRecorder::set_pipeline(GraphicsPipeline const& pipeline) {
+		@autoreleasepool {
+			auto& casted = reinterpret_cast<MetalGraphicsPipeline const&>(pipeline);
+			[m_encoder setRenderPipelineState:casted.render_pipeline_state()];
+		}
+		return *this;
+	}
+	RenderPassRecorder& MetalRenderPassRecorder::set_vertices(Buffer const& buffer) {
+		@autoreleasepool {
+			auto& casted = reinterpret_cast<MetalBuffer const&>(buffer);
+			[m_encoder setVertexBuffer:casted.buffer() offset:0 atIndex:0];
+		}
+		return *this;
+	}
 	RenderPassRecorder& MetalRenderPassRecorder::set_indices(Buffer const& buffer) { return *this; }
 	RenderPassRecorder& MetalRenderPassRecorder::push_constant(const void* ptr) { return *this; }
-	RenderPassRecorder& MetalRenderPassRecorder::draw(usize vertex_count, usize first_vertex) { return *this; }
+	RenderPassRecorder& MetalRenderPassRecorder::draw(usize vertex_count, usize first_vertex) {
+		@autoreleasepool {
+			[m_encoder drawPrimitives:MTLPrimitiveTypeTriangle
+						  vertexStart:first_vertex
+						  vertexCount:vertex_count
+						instanceCount:1];
+		}
+		return *this;
+	}
 	RenderPassRecorder& MetalRenderPassRecorder::draw_indexed(usize index_count, usize first_index) { return *this; }
 } // namespace Grizzly::GPU

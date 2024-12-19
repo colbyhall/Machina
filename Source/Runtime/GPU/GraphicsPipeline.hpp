@@ -99,6 +99,24 @@ namespace Grizzly::GPU {
 			CompareOp depth_compare = CompareOp::Always;
 		};
 
+		GraphicsPipeline(const CreateInfo& create_info)
+			: m_vertex_shader(create_info.vertex_shader.to_shared())
+			, m_pixel_shader(create_info.pixel_shader.to_shared())
+			, m_color_attachments(create_info.color_attachments)
+			, m_depth_attachment(create_info.depth_attachment)
+			, m_draw_mode(create_info.draw_mode)
+			, m_line_width(create_info.line_width)
+			, m_cull_mode(create_info.cull_mode)
+			, m_blend_enabled(create_info.blend_enabled)
+			, m_src_color_blend_factor(create_info.src_color_blend_factor)
+			, m_dst_color_blend_factor(create_info.dst_color_blend_factor)
+			, m_color_blend_op(create_info.color_blend_op)
+			, m_src_alpha_blend_factor(create_info.src_alpha_blend_factor)
+			, m_dst_alpha_blend_factor(create_info.dst_alpha_blend_factor)
+			, m_alpha_blend_op(create_info.alpha_blend_op)
+			, m_depth_test(create_info.depth_test)
+			, m_depth_write(create_info.depth_write)
+			, m_depth_compare(create_info.depth_compare) {}
 		virtual ~GraphicsPipeline() {}
 
 		GRIZZLY_ALWAYS_INLINE VertexShader const& vertex_shader() const { return *m_vertex_shader; }

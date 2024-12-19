@@ -20,6 +20,8 @@ namespace Grizzly::GPU {
 
 		void map(FunctionRef<void(Slice<u8>)> f) const final;
 
+		GRIZZLY_ALWAYS_INLINE Core::Protocol buffer() const { return m_buffer; }
+
 	private:
 		Core::Protocol m_buffer; // MTLBuffer
 	};

@@ -22,7 +22,7 @@ namespace Grizzly::GUI {
 		}
 
 		GRIZZLY_ALWAYS_INLINE GPU::Device& device() { return *m_device; }
-		int run(FunctionRef<void()> tick);
+		int run(FunctionRef<void(f64 delta_time)> tick);
 
 	private:
 		explicit Application(GPU::Device const& device) : m_device(device.to_shared()) {}

@@ -8,9 +8,10 @@
 
 #include <GPU/Metal/Buffer.hpp>
 #include <GPU/Metal/CommandList.hpp>
+#include <GPU/Metal/GraphicsPipeline.hpp>
+#include <GPU/Metal/Shader.hpp>
 #include <GPU/Metal/Swapchain.hpp>
 #include <GPU/Metal/Texture.hpp>
-#include <GPU/Metal/Shader.hpp>
 
 #import <AppKit/AppKit.h>
 #import <Metal/Metal.h>
@@ -75,25 +76,37 @@ namespace Grizzly::GPU {
 		}
 	}
 
-    Shared<Library> MetalDevice::create_library_from_source(StringView source) {
-        @autoreleasepool {
-            NSString* objc_source = [[NSString alloc] initWithBytesNoCopy: (void*)*source 
-                                                           length: static_cast<NSUInteger>(source.len())
-                                                         encoding: NSUTF8StringEncoding
-                                                     freeWhenDone: NO];
+	Shared<Library> MetalDevice::create_library_from_source(StringView source) {
+		@autoreleasepool {
+			NSString* objc_source = [[NSString alloc] initWithBytesNoCopy:(void*)*source
+																   length:static_cast<NSUInteger>(source.len())
+																 encoding:NSUTF8StringEncoding
+															 freeWhenDone:NO];
 
-            MTLCompileOptions* options = [[MTLCompileOptions alloc] init];
-            NSError* error = nil;
-            id<MTLLibrary> library = [m_device newLibraryWithSource: objc_source
-                                                           options: options
-                                                             error: &error];
-            GRIZZLY_ASSERT(error == nil);
-            return Shared<MetalLibrary>::create(library);
-        }
-    }
+			MTLCompileOptions* options = [[MTLCompileOptions alloc] init];
+			NSError* error = nil;
+			id<MTLLibrary> library = [m_device newLibraryWithSource:objc_source options:options error:&error];
+			GRIZZLY_ASSERT(error == nil);
+			return Shared<MetalLibrary>::create(library);
+		}
+	}
 
-	// Shared<GraphicsPipeline> MetalDevice::create_graphics_pipeline(GraphicsPipeline::CreateInfo const& create_info)
-	// {}
+	Shared<GraphicsPipeline> MetalDevice::create_graphics_pipeline(GraphicsPipeline::CreateInfo const& create_info) {
+		@autoreleasepool {
+			MTLRenderPipelineDescriptor* const pipeline_descriptor = [[MTLRenderPipelineDescriptor alloc] init];
+			pipeline_descriptor.vertexFunction =
+				static_cast<MetalVertexShader const&>(create_info.vertex_shader).function();
+			pipeline_descriptor.fragmentFunction =
+				static_cast<MetalPixelShader const&>(create_info.pixel_shader).function();
+			pipeline_descriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
+
+			NSError* error = nil;
+			id<MTLRenderPipelineState> pipeline_state =
+				[m_device newRenderPipelineStateWithDescriptor:pipeline_descriptor error:&error];
+			GRIZZLY_ASSERT(error == nil);
+			return Shared<MetalGraphicsPipeline>::create(create_info, pipeline_state);
+		}
+	}
 
 	Shared<CommandList> MetalDevice::record(FunctionRef<void(CommandRecorder&)> f) {
 		@autoreleasepool {

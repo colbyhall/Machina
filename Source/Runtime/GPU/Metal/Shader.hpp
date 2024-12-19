@@ -27,6 +27,8 @@ namespace Grizzly::GPU {
 	public:
 		explicit MetalVertexShader(id<MTLFunction> function) : m_function(function) {}
 
+		GRIZZLY_ALWAYS_INLINE id<MTLFunction> function() const { return m_function; }
+
 	private:
 		Core::Protocol m_function; // MTLFunction
 	};
@@ -34,6 +36,8 @@ namespace Grizzly::GPU {
 	class MetalPixelShader final : public PixelShader {
 	public:
 		explicit MetalPixelShader(id<MTLFunction> function) : m_function(function) {}
+
+		GRIZZLY_ALWAYS_INLINE id<MTLFunction> function() const { return m_function; }
 
 	private:
 		Core::Protocol m_function; // MTLFunction

@@ -4,6 +4,7 @@
  * this software is released under the mit license.
  */
 
+#include <Foundation/Foundation.h>
 #include <GPU/Metal/Shader.hpp>
 
 namespace Grizzly::GPU {

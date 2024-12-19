@@ -4,7 +4,8 @@
  * This software is released under the MIT License.
  */
 
-#include "Core/Debug/Assertions.hpp"
+#include <Core/Debug/Assertions.hpp>
+#include <Core/Time.hpp>
 #include <GUI/Application.hpp>
 #include <GUI/MacOS/Window.hpp>
 
@@ -49,10 +50,15 @@ namespace Grizzly::GUI {
 		};
 	}
 
-	int Application::run(FunctionRef<void()> tick) {
+	int Application::run(FunctionRef<void(f64 delta_time)> tick) {
+		auto last = Core::Instant::now();
 		while (m_running) {
+			const auto now = Core::Instant::now();
+			const auto delta_time = now.since(last).as_secs_f64();
+			last = now;
+
 			poll_input();
-			tick();
+			tick(delta_time);
 		}
 		return 0;
 	}

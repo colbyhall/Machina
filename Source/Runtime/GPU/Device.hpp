@@ -71,7 +71,7 @@ namespace Grizzly::GPU {
 
         GRIZZLY_NO_DISCARD virtual Shared<Library> create_library_from_source(StringView source) = 0;
 
-        // GRIZZLY_NO_DISCARD virtual Shared<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) = 0;
+        GRIZZLY_NO_DISCARD virtual Shared<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) = 0;
 
 		GRIZZLY_NO_DISCARD virtual Shared<CommandList> record(FunctionRef<void(CommandRecorder&)> f) = 0;
 
