@@ -10,7 +10,7 @@
 
 namespace Grizzly::Core::Math {
 	template <Number T>
-	struct Vector3 {
+	struct alignas(16) Vector3 {
 		T x, y, z;
 
 		constexpr GRIZZLY_ALWAYS_INLINE Vector3() : x{ 0 }, y{ 0 }, z{ 0 } {}
