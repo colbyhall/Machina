@@ -35,6 +35,9 @@ namespace Grizzly::Core {
 		GRIZZLY_ALWAYS_INLINE constexpr StringView() = default;
 		GRIZZLY_ALWAYS_INLINE StringView(const Slice<UTF8Char const>& bytes) : m_bytes(bytes) {}
 		GRIZZLY_ALWAYS_INLINE constexpr StringView(const UTF8Char* ptr, usize size) : m_bytes(ptr, size) {}
+		GRIZZLY_ALWAYS_INLINE static StringView from_cstring(const char* ptr) {
+			return StringView(reinterpret_cast<const UTF8Char*>(ptr), strlen(ptr));
+		}
 
 		GRIZZLY_ALWAYS_INLINE explicit operator Slice<UTF8Char const>() const { return m_bytes; }
 		GRIZZLY_ALWAYS_INLINE const UTF8Char* operator*() const { return &m_bytes[0]; }
