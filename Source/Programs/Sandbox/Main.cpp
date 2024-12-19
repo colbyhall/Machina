@@ -44,11 +44,11 @@ int main(int argc, char** argv) {
 	)"sv;
 	const auto library = device->create_library_from_source(shader_source);
 	const auto vertex_shader = library->create_vertex_shader(u8"vertex_main"sv);
-	const auto pixel_shader = library->create_pixel_shader(u8"fragment_main"sv);
+	const auto fragment_shader = library->create_fragment_shader(u8"fragment_main"sv);
 
 	const auto graphics_pipeline = device->create_graphics_pipeline({
 		.vertex_shader = vertex_shader,
-		.pixel_shader = pixel_shader,
+		.fragment_shader = fragment_shader,
 		.color_attachments = { GPU::Texture::Format::BGR_U8_SRGB },
 	});
 

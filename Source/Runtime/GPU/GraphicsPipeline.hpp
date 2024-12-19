@@ -75,7 +75,7 @@ namespace Grizzly::GPU {
 
 		struct CreateInfo {
 			VertexShader const& vertex_shader;
-			PixelShader const& pixel_shader;
+			FragmentShader const& fragment_shader;
 
 			Array<Texture::Format, InlineAllocator<8>> color_attachments;
 			Option<Texture::Format> depth_attachment = nullopt;
@@ -101,7 +101,7 @@ namespace Grizzly::GPU {
 
 		GraphicsPipeline(const CreateInfo& create_info)
 			: m_vertex_shader(create_info.vertex_shader.to_shared())
-			, m_pixel_shader(create_info.pixel_shader.to_shared())
+			, m_fragment_shader(create_info.fragment_shader.to_shared())
 			, m_color_attachments(create_info.color_attachments)
 			, m_depth_attachment(create_info.depth_attachment)
 			, m_draw_mode(create_info.draw_mode)
@@ -120,7 +120,7 @@ namespace Grizzly::GPU {
 		virtual ~GraphicsPipeline() {}
 
 		GRIZZLY_ALWAYS_INLINE VertexShader const& vertex_shader() const { return *m_vertex_shader; }
-		GRIZZLY_ALWAYS_INLINE PixelShader const& pixel_shader() const { return *m_pixel_shader; }
+		GRIZZLY_ALWAYS_INLINE FragmentShader const& fragment_shader() const { return *m_fragment_shader; }
 		GRIZZLY_ALWAYS_INLINE Slice<Texture::Format const> color_attachments() const {
 			return m_color_attachments.as_const_slice();
 		}
@@ -143,7 +143,7 @@ namespace Grizzly::GPU {
 
 	protected:
 		Shared<VertexShader> m_vertex_shader;
-		Shared<PixelShader> m_pixel_shader;
+		Shared<FragmentShader> m_fragment_shader;
 
 		Array<Texture::Format, InlineAllocator<8>> m_color_attachments;
 		Option<Texture::Format> m_depth_attachment;

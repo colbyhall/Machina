@@ -17,7 +17,7 @@ namespace Grizzly::GPU {
 		explicit MetalLibrary(id<MTLLibrary> library) : m_library(library) {}
 
 		Shared<VertexShader> create_vertex_shader(StringView function_name) final;
-		Shared<PixelShader> create_pixel_shader(StringView function_name) final;
+		Shared<FragmentShader> create_fragment_shader(StringView function_name) final;
 
 	private:
 		Core::Protocol m_library; // MTLLibrary
@@ -33,9 +33,9 @@ namespace Grizzly::GPU {
 		Core::Protocol m_function; // MTLFunction
 	};
 
-	class MetalPixelShader final : public PixelShader {
+	class MetalFragmentShader final : public FragmentShader {
 	public:
-		explicit MetalPixelShader(id<MTLFunction> function) : m_function(function) {}
+		explicit MetalFragmentShader(id<MTLFunction> function) : m_function(function) {}
 
 		GRIZZLY_ALWAYS_INLINE id<MTLFunction> function() const { return m_function; }
 

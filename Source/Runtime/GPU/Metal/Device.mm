@@ -97,7 +97,7 @@ namespace Grizzly::GPU {
 			pipeline_descriptor.vertexFunction =
 				static_cast<MetalVertexShader const&>(create_info.vertex_shader).function();
 			pipeline_descriptor.fragmentFunction =
-				static_cast<MetalPixelShader const&>(create_info.pixel_shader).function();
+				static_cast<MetalFragmentShader const&>(create_info.fragment_shader).function();
 			pipeline_descriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
 
 			NSError* error = nil;

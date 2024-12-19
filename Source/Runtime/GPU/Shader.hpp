@@ -11,12 +11,12 @@
 
 namespace Grizzly::GPU {
 	class VertexShader;
-	class PixelShader;
+	class FragmentShader;
 
 	class Library : public SharedFromThis<Library> {
 	public:
 		GRIZZLY_NO_DISCARD virtual Shared<VertexShader> create_vertex_shader(StringView function_name) = 0;
-		GRIZZLY_NO_DISCARD virtual Shared<PixelShader> create_pixel_shader(StringView function_name) = 0;
+		GRIZZLY_NO_DISCARD virtual Shared<FragmentShader> create_fragment_shader(StringView function_name) = 0;
 
 		virtual ~Library() {}
 	};
@@ -26,8 +26,8 @@ namespace Grizzly::GPU {
 		virtual ~VertexShader() {}
 	};
 
-	class PixelShader : public SharedFromThis<PixelShader> {
+	class FragmentShader : public SharedFromThis<FragmentShader> {
 	public:
-		virtual ~PixelShader() {}
+		virtual ~FragmentShader() {}
 	};
 } // namespace Grizzly::GPU
