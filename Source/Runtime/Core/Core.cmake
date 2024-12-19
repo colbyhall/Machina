@@ -15,6 +15,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Memory.hpp
         ${CORE_ROOT}/Memory.cpp
         ${CORE_ROOT}/Primitives.hpp
+        ${CORE_ROOT}/Time.hpp
+        ${CORE_ROOT}/Time.cpp
         ${CORE_ROOT}/TypeTraits.hpp
 
         ${CORE_ROOT}/Async/Thread.hpp
