@@ -62,21 +62,21 @@ namespace Grizzly::GPU {
 		Store,
 	};
 
-	struct ColorAttachment {
-		Texture const& texture;
-		LoadAction load_action;
-		StoreAction store_action;
-		Vector4<f32> clear_color = { 0.f, 0.f, 0.f, 1.f };
-	};
-
-	struct DepthAttachment {
-		Texture const& texture;
-		LoadAction load_action;
-		StoreAction store_action;
-		f32 clear_depth = 1.f;
-	};
-
 	struct RenderPass {
+		struct ColorAttachment {
+			Texture const& texture;
+			LoadAction load_action;
+			StoreAction store_action;
+			Vector4<f32> clear_color = { 0.f, 0.f, 0.f, 1.f };
+		};
+
+		struct DepthAttachment {
+			Texture const& texture;
+			LoadAction load_action;
+			StoreAction store_action;
+			f32 clear_depth = 1.f;
+		};
+
 		Slice<ColorAttachment const> color_attachments;
 		Option<DepthAttachment const> depth_attachment = nullopt;
 	};

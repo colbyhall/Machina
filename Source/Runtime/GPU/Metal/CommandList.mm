@@ -4,11 +4,11 @@
  * this software is released under the mit license.
  */
 
-#include "GPU/Metal/Buffer.hpp"
-#include "GPU/Metal/GraphicsPipeline.hpp"
+#include <GPU/Metal/Buffer.hpp>
 #include <GPU/Metal/CommandList.hpp>
+#include <GPU/Metal/Conversion.hpp>
+#include <GPU/Metal/GraphicsPipeline.hpp>
 #include <GPU/Metal/Texture.hpp>
-#include <Metal/Metal.h>
 
 namespace Grizzly::GPU {
 	void MetalReceipt::wait_until_complete() const {
@@ -33,26 +33,6 @@ namespace Grizzly::GPU {
 		return *this;
 	}
 
-	static MTLLoadAction convert_load_action(LoadAction action) {
-		switch (action) {
-		case LoadAction::Clear:
-			return MTLLoadActionClear;
-		case LoadAction::Load:
-			return MTLLoadActionLoad;
-		case LoadAction::DontCare:
-			return MTLLoadActionDontCare;
-		}
-	}
-
-	static MTLStoreAction convert_store_action(StoreAction action) {
-		switch (action) {
-		case StoreAction::Store:
-			return MTLStoreActionStore;
-		case StoreAction::DontCare:
-			return MTLStoreActionDontCare;
-		}
-	}
-
 	CommandRecorder&
 	MetalCommandRecorder::render_pass(RenderPass const& info, FunctionRef<void(RenderPassRecorder&)> f) {
 		@autoreleasepool {
@@ -64,8 +44,8 @@ namespace Grizzly::GPU {
 
 				id<MTLTexture> const texture = *(static_cast<MetalTexture const&>(my_attachment.texture)).texture();
 				metal_attachment.texture = texture;
-				metal_attachment.loadAction = convert_load_action(my_attachment.load_action);
-				metal_attachment.storeAction = convert_store_action(my_attachment.store_action);
+				metal_attachment.loadAction = load_action_to_mtl_load_action(my_attachment.load_action);
+				metal_attachment.storeAction = store_action_to_mtl_store_action(my_attachment.store_action);
 				metal_attachment.clearColor = MTLClearColorMake(
 					my_attachment.clear_color.x,
 					my_attachment.clear_color.y,
@@ -78,8 +58,8 @@ namespace Grizzly::GPU {
 
 				id<MTLTexture> const texture = *(static_cast<MetalTexture const&>(my_attachment.texture)).texture();
 				metal_attachment.texture = texture;
-				metal_attachment.loadAction = convert_load_action(my_attachment.load_action);
-				metal_attachment.storeAction = convert_store_action(my_attachment.store_action);
+				metal_attachment.loadAction = load_action_to_mtl_load_action(my_attachment.load_action);
+				metal_attachment.storeAction = store_action_to_mtl_store_action(my_attachment.store_action);
 				metal_attachment.clearDepth = my_attachment.clear_depth;
 			}
 
@@ -99,6 +79,8 @@ namespace Grizzly::GPU {
 		@autoreleasepool {
 			auto& casted = reinterpret_cast<MetalGraphicsPipeline const&>(pipeline);
 			[m_encoder setRenderPipelineState:casted.render_pipeline_state()];
+			const auto cull_mode_converted = cull_mode_to_mtl_cull_mode(pipeline.cull_mode());
+			[m_encoder setCullMode:cull_mode_converted];
 		}
 		return *this;
 	}

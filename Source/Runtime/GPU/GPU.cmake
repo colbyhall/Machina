@@ -23,6 +23,7 @@ if (APPLE)
 		${GPU_ROOT}/Metal/Buffer.hpp
 		${GPU_ROOT}/Metal/CommandList.mm
 		${GPU_ROOT}/Metal/CommandList.hpp
+		${GPU_ROOT}/Metal/Conversion.hpp
 		${GPU_ROOT}/Metal/Device.mm
 		${GPU_ROOT}/Metal/Device.hpp
 		${GPU_ROOT}/Metal/GraphicsPipeline.mm

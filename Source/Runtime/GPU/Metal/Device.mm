@@ -8,6 +8,7 @@
 
 #include <GPU/Metal/Buffer.hpp>
 #include <GPU/Metal/CommandList.hpp>
+#include <GPU/Metal/Conversion.hpp>
 #include <GPU/Metal/GraphicsPipeline.hpp>
 #include <GPU/Metal/Shader.hpp>
 #include <GPU/Metal/Swapchain.hpp>
@@ -98,7 +99,55 @@ namespace Grizzly::GPU {
 				static_cast<MetalVertexShader const&>(create_info.vertex_shader).function();
 			pipeline_descriptor.fragmentFunction =
 				static_cast<MetalFragmentShader const&>(create_info.fragment_shader).function();
-			pipeline_descriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
+
+			// Fill out the color attachments from create_info
+			for (usize index = 0; index < create_info.color_attachments.len(); index += 1) {
+				auto& color_attachment = create_info.color_attachments[index];
+
+				pipeline_descriptor.colorAttachments[index].pixelFormat =
+					GPU::format_to_mtl_pixel_format(color_attachment.format);
+
+				pipeline_descriptor.colorAttachments[index].blendingEnabled = color_attachment.blend_enabled;
+
+				pipeline_descriptor.colorAttachments[index].sourceRGBBlendFactor =
+					blend_factor_to_mtl_blend_factor(color_attachment.src_color_blend_factor);
+				pipeline_descriptor.colorAttachments[index].destinationRGBBlendFactor =
+					blend_factor_to_mtl_blend_factor(color_attachment.dst_color_blend_factor);
+				pipeline_descriptor.colorAttachments[index].rgbBlendOperation =
+					blend_op_to_mtl_blend_operation(color_attachment.color_blend_op);
+
+				pipeline_descriptor.colorAttachments[index].sourceAlphaBlendFactor =
+					blend_factor_to_mtl_blend_factor(color_attachment.src_alpha_blend_factor);
+				pipeline_descriptor.colorAttachments[index].destinationAlphaBlendFactor =
+					blend_factor_to_mtl_blend_factor(color_attachment.dst_alpha_blend_factor);
+				pipeline_descriptor.colorAttachments[index].alphaBlendOperation =
+					blend_op_to_mtl_blend_operation(color_attachment.alpha_blend_op);
+
+				MTLColorWriteMask write_mask = MTLColorWriteMaskNone;
+				if ((color_attachment.color_write_mask & GraphicsPipeline::ColorComponents::R) ==
+					GraphicsPipeline::ColorComponents::R) {
+					write_mask |= MTLColorWriteMaskRed;
+				}
+				if ((color_attachment.color_write_mask & GraphicsPipeline::ColorComponents::G) ==
+					GraphicsPipeline::ColorComponents::G) {
+					write_mask |= MTLColorWriteMaskGreen;
+				}
+				if ((color_attachment.color_write_mask & GraphicsPipeline::ColorComponents::B) ==
+					GraphicsPipeline::ColorComponents::B) {
+					write_mask |= MTLColorWriteMaskBlue;
+				}
+				if ((color_attachment.color_write_mask & GraphicsPipeline::ColorComponents::A) ==
+					GraphicsPipeline::ColorComponents::A) {
+					write_mask |= MTLColorWriteMaskAlpha;
+				}
+				pipeline_descriptor.colorAttachments[index].writeMask = write_mask;
+			}
+
+			// TODO: Depth and Stencil Attachments
+
+			pipeline_descriptor.inputPrimitiveTopology =
+				draw_mode_to_mtl_primitive_topology_class(create_info.draw_mode);
+			pipeline_descriptor.tessellationOutputWindingOrder = winding_to_mtl_winding(create_info.winding);
 
 			NSError* error = nil;
 			id<MTLRenderPipelineState> pipeline_state =
@@ -115,7 +164,6 @@ namespace Grizzly::GPU {
 
 			MetalCommandRecorder recorder(command_buffer);
 			f(recorder);
-			[command_buffer retain];
 
 			return Shared<MetalCommandList>::create(command_buffer);
 		}

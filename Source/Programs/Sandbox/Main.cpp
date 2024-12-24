@@ -49,7 +49,9 @@ int main(int argc, char** argv) {
 	const auto graphics_pipeline = device->create_graphics_pipeline({
 		.vertex_shader = vertex_shader,
 		.fragment_shader = fragment_shader,
-		.color_attachments = { GPU::Texture::Format::BGR_U8_SRGB },
+		.color_attachments = {
+			{ .format = GPU::Texture::Format::BGRA_U8_SRGB },
+		},
 	});
 
 	f64 time = 0;
@@ -64,28 +66,25 @@ int main(int argc, char** argv) {
 				.len = 3,
 				.stride = sizeof(Vector3<f32>),
 			});
-			const f32 x = Math::cos(time * 5.f) * 0.5f;
-			const f32 y = Math::sin(time * 5.f) * 0.5f;
-			const auto offset = Vector3<f32>{ x, y, 0.f };
 			vertices->map([&](auto slice) {
 				const Slice<Vector3<f32> const> vertex_slice = {
-					Vector3<f32>{ -0.5f, -0.5f, 0.f } + offset,
-					Vector3<f32>{ 0.f, 0.5f, 0.f } + offset,
-					Vector3<f32>{ 0.5f, -0.5f, 0.f } + offset,
+					{ -0.5f, -0.5f, 0.f },
+					{ 0.f, 0.5f, 0.f },
+					{ 0.5f, -0.5f, 0.f },
 				};
-				Memory::copy(slice.begin(), vertex_slice.begin(), 3 * sizeof(Vector3<f32>));
+				Memory::copy(slice.begin(), vertex_slice.begin(), slice.len());
 			});
 
 			const auto triangle_pass = GPU::RenderPass{
-					.color_attachments = {
-						GPU::ColorAttachment{
-							.texture = backbuffer->texture(),
-							.load_action = GPU::LoadAction::Clear,
-							.store_action = GPU::StoreAction::Store,
-							.clear_color = { 0.2f, 0.2f, 0.2f, 1.f},
-						},
+				.color_attachments = {
+					{
+						.texture = backbuffer->texture(),
+						.load_action = GPU::LoadAction::Clear,
+						.store_action = GPU::StoreAction::Store,
+						.clear_color = { 0.2f, 0.2f, 0.2f, 1.f},
 					},
-				};
+				},
+			};
 			cr.render_pass(triangle_pass, [&](auto& rpr) {
 				rpr.set_pipeline(graphics_pipeline);
 				rpr.set_vertices(vertices);

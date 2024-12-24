@@ -4,6 +4,7 @@
  * this software is released under the mit license.
  */
 
+#include <Core/Debug/Log.hpp>
 #include <GPU/Metal/Buffer.hpp>
 
 namespace Grizzly::GPU {

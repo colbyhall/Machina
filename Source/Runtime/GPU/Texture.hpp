@@ -45,16 +45,13 @@ namespace Grizzly::GPU {
 
 			R_U8,
 
-			RGB_U8,
-			RGB_U8_SRGB,
 			RGBA_U8,
 			RGBA_U8_SRGB,
 
 			RGBA_F16,
-
 			RGBA_F32,
 
-			BGR_U8_SRGB,
+			BGRA_U8_SRGB,
 
 			Depth16,
 			Depth24_Stencil8,

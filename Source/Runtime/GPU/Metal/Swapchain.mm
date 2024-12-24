@@ -15,7 +15,7 @@ namespace Grizzly::GPU {
 			auto texture = Shared<MetalTexture>::create(
 				Texture::CreateInfo{
 					.usage = Texture::Usage::Swapchain,
-					.format = Texture::Format::BGR_U8_SRGB,
+					.format = Texture::Format::BGRA_U8_SRGB,
 					.size = { static_cast<u32>(drawable.texture.width),
 							  static_cast<u32>(drawable.texture.height),
 							  static_cast<u32>(drawable.texture.depth) },
