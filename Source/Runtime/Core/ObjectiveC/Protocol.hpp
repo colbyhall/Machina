@@ -45,7 +45,7 @@ namespace Grizzly::Core {
 		~Protocol() {
 			@autoreleasepool {
 				if (m_internal) {
-					[m_internal autorelease];
+					[m_internal release];
 					m_internal = nil;
 				}
 			}
