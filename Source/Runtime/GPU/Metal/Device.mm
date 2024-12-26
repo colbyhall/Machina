@@ -48,7 +48,7 @@ namespace Grizzly::GPU {
 
 	Shared<Buffer> MetalDevice::create_buffer(Buffer::CreateInfo const& create_info) {
 		@autoreleasepool {
-			MTLResourceOptions options = MTLResourceStorageModeManaged;
+			MTLResourceOptions options = MTLResourceStorageModeShared;
 			if (create_info.heap == Buffer::Heap::Storage) {
 				options = MTLResourceStorageModePrivate;
 			}
