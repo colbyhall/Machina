@@ -10,6 +10,7 @@ option(ENABLE_ALL_WARNINGS "Enable all warnings and warnings as errors" ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+
 # Setup project settings for MSVC
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Only support 64 bit architecture
@@ -215,6 +216,20 @@ set(GRIZZLY_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 # Enable testing using CTest
 enable_testing()
 
+set(TARGETS_TO_SIGN)
+
 # Include the source directory cmake file
 include(${GRIZZLY_ROOT}/Source/Source.cmake)
+
+message("Hello " ${TARGETS_TO_SIGN})
+
+set(ENTITLEMENTS_FILE "${CMAKE_BINARY_DIR}/Grizzly.entitlements")
+execute_process(COMMAND /usr/libexec/PlistBuddy -c "Add :com.apple.security.get-task-allow bool true" "${ENTITLEMENTS_FILE}")
+foreach(target "${TARGETS_TO_SIGN}")
+	add_custom_command(TARGET "${target}" POST_BUILD
+		COMMAND codesign -s - -f --entitlements "${ENTITLEMENTS_FILE}" "$<TARGET_FILE:${target}>"
+		COMMENT "sign target \"${target}\" to enable core dump on MacOS"
+    VERBATIM
+)
+endforeach()
 
