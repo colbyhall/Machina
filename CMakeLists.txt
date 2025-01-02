@@ -221,15 +221,15 @@ set(TARGETS_TO_SIGN)
 # Include the source directory cmake file
 include(${GRIZZLY_ROOT}/Source/Source.cmake)
 
-message("Hello " ${TARGETS_TO_SIGN})
-
-set(ENTITLEMENTS_FILE "${CMAKE_BINARY_DIR}/Grizzly.entitlements")
-execute_process(COMMAND /usr/libexec/PlistBuddy -c "Add :com.apple.security.get-task-allow bool true" "${ENTITLEMENTS_FILE}")
-foreach(target "${TARGETS_TO_SIGN}")
-	add_custom_command(TARGET "${target}" POST_BUILD
-		COMMAND codesign -s - -f --entitlements "${ENTITLEMENTS_FILE}" "$<TARGET_FILE:${target}>"
-		COMMENT "sign target \"${target}\" to enable core dump on MacOS"
-    VERBATIM
-)
-endforeach()
+if (APPLE)
+	set(ENTITLEMENTS_FILE "${CMAKE_BINARY_DIR}/Grizzly.entitlements")
+	execute_process(COMMAND /usr/libexec/PlistBuddy -c "Add :com.apple.security.get-task-allow bool true" "${ENTITLEMENTS_FILE}")
+	foreach(target "${TARGETS_TO_SIGN}")
+		add_custom_command(TARGET "${target}" POST_BUILD
+			COMMAND codesign -s - -f --entitlements "${ENTITLEMENTS_FILE}" "$<TARGET_FILE:${target}>"
+			COMMENT "sign target \"${target}\" to enable core dump on MacOS"
+		VERBATIM
+	)
+	endforeach()
+endif()
 
