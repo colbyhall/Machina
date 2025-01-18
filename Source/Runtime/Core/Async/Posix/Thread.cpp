@@ -8,23 +8,54 @@
 #include <Core/Debug/Log.hpp>
 
 namespace Grizzly::Core {
+	thread_local Option<AtomicShared<Thread>> g_current_thread = nullopt;
+
+	Thread const& Thread::current() {
+		if (!g_current_thread.is_set()) {
+			PosixThread thread{ pthread_self() };
+			g_current_thread = AtomicShared<PosixThread>::create(Grizzly::move(thread));
+		}
+		return *g_current_thread.as_ref().unwrap();
+	}
+
+	struct ThreadArg {
+		Thread::Function f;
+		AtomicShared<PosixThread> thread;
+	};
 	static void* posix_thread_main(void* arg) {
-		auto* param = static_cast<Thread::Function*>(arg);
-		(*param)();
-		param->~Function();
+		auto* param = static_cast<ThreadArg*>(arg);
+		g_current_thread = param->thread;
+
+		// Spinlock until the thread is ready to execute. We have to wait until the m_thread value has been set in the
+		// thread
+		while (!param->thread->is_ready()) {
+		}
+
+		(param->f)();
+
+		param->~ThreadArg();
 		Memory::free(param);
+
 		return nullptr;
 	}
 
 	AtomicShared<Thread> Thread::spawn(Function&& f, SpawnInfo const& info) {
-		auto param = Memory::alloc(Memory::Layout::single<Function>());
-		Memory::emplace<Function>(param, Grizzly::move(f));
+		auto result = AtomicShared<PosixThread>::create(nullptr);
+
+		auto param = Memory::alloc(Memory::Layout::single<ThreadArg>());
+		Memory::emplace<ThreadArg>(param, ThreadArg{ .f = Grizzly::forward<Function>(f), .thread = result });
 
 		pthread_t thread;
-		const int result = pthread_create(&thread, nullptr, posix_thread_main, param);
+		const int create_result = pthread_create(&thread, nullptr, posix_thread_main, param);
 		// TODO: Error handling
-		GRIZZLY_UNUSED(result);
-		return AtomicShared<PosixThread>::create(thread);
+		GRIZZLY_UNUSED(create_result);
+
+		result->m_thread = thread;
+
+		// Mark the thread as ready so it can execute.
+		result->m_ready.store(true);
+
+		return result;
 	}
 
 	void PosixThread::join() {
@@ -42,7 +73,7 @@ namespace Grizzly::Core {
 
 	PosixThread::~PosixThread() {
 		if (m_thread != nullptr) {
-			join();
+			// join();
 		}
 	}
 } // namespace Grizzly::Core

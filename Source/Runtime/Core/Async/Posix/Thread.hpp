@@ -30,8 +30,11 @@ namespace Grizzly::Core {
 		void join() final;
 		void detach() final;
 		~PosixThread() final;
+		GRIZZLY_ALWAYS_INLINE bool is_ready() const { return m_ready.load(); }
 
 	private:
+		friend class Thread;
 		pthread_t m_thread;
+		Atomic<bool> m_ready{ false };
 	};
 } // namespace Grizzly::Core

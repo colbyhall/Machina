@@ -192,12 +192,13 @@ namespace Grizzly::Core {
 
 	template <typename T, ArrayAllocator Allocator>
 	Array<T, Allocator>& Array<T, Allocator>::operator=(Array&& move) noexcept {
-		auto to_destroy = Grizzly::move(*this);
-		GRIZZLY_UNUSED(to_destroy);
+		this->~Array();
 
 		m_len = move.m_len;
 		move.m_len = 0;
+
 		m_storage = Grizzly::move(move.m_storage);
+
 		return *this;
 	}
 
@@ -207,6 +208,7 @@ namespace Grizzly::Core {
 			Element& item = m_storage.data()[i];
 			item.~Element();
 		}
+		m_len = 0;
 	}
 
 	template <typename T, ArrayAllocator Allocator>
@@ -451,12 +453,12 @@ namespace Grizzly::Core {
 				move.m_cap = 0;
 			}
 			Storage& operator=(Storage&& move) noexcept {
-				auto to_destroy = Grizzly::move(*this);
-				GRIZZLY_UNUSED(to_destroy);
+				this->~Storage();
 
 				m_ptr = move.m_ptr;
-				move.m_ptr = nullptr;
 				m_cap = move.m_cap;
+
+				move.m_ptr = nullptr;
 				move.m_cap = 0;
 
 				return *this;
@@ -465,6 +467,7 @@ namespace Grizzly::Core {
 				if (m_ptr) {
 					Memory::free(m_ptr);
 					m_ptr = nullptr;
+					m_cap = 0;
 				}
 			}
 

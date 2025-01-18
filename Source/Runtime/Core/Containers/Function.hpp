@@ -50,9 +50,7 @@ namespace Grizzly::Core {
 			FunctionBase(FunctionBase&& move) noexcept
 				: m_callable(move.m_callable)
 				, m_storage(Grizzly::move(move.m_storage)) {
-				if (m_callable) {
-					move.m_callable = nullptr;
-				}
+				move.m_callable = nullptr;
 			}
 			FunctionBase& operator=(FunctionBase&& move) noexcept {
 				this->~FunctionBase();
@@ -113,6 +111,7 @@ namespace Grizzly::Core {
 			~FunctorWrapper() final = default;
 			FunctorWrapper(const FunctorWrapper& copy) = delete;
 			FunctorWrapper& operator=(const FunctorWrapper& copy) = delete;
+			FunctorWrapper(FunctorWrapper&& m) : f(Grizzly::move(f)) {}
 
 			void* ptr() override { return &f; }
 
@@ -123,10 +122,14 @@ namespace Grizzly::Core {
 			UniqueStorage() = default;
 			UniqueStorage(const UniqueStorage& copy) = delete;
 			UniqueStorage& operator=(const UniqueStorage& copy) = delete;
+
 			UniqueStorage(UniqueStorage&& s) noexcept : m_ptr(s.m_ptr) { s.m_ptr = nullptr; }
 			UniqueStorage& operator=(UniqueStorage&& s) noexcept {
+				// m_ptr->~FunctorWrapperBase();
+
 				m_ptr = s.m_ptr;
 				s.m_ptr = nullptr;
+
 				return *this;
 			}
 			~UniqueStorage() {
@@ -161,7 +164,7 @@ namespace Grizzly::Core {
 		inline constexpr bool functor_return_type_is_compatible<MR Class::*, R, P...> =
 			Grizzly::Core::is_constructible<R, MR>;
 		template <typename MR, typename Class, typename R, typename... P>
-		inline constexpr bool functor_return_type_is_compatible<MR Class::*const, R, P...> =
+		inline constexpr bool functor_return_type_is_compatible<MR Class::* const, R, P...> =
 			Grizzly::Core::is_constructible<R, MR>;
 		template <typename MR, typename Class, typename... MP, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR (Class::*)(MP...), R, P...> =

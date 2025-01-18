@@ -34,20 +34,19 @@ namespace Grizzly::Core {
 		return AtomicShared<Fiber>::create(Grizzly::move(fiber));
 	}
 
-	AtomicShared<Fiber> Fiber::current() {
+	Fiber const& Fiber::current() {
 		if (!g_current_fiber.is_set()) {
 			Fiber fiber{ Registers{} };
 			g_current_fiber = AtomicShared<Fiber>::create(Grizzly::move(fiber));
 		}
-		return g_current_fiber.as_ref().unwrap();
+		return *g_current_fiber.as_ref().unwrap();
 	}
 
 	void Fiber::switch_to() {
-		auto current_fiber = current();
-		auto next_fiber = to_shared();
-		g_current_fiber = next_fiber;
-		auto* current_registers = &current_fiber->m_registers;
-		auto* next_registers = &next_fiber->m_registers;
+		auto& current_fiber = current();
+		g_current_fiber = to_shared();
+		auto* current_registers = &current_fiber.m_registers;
+		auto* next_registers = &m_registers;
 #if GRIZZLY_CPU == GRIZZLY_CPU_ARM
 		asm volatile(
 			R"(

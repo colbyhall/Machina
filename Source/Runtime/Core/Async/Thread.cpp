@@ -6,4 +6,6 @@
 
 #include <Core/Async/Thread.hpp>
 
-namespace Grizzly::Core {} // namespace Grizzly::Core
+namespace Grizzly::Core {
+	AtomicShared<Thread> Thread::spawn(Function&& f) { return Thread::spawn(Grizzly::forward<Function>(f), {}); }
+} // namespace Grizzly::Core

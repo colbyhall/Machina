@@ -20,7 +20,7 @@ namespace Grizzly::Core {
 		};
 		static AtomicShared<Fiber> spawn(Function&& f);
 		static AtomicShared<Fiber> spawn(Function&& f, SpawnInfo const& info);
-		static AtomicShared<Fiber> current();
+		static Fiber const& current();
 
 		Fiber(const Fiber&) = delete;
 		Fiber& operator=(const Fiber&) = delete;

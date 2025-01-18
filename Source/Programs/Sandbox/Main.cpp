@@ -4,6 +4,7 @@
  * This software is released under the MIT License.
  */
 
+#include <Core/Async/TaskManager.hpp>
 #include <Core/Debug/Log.hpp>
 #include <Core/Math/Vector3.hpp>
 #include <Core/Memory.hpp>
@@ -15,7 +16,11 @@ using namespace Grizzly;
 
 int main(int argc, char** argv) {
 	const auto device = GPU::Device::create({ .backend = GPU::Backend::Metal });
-	auto app = GUI::Application::create(device);
+	auto app = GUI::Application::create(*device);
+
+	const auto task_manager = Core::TaskManager::create();
+	using Priority = Core::TaskManager::Priority;
+	const auto future = task_manager->schedule<void>(Priority::Normal, []() { dbgln(u8"hello world"sv); });
 
 	const auto window = app.create<GUI::Window>({
 		.title = u8"Hello World"sv,
@@ -27,7 +32,12 @@ int main(int argc, char** argv) {
 		#include <metal_stdlib>
 		using namespace metal;
 
-		vertex float4
+		struct FragmentIn {
+			float4 position [[position]];
+			float3 color;
+		};
+
+		vertex FragmentIn
 		vertex_main(uint vertexID [[vertex_id]],
 					 constant simd::float3* vertexPositions)
 		{
@@ -35,11 +45,19 @@ int main(int argc, char** argv) {
 											   vertexPositions[vertexID][1],
 											   vertexPositions[vertexID][2],
 											   1.0f);
-			return vertexOutPositions;
+			float3 colors[3] = {
+				float3(1.0, 0.0, 0.0),
+				float3(0.0, 1.0, 0.0),
+				float3(0.0, 0.0, 1.0)
+			};
+			FragmentIn result;
+			result.position = vertexOutPositions;
+			result.color = colors[vertexID % 3];
+			return result;
 		}
 
-		fragment float4 fragment_main(float4 vertexOutPositions [[stage_in]]) {
-			return float4(182.0f/255.0f, 240.0f/255.0f, 228.0f/255.0f, 1.0f);
+		fragment float4 fragment_main(FragmentIn fragment_in [[stage_in]]) {
+			return float4(fragment_in.color, 1.0);
 		}
 	)"sv;
 	const auto library = device->create_library_from_source(shader_source);
@@ -47,8 +65,8 @@ int main(int argc, char** argv) {
 	const auto fragment_shader = library->create_fragment_shader(u8"fragment_main"sv);
 
 	const auto graphics_pipeline = device->create_graphics_pipeline({
-		.vertex_shader = vertex_shader,
-		.fragment_shader = fragment_shader,
+		.vertex_shader = *vertex_shader,
+		.fragment_shader = *fragment_shader,
 		.color_attachments = {
 			{ .format = GPU::Texture::Format::BGRA_U8_SRGB },
 		},
@@ -86,8 +104,8 @@ int main(int argc, char** argv) {
 				},
 			};
 			cr.render_pass(triangle_pass, [&](auto& rpr) {
-				rpr.set_pipeline(graphics_pipeline);
-				rpr.set_vertices(vertices);
+				rpr.set_pipeline(*graphics_pipeline);
+				rpr.set_vertices(*vertices);
 				rpr.draw(vertices->len(), 0);
 			});
 		});

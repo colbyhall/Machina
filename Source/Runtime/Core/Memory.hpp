@@ -8,7 +8,11 @@
 
 #include <Core/Containers/NonNull.hpp>
 #include <Core/TypeTraits.hpp>
+
 #include <new>
+#undef stdin
+#undef stdout
+#undef stderr
 
 namespace Grizzly::Core::Memory {
 	struct Layout {

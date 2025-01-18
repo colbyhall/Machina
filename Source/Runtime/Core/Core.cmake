@@ -19,9 +19,13 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Time.cpp
         ${CORE_ROOT}/TypeTraits.hpp
 
-        ${CORE_ROOT}/Async/Thread.hpp
         ${CORE_ROOT}/Async/Fiber.hpp
         ${CORE_ROOT}/Async/Fiber.cpp
+		${CORE_ROOT}/Async/MPMC.hpp
+		${CORE_ROOT}/Async/TaskManager.hpp
+		${CORE_ROOT}/Async/TaskManager.cpp
+        ${CORE_ROOT}/Async/Thread.hpp
+        ${CORE_ROOT}/Async/Thread.cpp
 
         ${CORE_ROOT}/Containers/Array.hpp
         ${CORE_ROOT}/Containers/Array.cpp

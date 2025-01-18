@@ -20,7 +20,7 @@ namespace Grizzly::Core {
 	public:
 		constexpr explicit Duration(u64 secs, u32 nanos) : m_secs(secs), m_nanos(nanos) {}
 		GRIZZLY_ALWAYS_INLINE static Duration from_millis(u64 millis) {
-			return Duration(millis / millis_per_sec, static_cast<u32>(millis & millis_per_sec));
+			return Duration(millis / millis_per_sec, static_cast<u32>(millis % millis_per_sec));
 		}
 
 		GRIZZLY_ALWAYS_INLINE f32 as_secs_f32() const { return (f32)m_secs + ((f32)m_nanos / (f32)nanos_per_sec); }

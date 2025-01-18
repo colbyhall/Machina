@@ -91,7 +91,23 @@ namespace Grizzly::Core {
 			auto& c = counter();
 			c.add_strong();
 		}
+		template <typename Derived = Base>
+		Shared(const Shared<Derived, Type>& copy) noexcept : m_counter(copy.m_counter)
+														   , m_base(copy.m_base) {
+			auto& c = counter();
+			c.add_strong();
+		}
 		Shared& operator=(const Shared& copy) noexcept {
+			m_counter = copy.m_counter;
+			m_base = copy.m_base;
+
+			auto& c = counter();
+			c.add_strong();
+
+			return *this;
+		}
+		template <typename Derived = Base>
+		Shared& operator=(const Shared<Derived, Type>& copy) noexcept {
 			m_counter = copy.m_counter;
 			m_base = copy.m_base;
 
@@ -105,6 +121,7 @@ namespace Grizzly::Core {
 			requires DerivedFrom<Derived, Base> || SameAs<Derived, Base>
 			: m_counter(move.m_counter)
 			, m_base(move.m_base) {
+
 			move.m_counter = nullptr;
 			move.m_base = nullptr;
 		}
@@ -112,8 +129,11 @@ namespace Grizzly::Core {
 		Shared& operator=(Shared<Derived, Type>&& move) noexcept
 			requires DerivedFrom<Derived, Base> || SameAs<Derived, Base>
 		{
+			this->~Shared();
+
 			m_counter = move.m_counter;
 			m_base = move.m_base;
+
 			move.m_counter = nullptr;
 			move.m_base = nullptr;
 
@@ -144,10 +164,10 @@ namespace Grizzly::Core {
 							Memory::free(m_counter);
 						}
 					}
-
-					m_counter = nullptr;
-					m_base = nullptr;
 				}
+
+				m_counter = nullptr;
+				m_base = nullptr;
 			}
 		}
 
@@ -160,8 +180,8 @@ namespace Grizzly::Core {
 		// Accessors
 		GRIZZLY_ALWAYS_INLINE explicit operator Base*() { return &value(); }
 		GRIZZLY_ALWAYS_INLINE explicit operator Base*() const { return &value(); }
-		GRIZZLY_ALWAYS_INLINE operator Base&() { return value(); }
-		GRIZZLY_ALWAYS_INLINE operator Base&() const { return value(); }
+		GRIZZLY_ALWAYS_INLINE explicit operator Base&() { return value(); }
+		GRIZZLY_ALWAYS_INLINE explicit operator Base&() const { return value(); }
 		GRIZZLY_ALWAYS_INLINE Base* operator->() { return &value(); }
 		GRIZZLY_ALWAYS_INLINE Base* operator->() const { return &value(); }
 		GRIZZLY_ALWAYS_INLINE Base& operator*() { return value(); }
