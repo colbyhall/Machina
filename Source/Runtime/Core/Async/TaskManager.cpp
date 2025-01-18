@@ -12,9 +12,9 @@ namespace Grizzly::Core {
 		return *this;
 	}
 
-	AtomicShared<TaskList> TaskList::Builder::finish() {
+	Arc<TaskList> TaskList::Builder::finish() {
 		TaskList result{ Grizzly::move(m_tasks) };
-		return AtomicShared<TaskList>::create(Grizzly::move(result));
+		return Arc<TaskList>::create(Grizzly::move(result));
 	}
 
 	Task::Status TaskList::status() const {
@@ -47,10 +47,10 @@ namespace Grizzly::Core {
 		}
 	}
 
-	AtomicShared<TaskManager> TaskManager::create() {
+	Arc<TaskManager> TaskManager::create() {
 		constexpr u32 num_threads = 10;
 
-		const AtomicShared<TaskManager> task_manager = AtomicShared<TaskManager>::create(
+		const Arc<TaskManager> task_manager = Arc<TaskManager>::create(
 			TaskManager{ MPMCQueue<Job>::create(1024), MPMCQueue<Job>::create(1024), MPMCQueue<Job>::create(1024) });
 		auto& mut_task_manager = task_manager.unsafe_get_mut();
 		mut_task_manager.m_threads.reserve(num_threads);

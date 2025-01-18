@@ -16,7 +16,7 @@ namespace Grizzly::Core {
 		return 0;
 	}
 
-	AtomicShared<Thread> Thread::spawn(SpawnInfo&& info) {
+	Arc<Thread> Thread::spawn(SpawnInfo&& info) {
 		auto flags = 0;
 		if (info.start_suspended) {
 			flags |= CREATE_SUSPENDED;
@@ -30,7 +30,7 @@ namespace Grizzly::Core {
 		DWORD id;
 		const HANDLE thread = ::CreateThread(nullptr, stack_size, &ThreadProc, static_cast<LPVOID>(param), flags, &id);
 
-		return AtomicShared<Win32Thread>::create(thread, id);
+		return Arc<Win32Thread>::create(thread, id);
 	}
 
 	void Win32Thread::join() {

@@ -12,14 +12,14 @@
 #include <Core/Containers/Unique.hpp>
 
 namespace Grizzly::Core {
-	class Fiber final : public AtomicSharedFromThis<Fiber> {
+	class Fiber final : public ArcFromThis<Fiber> {
 	public:
 		using Function = Function<void()>;
 		struct SpawnInfo {
 			usize stack_size = 1024 * 1024;
 		};
-		static AtomicShared<Fiber> spawn(Function&& f);
-		static AtomicShared<Fiber> spawn(Function&& f, SpawnInfo const& info);
+		static Arc<Fiber> spawn(Function&& f);
+		static Arc<Fiber> spawn(Function&& f, SpawnInfo const& info);
 		static Fiber const& current();
 
 		Fiber(const Fiber&) = delete;

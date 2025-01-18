@@ -8,16 +8,16 @@
 #include <Core/Debug/Log.hpp>
 
 namespace Grizzly::Core {
-	thread_local Option<AtomicShared<Fiber>> g_current_fiber = nullopt;
+	thread_local Option<Arc<Fiber>> g_current_fiber = nullopt;
 
 	static void fiber_entry(Fiber::Function* f) {
 		(*f)();
 		Memory::free(f);
 	}
 
-	AtomicShared<Fiber> Fiber::spawn(Function&& f) { return Fiber::spawn(Grizzly::move(f), SpawnInfo{}); }
+	Arc<Fiber> Fiber::spawn(Function&& f) { return Fiber::spawn(Grizzly::move(f), SpawnInfo{}); }
 
-	AtomicShared<Fiber> Fiber::spawn(Function&& f, SpawnInfo const& spawn_info) {
+	Arc<Fiber> Fiber::spawn(Function&& f, SpawnInfo const& spawn_info) {
 		const auto stack_size = spawn_info.stack_size;
 		auto stack = Unique<u8[]>::create(stack_size);
 
@@ -31,13 +31,13 @@ namespace Grizzly::Core {
 		registers.x[0] = reinterpret_cast<u64>(*param);
 
 		Fiber fiber{ Grizzly::move(registers), Grizzly::move(stack) };
-		return AtomicShared<Fiber>::create(Grizzly::move(fiber));
+		return Arc<Fiber>::create(Grizzly::move(fiber));
 	}
 
 	Fiber const& Fiber::current() {
 		if (!g_current_fiber.is_set()) {
 			Fiber fiber{ Registers{} };
-			g_current_fiber = AtomicShared<Fiber>::create(Grizzly::move(fiber));
+			g_current_fiber = Arc<Fiber>::create(Grizzly::move(fiber));
 		}
 		return *g_current_fiber.as_ref().unwrap();
 	}

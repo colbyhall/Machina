@@ -10,7 +10,7 @@
 #include <GUI/Window.hpp>
 
 namespace Grizzly::GUI {
-	Shared<Window> Window::create(Application& app, const CreateInfo& create_info) {
+	Rc<Window> Window::create(Application& app, const CreateInfo& create_info) {
 		@autoreleasepool {
 			const NSRect size = NSMakeRect(0.f, 0.f, create_info.size.as<f32>().x, create_info.size.as<f32>().y);
 			NSWindow* window =
@@ -27,7 +27,7 @@ namespace Grizzly::GUI {
 			[window setTabbingMode:NSWindowTabbingModeDisallowed];
 
 			auto swapchain = app.device().create_swapchain(window);
-			return Shared<MacOSWindow>::create(window, Grizzly::move(swapchain));
+			return Rc<MacOSWindow>::create(window, Grizzly::move(swapchain));
 		}
 	}
 

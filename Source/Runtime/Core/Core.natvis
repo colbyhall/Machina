@@ -35,7 +35,7 @@
         </Expand>
     </Type>
 
-    <Type Name="Grizzly::Core::Shared&lt;*&gt;">
+    <Type Name="Grizzly::Core::Rc&lt;*&gt;">
         <Expand>
             <Item Name="[strong]">m_counter->m_strong</Item>
             <Item Name="[weak]">m_counter->m_weak</Item>

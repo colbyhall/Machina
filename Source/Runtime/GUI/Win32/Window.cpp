@@ -9,7 +9,7 @@
 #include <GUI/Win32/Window.hpp>
 
 namespace Grizzly::GUI {
-	Shared<Window> Window::create(Application& app, const CreateInfo& create_info) {
+	Rc<Window> Window::create(Application& app, const CreateInfo& create_info) {
 		const auto dpi = static_cast<f32>(::GetDpiForSystem()) / 96.f;
 
 		const DWORD dwStyle = WS_OVERLAPPEDWINDOW;
@@ -48,7 +48,7 @@ namespace Grizzly::GUI {
 		// TODO: Error handling
 
 		auto swapchain = app.device().create_swapchain(handle);
-		auto result = Shared<Win32Window>::create(handle, Grizzly::move(swapchain));
+		auto result = Rc<Win32Window>::create(handle, Grizzly::move(swapchain));
 		::SetWindowLongPtrW(handle, GWLP_USERDATA, (LONG_PTR) & *result);
 		return result;
 	}

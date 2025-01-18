@@ -24,7 +24,7 @@ namespace Grizzly::GUI {
 			bool minimizable = true;
 			bool maximizable = true;
 		};
-		static Shared<Window> create(Application& app, CreateInfo const& create_info);
+		static Rc<Window> create(Application& app, CreateInfo const& create_info);
 
 		/**
 		 * @brief Closes the window so it may never be opened again.

@@ -15,7 +15,7 @@
 #include <Core/Time.hpp>
 
 namespace Grizzly::Core {
-	class Task : public AtomicSharedFromThis<Task> {
+	class Task : public ArcFromThis<Task> {
 	public:
 		enum class Status : u8 { NotStarted, InProgress, Complete };
 		GRIZZLY_NO_DISCARD virtual Status status() const = 0;
@@ -30,22 +30,22 @@ namespace Grizzly::Core {
 
 			Builder& add(Task const& task);
 
-			AtomicShared<TaskList> finish();
+			Arc<TaskList> finish();
 
 		private:
-			Array<AtomicShared<Task>> m_tasks;
+			Array<Arc<Task>> m_tasks;
 		};
 
 		Status status() const;
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Slice<AtomicShared<Task> const> tasks() const {
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Slice<Arc<Task> const> tasks() const {
 			return m_tasks.as_const_slice();
 		}
 
 	private:
-		explicit TaskList(Array<AtomicShared<Task>>&& tasks) : m_tasks(Grizzly::move(tasks)) {}
+		explicit TaskList(Array<Arc<Task>>&& tasks) : m_tasks(Grizzly::move(tasks)) {}
 		friend class Builder;
 
-		Array<AtomicShared<Task>> m_tasks;
+		Array<Arc<Task>> m_tasks;
 	};
 
 	template <typename T>
@@ -86,17 +86,17 @@ namespace Grizzly::Core {
 		Atomic<Status> m_status{ Status::NotStarted };
 	};
 
-	class TaskManager final : public AtomicSharedFromThis<TaskManager> {
+	class TaskManager final : public ArcFromThis<TaskManager> {
 	public:
-		static AtomicShared<TaskManager> create();
+		static Arc<TaskManager> create();
 
 		enum class Priority : u8 { Low, Normal, High };
 		using Job = Function<void()>;
 
 		template <typename T = void>
-		GRIZZLY_NO_DISCARD AtomicShared<Future<T>> schedule(Priority priority, Function<T()>&& f) const {
+		GRIZZLY_NO_DISCARD Arc<Future<T>> schedule(Priority priority, Function<T()>&& f) const {
 			if constexpr (Core::is_same<T, void>) {
-				auto future = AtomicShared<Future<T>>::create();
+				auto future = Arc<Future<T>>::create();
 
 				Function<void()> job = [f = Grizzly::move(f), future = future]() {
 					const bool successful = future->start();
@@ -126,7 +126,7 @@ namespace Grizzly::Core {
 
 				return future;
 			} else {
-				const auto future = AtomicShared<Future<T>>::create();
+				const auto future = Arc<Future<T>>::create();
 
 				Function<void()> job = [f = Grizzly::move(f), future = future]() {
 					const auto result = f();
@@ -177,8 +177,8 @@ namespace Grizzly::Core {
 		};
 		Atomic<State> m_state{ State::Starting };
 
-		Array<AtomicShared<Thread>> m_threads;
-		Array<AtomicShared<Fiber>> m_fibers;
+		Array<Arc<Thread>> m_threads;
+		Array<Arc<Fiber>> m_fibers;
 
 		MPMCQueue<Job> m_high_priority;
 		MPMCQueue<Job> m_normal_priority;

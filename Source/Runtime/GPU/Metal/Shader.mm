@@ -19,21 +19,21 @@ namespace Grizzly::GPU {
 		}
 	}
 
-	Shared<VertexShader> MetalLibrary::create_vertex_shader(StringView function_name) {
+	Rc<VertexShader> MetalLibrary::create_vertex_shader(StringView function_name) {
 		@autoreleasepool {
 			id<MTLFunction> function = get_function_from_library(m_library, function_name);
 			GRIZZLY_ASSERT(function != nil);
 			GRIZZLY_ASSERT(function.functionType == MTLFunctionTypeVertex);
-			return Shared<MetalVertexShader>::create(function);
+			return Rc<MetalVertexShader>::create(function);
 		}
 	}
 
-	Shared<FragmentShader> MetalLibrary::create_fragment_shader(StringView function_name) {
+	Rc<FragmentShader> MetalLibrary::create_fragment_shader(StringView function_name) {
 		@autoreleasepool {
 			id<MTLFunction> function = get_function_from_library(m_library, function_name);
 			GRIZZLY_ASSERT(function != nil);
 			GRIZZLY_ASSERT(function.functionType == MTLFunctionTypeFragment);
-			return Shared<MetalFragmentShader>::create(function);
+			return Rc<MetalFragmentShader>::create(function);
 		}
 	}
 } // namespace Grizzly::GPU

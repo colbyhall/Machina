@@ -384,20 +384,20 @@ namespace Grizzly::Core {
 
 namespace Grizzly {
 	template <typename T>
-	using Shared = Core::Shared<T, Core::SharedType::NonAtomic>;
+	using Rc = Core::Shared<T, Core::SharedType::NonAtomic>;
 
 	template <typename T>
-	using SharedFromThis = Core::SharedFromThis<T, Core::SharedType::NonAtomic>;
+	using RcFromThis = Core::SharedFromThis<T, Core::SharedType::NonAtomic>;
 
 	template <typename T>
-	using Weak = Core::Weak<T, Core::SharedType::NonAtomic>;
+	using RcWeak = Core::Weak<T, Core::SharedType::NonAtomic>;
 
 	template <typename T>
-	using AtomicShared = Core::Shared<T, Core::SharedType::Atomic>;
+	using Arc = Core::Shared<T, Core::SharedType::Atomic>;
 
 	template <typename T>
-	using AtomicSharedFromThis = Core::SharedFromThis<T, Core::SharedType::Atomic>;
+	using ArcFromThis = Core::SharedFromThis<T, Core::SharedType::Atomic>;
 
 	template <typename T>
-	using AtomicWeak = Core::Weak<T, Core::SharedType::Atomic>;
+	using ArcWeak = Core::Weak<T, Core::SharedType::Atomic>;
 } // namespace Grizzly

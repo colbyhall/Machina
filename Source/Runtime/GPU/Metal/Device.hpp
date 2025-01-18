@@ -20,11 +20,11 @@ namespace Grizzly::GPU {
 
 		// Device Interace
 		Unique<Swapchain> create_swapchain(Swapchain::Owner owner) final;
-		Shared<Buffer> create_buffer(Buffer::CreateInfo const& info) final;
-		Shared<Texture> create_texture(Texture::CreateInfo const& info) final;
-		Shared<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) final;
-		Shared<Library> create_library_from_source(StringView info) final;
-		Shared<CommandList> record(FunctionRef<void(CommandRecorder&)> f) final;
+		Rc<Buffer> create_buffer(Buffer::CreateInfo const& info) final;
+		Rc<Texture> create_texture(Texture::CreateInfo const& info) final;
+		Rc<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) final;
+		Rc<Library> create_library_from_source(StringView info) final;
+		Rc<CommandList> record(FunctionRef<void(CommandRecorder&)> f) final;
 		Backend backend() const final { return Backend::Metal; }
 		// ~Device Interface
 
@@ -33,5 +33,5 @@ namespace Grizzly::GPU {
 		Core::Protocol m_command_queue; // MTLCommandQueue
 	};
 
-	Shared<Device> create_metal_device(Device::CreateInfo const& create_info);
+	Rc<Device> create_metal_device(Device::CreateInfo const& create_info);
 } // namespace Grizzly::GPU

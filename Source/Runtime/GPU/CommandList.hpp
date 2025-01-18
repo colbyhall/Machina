@@ -32,7 +32,7 @@ namespace Grizzly::GPU {
 		virtual ~Receipt() {}
 	};
 
-	class CommandList : public SharedFromThis<CommandList> {
+	class CommandList : public RcFromThis<CommandList> {
 	public:
 		GRIZZLY_NO_DISCARD virtual Unique<Receipt> submit() const = 0;
 

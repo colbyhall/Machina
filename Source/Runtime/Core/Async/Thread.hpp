@@ -11,7 +11,7 @@
 #include <Core/Containers/StringView.hpp>
 
 namespace Grizzly::Core {
-	class Thread : public AtomicSharedFromThis<Thread> {
+	class Thread : public ArcFromThis<Thread> {
 	public:
 		using Function = Function<void()>;
 		struct SpawnInfo {
@@ -19,8 +19,8 @@ namespace Grizzly::Core {
 			Option<usize> stack_size = nullopt;
 			bool start_suspended = false;
 		};
-		static AtomicShared<Thread> spawn(Function&& f, const SpawnInfo& info);
-		static AtomicShared<Thread> spawn(Function&& f);
+		static Arc<Thread> spawn(Function&& f, const SpawnInfo& info);
+		static Arc<Thread> spawn(Function&& f);
 		static Thread const& current();
 
 		using Id = u64;

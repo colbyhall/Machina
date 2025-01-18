@@ -9,7 +9,7 @@
 #include <Core/Containers/Shared.hpp>
 
 namespace Grizzly::GUI {
-	class View : public SharedFromThis<View> {
+	class View : public RcFromThis<View> {
 	public:
 		virtual ~View() {}
 	};

@@ -17,7 +17,7 @@ namespace Grizzly::GUI {
 		static Application create(GPU::Device const& device);
 
 		template <typename T>
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Shared<T> create(T::CreateInfo const& info) {
+		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Rc<T> create(T::CreateInfo const& info) {
 			return T::create(*this, info);
 		}
 
@@ -29,6 +29,6 @@ namespace Grizzly::GUI {
 		void poll_input();
 
 		bool m_running = true;
-		Shared<GPU::Device> m_device;
+		Rc<GPU::Device> m_device;
 	};
 } // namespace Grizzly::GUI

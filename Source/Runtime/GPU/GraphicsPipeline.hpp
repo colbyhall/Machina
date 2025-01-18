@@ -12,7 +12,7 @@
 #include <GPU/Texture.hpp>
 
 namespace Grizzly::GPU {
-	class GraphicsPipeline : public SharedFromThis<GraphicsPipeline> {
+	class GraphicsPipeline : public RcFromThis<GraphicsPipeline> {
 	public:
 		enum class DrawMode : u8 {
 			Fill,
@@ -144,8 +144,8 @@ namespace Grizzly::GPU {
 		GRIZZLY_ALWAYS_INLINE CullMode cull_mode() const { return m_cull_mode; }
 
 	protected:
-		Shared<VertexShader> m_vertex_shader;
-		Shared<FragmentShader> m_fragment_shader;
+		Rc<VertexShader> m_vertex_shader;
+		Rc<FragmentShader> m_fragment_shader;
 
 		Array<ColorAttachment, InlineAllocator<8>> m_color_attachments;
 		Option<DepthAttachment> m_depth_attachment;

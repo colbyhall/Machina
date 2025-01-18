@@ -25,7 +25,7 @@ namespace Grizzly::GPU {
 
 	class MetalBackbuffer final : public Backbuffer {
 	public:
-		explicit MetalBackbuffer(Shared<Texture>&& texture, id<CAMetalDrawable> drawable)
+		explicit MetalBackbuffer(Rc<Texture>&& texture, id<CAMetalDrawable> drawable)
 			: m_texture(Grizzly::move(texture))
 			, m_drawable(drawable) {}
 
@@ -33,7 +33,7 @@ namespace Grizzly::GPU {
 		void present(Receipt const& wait_on) final;
 
 	private:
-		Shared<Texture> m_texture;
+		Rc<Texture> m_texture;
 		Core::Protocol m_drawable; // CAMetalDrawable
 	};
 } // namespace Grizzly::GPU

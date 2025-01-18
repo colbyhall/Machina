@@ -31,7 +31,7 @@ namespace Grizzly::GPU {
 	 *
 	 * Use this class to utilize the graphics cards for rendering or computation.
 	 */
-	class Device : public SharedFromThis<Device> {
+	class Device : public RcFromThis<Device> {
 	public:
 		struct CreateInfo {
 			Backend backend;
@@ -41,9 +41,9 @@ namespace Grizzly::GPU {
 		 * @brief Create a device with the given create info.
 		 *
 		 * @param create_info The create info for the device.
-		 * @return Shared<Device> The created device.
+		 * @return Rc<Device> The created device.
 		 */
-		GRIZZLY_NO_DISCARD static Shared<Device> create(CreateInfo const& create_info);
+		GRIZZLY_NO_DISCARD static Rc<Device> create(CreateInfo const& create_info);
 
 		/**
 		 * @brief Create a swapchain for the given owner.
@@ -57,24 +57,24 @@ namespace Grizzly::GPU {
 		 * @brief Creates a buffer.
 		 *
 		 * @param info The data structure containg the immutable details of the buffer.
-		 * @return Shared<Buffer> The created buffer.
+		 * @return Rc<Buffer> The created buffer.
 		 */
-		GRIZZLY_NO_DISCARD virtual Shared<Buffer> create_buffer(Buffer::CreateInfo const& info) = 0;
+		GRIZZLY_NO_DISCARD virtual Rc<Buffer> create_buffer(Buffer::CreateInfo const& info) = 0;
 
 		/**
 		 * @brief Creates a texture.
 		 *
 		 * @param info The data structure containg the immutable details of the texture.
-		 * @return Shared<Texture> The created texture.
+		 * @return Rc<Texture> The created texture.
 		 */
-		GRIZZLY_NO_DISCARD virtual Shared<Texture> create_texture(Texture::CreateInfo const& info) = 0;
+		GRIZZLY_NO_DISCARD virtual Rc<Texture> create_texture(Texture::CreateInfo const& info) = 0;
 
-		GRIZZLY_NO_DISCARD virtual Shared<Library> create_library_from_source(StringView source) = 0;
+		GRIZZLY_NO_DISCARD virtual Rc<Library> create_library_from_source(StringView source) = 0;
 
-		GRIZZLY_NO_DISCARD virtual Shared<GraphicsPipeline>
+		GRIZZLY_NO_DISCARD virtual Rc<GraphicsPipeline>
 		create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) = 0;
 
-		GRIZZLY_NO_DISCARD virtual Shared<CommandList> record(FunctionRef<void(CommandRecorder&)> f) = 0;
+		GRIZZLY_NO_DISCARD virtual Rc<CommandList> record(FunctionRef<void(CommandRecorder&)> f) = 0;
 
 		/**
 		 * @brief Get the backend of the device.

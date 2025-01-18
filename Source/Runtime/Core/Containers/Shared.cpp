@@ -13,17 +13,17 @@ GRIZZLY_TEST_SUITE("Containers") {
 
 	GRIZZLY_TEST_CASE("Shared") {
 		GRIZZLY_SUBCASE("default constructor") {
-			const Shared<int> shared;
+			const Rc<int> shared;
 			GRIZZLY_CHECK(*shared == 0);
 		}
 
 		GRIZZLY_SUBCASE("create") {
-			const auto shared = Shared<int>::create(100);
+			const auto shared = Rc<int>::create(100);
 			GRIZZLY_CHECK(*shared == 100);
 		}
 
 		GRIZZLY_SUBCASE("copy constructor") {
-			const auto shared = Shared<int>::create(100);
+			const auto shared = Rc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
 			const auto copy = shared;
@@ -35,10 +35,10 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("copy assignment") {
-			const auto shared = Shared<int>::create(100);
+			const auto shared = Rc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
-			Shared<int> copy_assignment;
+			Rc<int> copy_assignment;
 			GRIZZLY_CHECK(*copy_assignment == 0);
 			GRIZZLY_CHECK(copy_assignment.strong() == 1);
 			copy_assignment = shared;
@@ -50,7 +50,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("move constructor") {
-			auto shared = Shared<int>::create(100);
+			auto shared = Rc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
 			auto move = Grizzly::move(shared);
@@ -61,10 +61,10 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("move assignment") {
-			auto shared = Shared<int>::create(100);
+			auto shared = Rc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
-			Shared<int> move_assignment;
+			Rc<int> move_assignment;
 			GRIZZLY_CHECK(*move_assignment == 0);
 			GRIZZLY_CHECK(move_assignment.strong() == 1);
 			move_assignment = Grizzly::move(shared);
@@ -75,7 +75,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("destructor") {
-			Shared<int> shared;
+			Rc<int> shared;
 			GRIZZLY_CHECK(shared.strong() == 1);
 			{
 				const auto copy = shared;
@@ -85,7 +85,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("downgrade") {
-			const auto shared = Shared<int>::create(100);
+			const auto shared = Rc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
 			GRIZZLY_CHECK(shared.weak() == 0);
@@ -101,7 +101,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("upgrade") {
-			const auto shared = Shared<int>::create(100);
+			const auto shared = Rc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
 			GRIZZLY_CHECK(shared.weak() == 0);
@@ -122,13 +122,13 @@ GRIZZLY_TEST_SUITE("Containers") {
 			GRIZZLY_CHECK(shared.weak() == 0);
 		}
 
-		GRIZZLY_SUBCASE("SharedFromThis") {
-			class Test : public SharedFromThis<Test> {
+		GRIZZLY_SUBCASE("RcFromThis") {
+			class Test : public RcFromThis<Test> {
 			public:
 				int a = 120;
 			};
 
-			const auto test = Shared<Test>::create();
+			const auto test = Rc<Test>::create();
 			GRIZZLY_CHECK(test->a == 120);
 			const auto& test_ref = *test;
 			GRIZZLY_CHECK(test_ref.a == 120);
@@ -138,19 +138,19 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 	}
 
-	GRIZZLY_TEST_CASE("AtomicShared") {
+	GRIZZLY_TEST_CASE("Arc") {
 		GRIZZLY_SUBCASE("default constructor") {
-			const AtomicShared<int> shared;
+			const Arc<int> shared;
 			GRIZZLY_CHECK(*shared == 0);
 		}
 
 		GRIZZLY_SUBCASE("create") {
-			const auto shared = AtomicShared<int>::create(100);
+			const auto shared = Arc<int>::create(100);
 			GRIZZLY_CHECK(*shared == 100);
 		}
 
 		GRIZZLY_SUBCASE("copy constructor") {
-			const auto shared = AtomicShared<int>::create(100);
+			const auto shared = Arc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
 			const auto copy = shared;
@@ -162,10 +162,10 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("copy assignment") {
-			const auto shared = AtomicShared<int>::create(100);
+			const auto shared = Arc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
-			AtomicShared<int> copy_assignment;
+			Arc<int> copy_assignment;
 			GRIZZLY_CHECK(*copy_assignment == 0);
 			GRIZZLY_CHECK(copy_assignment.strong() == 1);
 			copy_assignment = shared;
@@ -177,7 +177,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("move constructor") {
-			auto shared = AtomicShared<int>::create(100);
+			auto shared = Arc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
 			auto move = Grizzly::move(shared);
@@ -188,10 +188,10 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("move assignment") {
-			auto shared = AtomicShared<int>::create(100);
+			auto shared = Arc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
-			AtomicShared<int> move_assignment;
+			Arc<int> move_assignment;
 			GRIZZLY_CHECK(*move_assignment == 0);
 			GRIZZLY_CHECK(move_assignment.strong() == 1);
 			move_assignment = Grizzly::move(shared);
@@ -202,7 +202,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("destructor") {
-			AtomicShared<int> shared;
+			Arc<int> shared;
 			GRIZZLY_CHECK(shared.strong() == 1);
 			{
 				const auto copy = shared;
@@ -212,7 +212,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("downgrade") {
-			const auto shared = AtomicShared<int>::create(100);
+			const auto shared = Arc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
 			GRIZZLY_CHECK(shared.weak() == 0);
@@ -228,7 +228,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("upgrade") {
-			const auto shared = AtomicShared<int>::create(100);
+			const auto shared = Arc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
 			GRIZZLY_CHECK(shared.weak() == 0);
@@ -249,13 +249,13 @@ GRIZZLY_TEST_SUITE("Containers") {
 			GRIZZLY_CHECK(shared.weak() == 0);
 		}
 
-		GRIZZLY_SUBCASE("AtomicSharedFromThis") {
-			class Test : public AtomicSharedFromThis<Test> {
+		GRIZZLY_SUBCASE("ArcFromThis") {
+			class Test : public ArcFromThis<Test> {
 			public:
 				int a = 120;
 			};
 
-			const auto test = AtomicShared<Test>::create();
+			const auto test = Arc<Test>::create();
 			GRIZZLY_CHECK(test->a == 120);
 			const auto& test_ref = *test;
 			GRIZZLY_CHECK(test_ref.a == 120);

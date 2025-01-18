@@ -12,7 +12,7 @@ namespace Grizzly::GPU {
 	Unique<Backbuffer> MetalSwapchain::next_back_buffer() {
 		@autoreleasepool {
 			id<CAMetalDrawable> drawable = [m_layer nextDrawable];
-			auto texture = Shared<MetalTexture>::create(
+			auto texture = Rc<MetalTexture>::create(
 				Texture::CreateInfo{
 					.usage = Texture::Usage::Swapchain,
 					.format = Texture::Format::BGRA_U8_SRGB,
