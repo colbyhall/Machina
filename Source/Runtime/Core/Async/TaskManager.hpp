@@ -54,10 +54,10 @@ namespace Grizzly::Core {
 		Status status() const final { return m_status.load(); }
 
 	private:
-		GRIZZLY_NO_DISCARD bool start() {
+		GRIZZLY_NO_DISCARD bool start() const {
 			return m_status.compare_exchange_weak(Status::NotStarted, Status::InProgress).is_set();
 		}
-		void finish(T&& t) {
+		void finish(T&& t) const {
 			m_value = Grizzly::forward<T>(t);
 			const bool updated = m_status.compare_exchange_weak(Status::InProgress, Status::Complete).is_set();
 			GRIZZLY_ASSERT(updated);
@@ -74,10 +74,10 @@ namespace Grizzly::Core {
 		Status status() const final { return m_status.load(); }
 
 	private:
-		GRIZZLY_NO_DISCARD bool start() {
+		GRIZZLY_NO_DISCARD bool start() const {
 			return m_status.compare_exchange_weak(Status::NotStarted, Status::InProgress).is_set();
 		}
-		void finish() {
+		void finish() const {
 			const bool updated = m_status.compare_exchange_weak(Status::InProgress, Status::Complete).is_set();
 			GRIZZLY_ASSERT(updated);
 		}

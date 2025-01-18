@@ -52,9 +52,10 @@ namespace Grizzly::Core {
 
 		const AtomicShared<TaskManager> task_manager = AtomicShared<TaskManager>::create(
 			TaskManager{ MPMCQueue<Job>::create(1024), MPMCQueue<Job>::create(1024), MPMCQueue<Job>::create(1024) });
-		task_manager->m_threads.reserve(num_threads);
+		auto& mut_task_manager = task_manager.unsafe_get_mut();
+		mut_task_manager.m_threads.reserve(num_threads);
 
-		task_manager->m_threads.push(Thread::current().to_shared());
+		mut_task_manager.m_threads.push(Thread::current().to_shared());
 		for (u32 i = 0; i < num_threads - 1; i += 1) {
 			auto thread = Thread::spawn([task_manager]() {
 				bool running = true;
@@ -93,7 +94,7 @@ namespace Grizzly::Core {
 					}
 				}
 			});
-			task_manager->m_threads.push(Grizzly::move(thread));
+			mut_task_manager.m_threads.push(Grizzly::move(thread));
 		}
 
 		task_manager->m_state.store(State::Running);

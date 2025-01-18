@@ -41,6 +41,7 @@ namespace Grizzly::Core {
 
 	AtomicShared<Thread> Thread::spawn(Function&& f, SpawnInfo const& info) {
 		auto result = AtomicShared<PosixThread>::create(nullptr);
+		auto& mut_result = result.unsafe_get_mut();
 
 		auto param = Memory::alloc(Memory::Layout::single<ThreadArg>());
 		Memory::emplace<ThreadArg>(param, ThreadArg{ .f = Grizzly::forward<Function>(f), .thread = result });
@@ -50,7 +51,7 @@ namespace Grizzly::Core {
 		// TODO: Error handling
 		GRIZZLY_UNUSED(create_result);
 
-		result->m_thread = thread;
+		mut_result.m_thread = thread;
 
 		// Mark the thread as ready so it can execute.
 		result->m_ready.store(true);

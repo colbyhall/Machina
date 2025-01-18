@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "Core/Core.hpp"
 #include <Core/Atomic.hpp>
 #include <Core/Concepts.hpp>
 #include <Core/Memory.hpp>
@@ -177,15 +178,55 @@ namespace Grizzly::Core {
 			return Weak<Base, Type>{ m_counter, m_base };
 		}
 
-		// Accessors
-		GRIZZLY_ALWAYS_INLINE explicit operator Base*() { return &value(); }
-		GRIZZLY_ALWAYS_INLINE explicit operator Base*() const { return &value(); }
-		GRIZZLY_ALWAYS_INLINE explicit operator Base&() { return value(); }
-		GRIZZLY_ALWAYS_INLINE explicit operator Base&() const { return value(); }
-		GRIZZLY_ALWAYS_INLINE Base* operator->() { return &value(); }
-		GRIZZLY_ALWAYS_INLINE Base* operator->() const { return &value(); }
-		GRIZZLY_ALWAYS_INLINE Base& operator*() { return value(); }
-		GRIZZLY_ALWAYS_INLINE Base& operator*() const { return value(); }
+		// Non Atomic Accessors
+		GRIZZLY_ALWAYS_INLINE explicit operator Base*() const
+			requires(Type == SharedType::NonAtomic)
+		{
+			return &value();
+		}
+		GRIZZLY_ALWAYS_INLINE explicit operator Base&() const
+			requires(Type == SharedType::NonAtomic)
+		{
+			return value();
+		}
+		GRIZZLY_ALWAYS_INLINE Base* operator->() const
+			requires(Type == SharedType::NonAtomic)
+		{
+			return &value();
+		}
+		GRIZZLY_ALWAYS_INLINE Base& operator*() const
+			requires(Type == SharedType::NonAtomic)
+		{
+			return value();
+		}
+
+		// Atomic Accessors are const only
+		GRIZZLY_NO_DISCARD Base& unsafe_get_mut() const
+			requires(Type == SharedType::Atomic)
+		{
+			return value();
+		}
+
+		GRIZZLY_ALWAYS_INLINE explicit operator Base const*() const
+			requires(Type == SharedType::Atomic)
+		{
+			return &value();
+		}
+		GRIZZLY_ALWAYS_INLINE explicit operator Base const&() const
+			requires(Type == SharedType::Atomic)
+		{
+			return value();
+		}
+		GRIZZLY_ALWAYS_INLINE Base const* operator->() const
+			requires(Type == SharedType::Atomic)
+		{
+			return &value();
+		}
+		GRIZZLY_ALWAYS_INLINE Base const& operator*() const
+			requires(Type == SharedType::Atomic)
+		{
+			return value();
+		}
 
 		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE u32 strong() const {
 			return m_counter != nullptr ? counter().strong() : 0;
