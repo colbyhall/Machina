@@ -22,6 +22,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Async/Fiber.hpp
         ${CORE_ROOT}/Async/Fiber.cpp
 		${CORE_ROOT}/Async/MPMC.hpp
+		${CORE_ROOT}/Async/Mutex.hpp
+		${CORE_ROOT}/Async/Mutex.cpp
 		${CORE_ROOT}/Async/Scheduler.hpp
 		${CORE_ROOT}/Async/Scheduler.cpp
         ${CORE_ROOT}/Async/Thread.hpp

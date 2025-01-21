@@ -4,6 +4,7 @@
  * This software is released under the MIT License.
  */
 
+#include <Core/Async/Mutex.hpp>
 #include <Core/Async/Scheduler.hpp>
 #include <Core/Debug/Log.hpp>
 #include <Core/Math/Vector3.hpp>
@@ -25,8 +26,12 @@ int main(int argc, char** argv) {
 	auto& scheduler = app->scheduler();
 	auto& device = app->device();
 
-	for (int i = 0; i < 1000; i += 1) {
-		const auto future = scheduler.schedule<void>([]() { dbgln(u8"hello world"sv); });
+	Core::SpinlockMutex<i32> mutex{ 0 };
+	for (int i = 0; i < 1; i += 1) {
+		const auto future = scheduler.schedule<void>([&mutex]() {
+			const auto guard = mutex.lock();
+			*guard += 1;
+		});
 	}
 	const auto window = app->create<GUI::Window>({
 		.title = u8"Hello World"sv,
