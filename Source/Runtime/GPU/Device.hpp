@@ -31,7 +31,7 @@ namespace Grizzly::GPU {
 	 *
 	 * Use this class to utilize the graphics cards for rendering or computation.
 	 */
-	class Device : public RcFromThis<Device> {
+	class Device : public ArcFromThis<Device> {
 	public:
 		struct CreateInfo {
 			Backend backend;
@@ -43,7 +43,7 @@ namespace Grizzly::GPU {
 		 * @param create_info The create info for the device.
 		 * @return Rc<Device> The created device.
 		 */
-		GRIZZLY_NO_DISCARD static Rc<Device> create(CreateInfo const& create_info);
+		GRIZZLY_NO_DISCARD static Arc<Device> create(CreateInfo const& create_info);
 
 		/**
 		 * @brief Create a swapchain for the given owner.
@@ -51,7 +51,7 @@ namespace Grizzly::GPU {
 		 * @param owner The owner of the swapchain.
 		 * @return Unique<Swapchain> The created swapchain.
 		 */
-		GRIZZLY_NO_DISCARD virtual Unique<Swapchain> create_swapchain(Swapchain::Owner owner) = 0;
+		GRIZZLY_NO_DISCARD virtual Unique<Swapchain> create_swapchain(Swapchain::Owner owner) const = 0;
 
 		/**
 		 * @brief Creates a buffer.
@@ -59,7 +59,7 @@ namespace Grizzly::GPU {
 		 * @param info The data structure containg the immutable details of the buffer.
 		 * @return Rc<Buffer> The created buffer.
 		 */
-		GRIZZLY_NO_DISCARD virtual Rc<Buffer> create_buffer(Buffer::CreateInfo const& info) = 0;
+		GRIZZLY_NO_DISCARD virtual Arc<Buffer> create_buffer(Buffer::CreateInfo const& info) const = 0;
 
 		/**
 		 * @brief Creates a texture.
@@ -67,14 +67,14 @@ namespace Grizzly::GPU {
 		 * @param info The data structure containg the immutable details of the texture.
 		 * @return Rc<Texture> The created texture.
 		 */
-		GRIZZLY_NO_DISCARD virtual Rc<Texture> create_texture(Texture::CreateInfo const& info) = 0;
+		GRIZZLY_NO_DISCARD virtual Arc<Texture> create_texture(Texture::CreateInfo const& info) const = 0;
 
-		GRIZZLY_NO_DISCARD virtual Rc<Library> create_library_from_source(StringView source) = 0;
+		GRIZZLY_NO_DISCARD virtual Arc<Library> create_library_from_source(StringView source) const = 0;
 
-		GRIZZLY_NO_DISCARD virtual Rc<GraphicsPipeline>
-		create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) = 0;
+		GRIZZLY_NO_DISCARD virtual Arc<GraphicsPipeline>
+		create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) const = 0;
 
-		GRIZZLY_NO_DISCARD virtual Rc<CommandList> record(FunctionRef<void(CommandRecorder&)> f) = 0;
+		GRIZZLY_NO_DISCARD virtual Arc<CommandList> record(FunctionRef<void(CommandRecorder&)> f) const = 0;
 
 		/**
 		 * @brief Get the backend of the device.

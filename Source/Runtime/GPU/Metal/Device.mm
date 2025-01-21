@@ -18,7 +18,7 @@
 #import <Metal/Metal.h>
 
 namespace Grizzly::GPU {
-	Rc<Device> create_metal_device(Device::CreateInfo const& create_info) {
+	Arc<Device> create_metal_device(Device::CreateInfo const& create_info) {
 		@autoreleasepool {
 			id<MTLDevice> device = MTLCreateSystemDefaultDevice();
 
@@ -26,11 +26,11 @@ namespace Grizzly::GPU {
 			[descriptor setMaxCommandBufferCount:32];
 			id<MTLCommandQueue> command_queue = [device newCommandQueueWithDescriptor:descriptor];
 
-			return Rc<MetalDevice>::create(device, command_queue);
+			return Arc<MetalDevice>::create(device, command_queue);
 		}
 	}
 
-	Unique<Swapchain> MetalDevice::create_swapchain(Swapchain::Owner owner) {
+	Unique<Swapchain> MetalDevice::create_swapchain(Swapchain::Owner owner) const {
 		@autoreleasepool {
 			CAMetalLayer* layer = [CAMetalLayer layer];
 			layer.device = *m_device;
@@ -46,7 +46,7 @@ namespace Grizzly::GPU {
 		}
 	}
 
-	Rc<Buffer> MetalDevice::create_buffer(Buffer::CreateInfo const& create_info) {
+	Arc<Buffer> MetalDevice::create_buffer(Buffer::CreateInfo const& create_info) const {
 		@autoreleasepool {
 			MTLResourceOptions options = MTLResourceStorageModeShared;
 			if (create_info.heap == Buffer::Heap::Storage) {
@@ -55,11 +55,11 @@ namespace Grizzly::GPU {
 
 			id<MTLBuffer> buffer = [m_device newBufferWithLength:create_info.len * create_info.stride options:options];
 
-			return Rc<MetalBuffer>::create(create_info, buffer);
+			return Arc<MetalBuffer>::create(create_info, buffer);
 		}
 	}
 
-	Rc<Texture> MetalDevice::create_texture(Texture::CreateInfo const& create_info) {
+	Arc<Texture> MetalDevice::create_texture(Texture::CreateInfo const& create_info) const {
 		@autoreleasepool {
 			MTLTextureDescriptor* descriptor = [[MTLTextureDescriptor alloc] init];
 			// TODO: Create a conversion function for Texture::Format
@@ -73,11 +73,11 @@ namespace Grizzly::GPU {
 
 			id<MTLTexture> texture = [m_device newTextureWithDescriptor:descriptor];
 
-			return Rc<MetalTexture>::create(create_info, texture);
+			return Arc<MetalTexture>::create(create_info, texture);
 		}
 	}
 
-	Rc<Library> MetalDevice::create_library_from_source(StringView source) {
+	Arc<Library> MetalDevice::create_library_from_source(StringView source) const {
 		@autoreleasepool {
 			NSString* objc_source = [[NSString alloc] initWithBytesNoCopy:(void*)*source
 																   length:static_cast<NSUInteger>(source.len())
@@ -92,11 +92,11 @@ namespace Grizzly::GPU {
 				NSLog(@"Error: %@", message);
 				Grizzly::Core::abort();
 			}
-			return Rc<MetalLibrary>::create(library);
+			return Arc<MetalLibrary>::create(library);
 		}
 	}
 
-	Rc<GraphicsPipeline> MetalDevice::create_graphics_pipeline(GraphicsPipeline::CreateInfo const& create_info) {
+	Arc<GraphicsPipeline> MetalDevice::create_graphics_pipeline(GraphicsPipeline::CreateInfo const& create_info) const {
 		@autoreleasepool {
 			MTLRenderPipelineDescriptor* const pipeline_descriptor = [[MTLRenderPipelineDescriptor alloc] init];
 			pipeline_descriptor.vertexFunction =
@@ -157,11 +157,11 @@ namespace Grizzly::GPU {
 			id<MTLRenderPipelineState> pipeline_state =
 				[m_device newRenderPipelineStateWithDescriptor:pipeline_descriptor error:&error];
 			GRIZZLY_ASSERT(error == nil);
-			return Rc<MetalGraphicsPipeline>::create(create_info, pipeline_state);
+			return Arc<MetalGraphicsPipeline>::create(create_info, pipeline_state);
 		}
 	}
 
-	Rc<CommandList> MetalDevice::record(FunctionRef<void(CommandRecorder&)> f) {
+	Arc<CommandList> MetalDevice::record(FunctionRef<void(CommandRecorder&)> f) const {
 		@autoreleasepool {
 			// Create a command buffer
 			id<MTLCommandBuffer> command_buffer = [m_command_queue commandBuffer];
@@ -169,7 +169,7 @@ namespace Grizzly::GPU {
 			MetalCommandRecorder recorder(command_buffer);
 			f(recorder);
 
-			return Rc<MetalCommandList>::create(command_buffer);
+			return Arc<MetalCommandList>::create(command_buffer);
 		}
 	}
 

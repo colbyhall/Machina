@@ -10,10 +10,10 @@
 namespace Grizzly::GPU {
 	// GPU/Metal/Device.hpp contains Objective-C. We can't use a static method to create the device
 	// so forwrds declare the function here.
-	Rc<Device> create_metal_device(Device::CreateInfo const& create_info);
+	Arc<Device> create_metal_device(Device::CreateInfo const& create_info);
 
-	Rc<Device> Device::create(const CreateInfo& create_info) {
-		Option<Rc<Device>> result = nullopt;
+	Arc<Device> Device::create(const CreateInfo& create_info) {
+		Option<Arc<Device>> result = nullopt;
 		switch (create_info.backend) {
 		case Backend::Metal:
 			result = create_metal_device(create_info);

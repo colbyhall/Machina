@@ -7,13 +7,15 @@
 #include <Core/Async/TaskManager.hpp>
 
 namespace Grizzly::Core {
+	Task::Task(TaskManager const& owner) : m_owner(owner.to_shared()) {}
+
 	TaskList::Builder& TaskList::Builder::add(Task const& task) {
 		m_tasks.push(task.to_shared());
 		return *this;
 	}
 
 	Arc<TaskList> TaskList::Builder::finish() {
-		TaskList result{ Grizzly::move(m_tasks) };
+		TaskList result{ m_owner, Grizzly::move(m_tasks) };
 		return Arc<TaskList>::create(Grizzly::move(result));
 	}
 
@@ -47,20 +49,22 @@ namespace Grizzly::Core {
 		}
 	}
 
-	Arc<TaskManager> TaskManager::create() {
-		constexpr u32 num_threads = 10;
-
-		const Arc<TaskManager> task_manager = Arc<TaskManager>::create(
-			TaskManager{ MPMCQueue<Job>::create(1024), MPMCQueue<Job>::create(1024), MPMCQueue<Job>::create(1024) });
+	Arc<TaskManager> TaskManager::create(CreateInfo const& create_info) {
+		const Arc<TaskManager> task_manager = Arc<TaskManager>::create(TaskManager{
+			MPMC<Job>::create(create_info.high_priority_count),
+			MPMC<Job>::create(create_info.normal_priority_count),
+			MPMC<Job>::create(create_info.low_priority_count),
+		});
 		auto& mut_task_manager = task_manager.unsafe_get_mut();
-		mut_task_manager.m_threads.reserve(num_threads);
+		mut_task_manager.m_threads.reserve(create_info.thread_count);
 
 		mut_task_manager.m_threads.push(Thread::current().to_shared());
-		for (u32 i = 0; i < num_threads - 1; i += 1) {
+		for (u32 i = 0; i < create_info.thread_count - 1; i += 1) {
 			auto thread = Thread::spawn([task_manager]() {
 				bool running = true;
 				while (running) {
 					const auto state = task_manager->m_state.load();
+
 					switch (state) {
 					case State::Starting: {
 					} break;
@@ -69,7 +73,7 @@ namespace Grizzly::Core {
 						if (job.is_set()) {
 							auto f = job.unwrap();
 							f();
-							return;
+							continue;
 						}
 
 						// Look for finished task
@@ -78,14 +82,14 @@ namespace Grizzly::Core {
 						if (job.is_set()) {
 							auto f = job.unwrap();
 							f();
-							return;
+							continue;
 						}
 
 						job = task_manager->m_low_priority.pop();
 						if (job.is_set()) {
 							auto f = job.unwrap();
 							f();
-							return;
+							continue;
 						}
 					} break;
 					case State::ShuttingDown:

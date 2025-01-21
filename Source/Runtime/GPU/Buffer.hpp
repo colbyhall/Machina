@@ -12,7 +12,7 @@
 #include <GPU/Resource.hpp>
 
 namespace Grizzly::GPU {
-	class Buffer : public Resource, public RcFromThis<Buffer> {
+	class Buffer : public Resource, public ArcFromThis<Buffer> {
 	public:
 		enum class Usage : u8 {
 			TransferSrc = (1 << 0),

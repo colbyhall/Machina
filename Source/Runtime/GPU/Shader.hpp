@@ -13,20 +13,20 @@ namespace Grizzly::GPU {
 	class VertexShader;
 	class FragmentShader;
 
-	class Library : public RcFromThis<Library> {
+	class Library : public ArcFromThis<Library> {
 	public:
-		GRIZZLY_NO_DISCARD virtual Rc<VertexShader> create_vertex_shader(StringView function_name) = 0;
-		GRIZZLY_NO_DISCARD virtual Rc<FragmentShader> create_fragment_shader(StringView function_name) = 0;
+		GRIZZLY_NO_DISCARD virtual Arc<VertexShader> create_vertex_shader(StringView function_name) const = 0;
+		GRIZZLY_NO_DISCARD virtual Arc<FragmentShader> create_fragment_shader(StringView function_name) const = 0;
 
 		virtual ~Library() {}
 	};
 
-	class VertexShader : public RcFromThis<VertexShader> {
+	class VertexShader : public ArcFromThis<VertexShader> {
 	public:
 		virtual ~VertexShader() {}
 	};
 
-	class FragmentShader : public RcFromThis<FragmentShader> {
+	class FragmentShader : public ArcFromThis<FragmentShader> {
 	public:
 		virtual ~FragmentShader() {}
 	};

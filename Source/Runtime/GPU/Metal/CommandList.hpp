@@ -25,7 +25,7 @@ namespace Grizzly::GPU {
 	public:
 		MetalCommandList(id<MTLCommandBuffer> command_buffer) : m_command_buffer(command_buffer) {}
 
-		Unique<Receipt> submit() const final;
+		Arc<Receipt> submit() const final;
 
 	private:
 		Core::Protocol m_command_buffer; // MTLCommandBuffer

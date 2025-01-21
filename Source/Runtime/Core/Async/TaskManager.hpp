@@ -15,24 +15,33 @@
 #include <Core/Time.hpp>
 
 namespace Grizzly::Core {
+	class TaskManager;
+
 	class Task : public ArcFromThis<Task> {
 	public:
+		explicit Task(TaskManager const& owner);
+
 		enum class Status : u8 { NotStarted, InProgress, Complete };
 		GRIZZLY_NO_DISCARD virtual Status status() const = 0;
+
 		virtual ~Task() {}
+
+	private:
+		Arc<TaskManager> m_owner;
 	};
 
 	class TaskList final : public Task {
 	public:
 		class Builder {
 		public:
-			explicit Builder() = default;
+			explicit Builder(TaskManager const& owner) : m_owner(owner) {}
 
 			Builder& add(Task const& task);
 
 			Arc<TaskList> finish();
 
 		private:
+			TaskManager const& m_owner;
 			Array<Arc<Task>> m_tasks;
 		};
 
@@ -42,7 +51,9 @@ namespace Grizzly::Core {
 		}
 
 	private:
-		explicit TaskList(Array<Arc<Task>>&& tasks) : m_tasks(Grizzly::move(tasks)) {}
+		explicit TaskList(TaskManager const& owner, Array<Arc<Task>>&& tasks)
+			: Task(owner)
+			, m_tasks(Grizzly::move(tasks)) {}
 		friend class Builder;
 
 		Array<Arc<Task>> m_tasks;
@@ -51,6 +62,8 @@ namespace Grizzly::Core {
 	template <typename T>
 	class Future final : public Task {
 	public:
+		explicit Future(TaskManager const& owner) : Task(owner) {}
+
 		Status status() const final { return m_status.load(); }
 
 	private:
@@ -71,6 +84,7 @@ namespace Grizzly::Core {
 	template <>
 	class Future<void> final : public Task {
 	public:
+		explicit Future(TaskManager const& owner) : Task(owner) {}
 		Status status() const final { return m_status.load(); }
 
 	private:
@@ -88,15 +102,27 @@ namespace Grizzly::Core {
 
 	class TaskManager final : public ArcFromThis<TaskManager> {
 	public:
-		static Arc<TaskManager> create();
+		struct CreateInfo {
+			u32 thread_count;
+
+			u32 high_priority_count = 256;
+			u32 normal_priority_count = 512;
+			u32 low_priority_count = 1024;
+		};
+		static Arc<TaskManager> create(CreateInfo const& create_info);
 
 		enum class Priority : u8 { Low, Normal, High };
 		using Job = Function<void()>;
 
-		template <typename T = void>
+		template <typename T>
+		GRIZZLY_NO_DISCARD Arc<Future<T>> schedule(Function<T()>&& f) const {
+			return schedule(Priority::Normal, Grizzly::forward<Function<T()>>(f));
+		}
+
+		template <typename T>
 		GRIZZLY_NO_DISCARD Arc<Future<T>> schedule(Priority priority, Function<T()>&& f) const {
 			if constexpr (Core::is_same<T, void>) {
-				auto future = Arc<Future<T>>::create();
+				auto future = Arc<Future<T>>::create(*this);
 
 				Function<void()> job = [f = Grizzly::move(f), future = future]() {
 					const bool successful = future->start();
@@ -105,7 +131,7 @@ namespace Grizzly::Core {
 					future->finish();
 				};
 
-				MPMCQueue<Job> const* queue = nullptr;
+				MPMC<Job> const* queue = nullptr;
 				switch (priority) {
 				case Priority::Low:
 					queue = &m_low_priority;
@@ -126,7 +152,7 @@ namespace Grizzly::Core {
 
 				return future;
 			} else {
-				const auto future = Arc<Future<T>>::create();
+				const auto future = Arc<Future<T>>::create(*this);
 
 				Function<void()> job = [f = Grizzly::move(f), future = future]() {
 					const auto result = f();
@@ -134,7 +160,7 @@ namespace Grizzly::Core {
 					GRIZZLY_ASSERT(successful);
 				};
 
-				MPMCQueue<Job> const* queue = nullptr;
+				MPMC<Job> const* queue = nullptr;
 				switch (priority) {
 				case Priority::Low:
 					queue = &m_low_priority;
@@ -165,7 +191,7 @@ namespace Grizzly::Core {
 		}
 
 	private:
-		TaskManager(MPMCQueue<Job>&& high_priority, MPMCQueue<Job>&& normal_priority, MPMCQueue<Job>&& low_priority)
+		TaskManager(MPMC<Job>&& high_priority, MPMC<Job>&& normal_priority, MPMC<Job>&& low_priority)
 			: m_high_priority(Grizzly::move(high_priority))
 			, m_normal_priority(Grizzly::move(normal_priority))
 			, m_low_priority(Grizzly::move(low_priority)) {}
@@ -180,8 +206,8 @@ namespace Grizzly::Core {
 		Array<Arc<Thread>> m_threads;
 		Array<Arc<Fiber>> m_fibers;
 
-		MPMCQueue<Job> m_high_priority;
-		MPMCQueue<Job> m_normal_priority;
-		MPMCQueue<Job> m_low_priority;
+		MPMC<Job> m_high_priority;
+		MPMC<Job> m_normal_priority;
+		MPMC<Job> m_low_priority;
 	};
 } // namespace Grizzly::Core

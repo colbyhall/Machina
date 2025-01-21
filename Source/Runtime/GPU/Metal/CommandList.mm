@@ -17,10 +17,10 @@ namespace Grizzly::GPU {
 		}
 	}
 
-	Unique<Receipt> MetalCommandList::submit() const {
+	Arc<Receipt> MetalCommandList::submit() const {
 		@autoreleasepool {
 			[m_command_buffer commit];
-			return Unique<MetalReceipt>::create(m_command_buffer);
+			return Arc<MetalReceipt>::create(m_command_buffer);
 		}
 	}
 

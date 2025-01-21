@@ -15,14 +15,14 @@ namespace Grizzly::Core {
 	// Source: Dmitry Vyukov's MPMC
 	// http://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mpmc-queue
 	template <typename T>
-	class MPMCQueue {
+	class MPMC {
 		struct Cell {
 			Atomic<usize> sequence;
 			Option<T> data;
 		};
 
 	public:
-		static MPMCQueue create(u32 capacity) {
+		static MPMC create(u32 capacity) {
 			// Verify that size is a power of 2
 			GRIZZLY_ASSERT(capacity >= 2 && (capacity & capacity - 1) == 0);
 
@@ -33,12 +33,12 @@ namespace Grizzly::Core {
 				Memory::emplace<Cell>(cell, Cell{ .sequence{ i }, .data = nullopt });
 			}
 
-			return MPMCQueue(buffer, capacity);
+			return MPMC(buffer, capacity);
 		}
-		MPMCQueue(const MPMCQueue&) = delete;
-		MPMCQueue& operator=(const MPMCQueue&) = delete;
+		MPMC(const MPMC&) = delete;
+		MPMC& operator=(const MPMC&) = delete;
 
-		GRIZZLY_ALWAYS_INLINE MPMCQueue(MPMCQueue<T>&& move) noexcept
+		GRIZZLY_ALWAYS_INLINE MPMC(MPMC<T>&& move) noexcept
 			: m_buffer(move.m_buffer)
 			, m_buffer_mask(move.m_buffer_mask)
 			, m_enqueue_pos(move.m_enqueue_pos.load(Order::Relaxed))
@@ -46,8 +46,8 @@ namespace Grizzly::Core {
 			move.m_buffer = nullptr;
 			move.m_buffer_mask = 0;
 		}
-		GRIZZLY_ALWAYS_INLINE MPMCQueue& operator=(MPMCQueue<T>&& move) noexcept {
-			~MPMCQueue();
+		GRIZZLY_ALWAYS_INLINE MPMC& operator=(MPMC<T>&& move) noexcept {
+			~MPMC();
 
 			m_buffer = move.m_buffer;
 			m_buffer_mask = move.m_buffer_mask;
@@ -64,7 +64,7 @@ namespace Grizzly::Core {
 			return *this;
 		}
 
-		~MPMCQueue() {
+		~MPMC() {
 			if (m_buffer) {
 				for (u32 i = 0; i < m_buffer_mask + 1; i += 1) {
 					m_buffer[i].~Cell();
@@ -127,7 +127,7 @@ namespace Grizzly::Core {
 			u8 internal[GRIZZLY_CACHE_LINE_SIZE];
 			CacheLinePad() : internal{} {}
 		};
-		MPMCQueue(Cell* buffer, u32 size) : m_buffer(buffer), m_buffer_mask(size - 1) {}
+		MPMC(Cell* buffer, u32 size) : m_buffer(buffer), m_buffer_mask(size - 1) {}
 
 		CacheLinePad m_pad0;
 		Cell* m_buffer;

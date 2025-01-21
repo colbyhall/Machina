@@ -15,14 +15,20 @@
 using namespace Grizzly;
 
 int main(int argc, char** argv) {
-	const auto device = GPU::Device::create({ .backend = GPU::Backend::Metal });
-	auto app = GUI::Application::create(*device);
+	auto app = Arc<GUI::Application>::create(
+		Core::TaskManager::create({
+			.thread_count = 10,
+		}),
+		GPU::Device::create({
+			.backend = GPU::Backend::Metal,
+		}));
+	auto& task_manager = app->task_manager();
+	auto& device = app->device();
 
-	const auto task_manager = Core::TaskManager::create();
-	using Priority = Core::TaskManager::Priority;
-	const auto future = task_manager->schedule<void>(Priority::Normal, []() { dbgln(u8"hello world"sv); });
-
-	const auto window = app.create<GUI::Window>({
+	for (int i = 0; i < 1000; i += 1) {
+		const auto future = task_manager.schedule<void>([]() { dbgln(u8"hello world"sv); });
+	}
+	const auto window = app->create<GUI::Window>({
 		.title = u8"Hello World"sv,
 		.size = { 1280, 720 },
 	});
@@ -60,11 +66,11 @@ int main(int argc, char** argv) {
 			return float4(fragment_in.color, 1.0);
 		}
 	)"sv;
-	const auto library = device->create_library_from_source(shader_source);
+	const auto library = device.create_library_from_source(shader_source);
 	const auto vertex_shader = library->create_vertex_shader(u8"vertex_main"sv);
 	const auto fragment_shader = library->create_fragment_shader(u8"fragment_main"sv);
 
-	const auto graphics_pipeline = device->create_graphics_pipeline({
+	const auto graphics_pipeline = device.create_graphics_pipeline({
 		.vertex_shader = *vertex_shader,
 		.fragment_shader = *fragment_shader,
 		.color_attachments = {
@@ -73,12 +79,12 @@ int main(int argc, char** argv) {
 	});
 
 	f64 time = 0;
-	return app.run([&](f64 delta_time) {
+	return GUI::run(*app, [&](f64 delta_time) {
 		time += delta_time;
 
 		const auto backbuffer = window->swapchain().next_back_buffer();
-		const auto command_list = device->record([&](auto& cr) {
-			const auto vertices = device->create_buffer({
+		const auto command_list = device.record([&](auto& cr) {
+			const auto vertices = device.create_buffer({
 				.usage = GPU::Buffer::Usage::Vertex,
 				.heap = GPU::Buffer::Heap::Upload,
 				.len = 3,
@@ -110,6 +116,6 @@ int main(int argc, char** argv) {
 			});
 		});
 		const auto receipt = command_list->submit();
-		backbuffer->present(receipt);
+		backbuffer->present(*receipt);
 	});
 }

@@ -77,15 +77,34 @@ namespace Grizzly::Core {
 	public:
 		using Counter = SharedCounter<Type>;
 
-		explicit Shared()
-			requires DefaultInitializable<Base>
-			: Shared{ Base{} } {}
+		explicit Shared() : Shared{ Base{} } {}
 
 		template <typename... Args>
 		static GRIZZLY_ALWAYS_INLINE Shared<Base, Type> create(Args&&... args)
 			requires ConstructibleFrom<Base, Args...>
 		{
-			return Shared<Base, Type>{ Grizzly::move(Base{ Grizzly::forward<Args>(args)... }) };
+			struct Combined {
+				SharedCounter<Type> counter;
+				Base base;
+			};
+
+			const auto layout = Memory::Layout::single<Combined>();
+			Combined* ptr = Memory::emplace<Combined>(
+				Memory::alloc(layout),
+				Combined{
+					.counter = SharedCounter<Type>{},
+					.base = Base{ Grizzly::forward<Args>(args)... },
+				});
+
+			auto* counter = &ptr->counter;
+			auto* base = &ptr->base;
+
+			const auto result = Shared<Base, Type>(counter, base);
+			if constexpr (is_base_of<SharedFromThisBase, Base>) {
+				base->m_this = result.downgrade();
+			}
+
+			return result;
 		}
 
 		Shared(const Shared& copy) noexcept : m_counter(copy.m_counter), m_base(copy.m_base) {
@@ -237,24 +256,6 @@ namespace Grizzly::Core {
 
 	private:
 		explicit Shared(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
-		explicit Shared(Base&& base)
-			requires Movable<Base>
-		{
-			struct Combined {
-				SharedCounter<Type> counter;
-				Base base;
-			};
-
-			const auto layout = Memory::Layout::single<Combined>();
-			Combined* ptr =
-				Memory::emplace<Combined>(Memory::alloc(layout), SharedCounter<Type>{}, Grizzly::forward<Base>(base));
-
-			m_counter = &ptr->counter;
-			m_base = &ptr->base;
-			if constexpr (is_base_of<SharedFromThisBase, Base>) {
-				m_base->m_this = downgrade();
-			}
-		}
 
 		template <typename, SharedType>
 		friend class Shared;

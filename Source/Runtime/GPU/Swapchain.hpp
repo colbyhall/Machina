@@ -14,7 +14,7 @@
 namespace Grizzly::GPU {
 	class Backbuffer;
 
-	class Swapchain : public RcFromThis<Swapchain> {
+	class Swapchain {
 	public:
 		using Owner = void*;
 

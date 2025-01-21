@@ -29,7 +29,7 @@ namespace Grizzly::GPU {
 		Wrap address_w = Wrap::Clamp;
 	};
 
-	class Texture : public Resource, public RcFromThis<Texture> {
+	class Texture : public Resource, public ArcFromThis<Texture> {
 	public:
 		enum class Usage : u8 {
 			TransferSrc = (1 << 0),

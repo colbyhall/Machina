@@ -25,16 +25,16 @@ namespace Grizzly::GPU {
 		Present,
 	};
 
-	class Receipt {
+	class Receipt : public ArcFromThis<Receipt> {
 	public:
 		virtual void wait_until_complete() const = 0;
 
 		virtual ~Receipt() {}
 	};
 
-	class CommandList : public RcFromThis<CommandList> {
+	class CommandList : public ArcFromThis<CommandList> {
 	public:
-		GRIZZLY_NO_DISCARD virtual Unique<Receipt> submit() const = 0;
+		GRIZZLY_NO_DISCARD virtual Arc<Receipt> submit() const = 0;
 
 		virtual ~CommandList() {}
 	};

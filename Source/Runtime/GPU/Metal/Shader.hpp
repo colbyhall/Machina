@@ -16,8 +16,8 @@ namespace Grizzly::GPU {
 	public:
 		explicit MetalLibrary(id<MTLLibrary> library) : m_library(library) {}
 
-		Rc<VertexShader> create_vertex_shader(StringView function_name) final;
-		Rc<FragmentShader> create_fragment_shader(StringView function_name) final;
+		Arc<VertexShader> create_vertex_shader(StringView function_name) const final;
+		Arc<FragmentShader> create_fragment_shader(StringView function_name) const final;
 
 	private:
 		Core::Protocol m_library; // MTLLibrary
