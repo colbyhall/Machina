@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Core/Async/TaskManager.hpp>
+#include <Core/Async/Scheduler.hpp>
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/Shared.hpp>
 #include <Core/Containers/Unique.hpp>
@@ -15,9 +15,9 @@
 namespace Grizzly::GUI {
 	class Application {
 	public:
-		explicit Application(Arc<Core::TaskManager>&& task_manager, Arc<GPU::Device>&& device);
+		explicit Application(Arc<Core::Scheduler>&& scheduler, Arc<GPU::Device>&& device);
 
-		GRIZZLY_ALWAYS_INLINE Core::TaskManager const& task_manager() const { return *m_task_manager; }
+		GRIZZLY_ALWAYS_INLINE Core::Scheduler const& scheduler() const { return *m_scheduler; }
 		GRIZZLY_ALWAYS_INLINE GPU::Device const& device() const { return *m_device; }
 
 		template <typename T>
@@ -26,7 +26,7 @@ namespace Grizzly::GUI {
 		}
 
 	private:
-		Arc<Core::TaskManager> m_task_manager;
+		Arc<Core::Scheduler> m_scheduler;
 		Arc<GPU::Device> m_device;
 	};
 

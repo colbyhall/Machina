@@ -4,10 +4,10 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Async/TaskManager.hpp>
+#include <Core/Async/Scheduler.hpp>
 
 namespace Grizzly::Core {
-	Task::Task(TaskManager const& owner) : m_owner(owner.to_shared()) {}
+	Task::Task(Scheduler const& owner) : m_owner(owner.to_shared()) {}
 
 	TaskList::Builder& TaskList::Builder::add(Task const& task) {
 		m_tasks.push(task.to_shared());
@@ -49,27 +49,28 @@ namespace Grizzly::Core {
 		}
 	}
 
-	Arc<TaskManager> TaskManager::create(CreateInfo const& create_info) {
-		const Arc<TaskManager> task_manager = Arc<TaskManager>::create(TaskManager{
+	Arc<Scheduler> Scheduler::create(CreateInfo const& create_info) {
+		const auto scheduler = Arc<Scheduler>::create(Scheduler{
 			MPMC<Job>::create(create_info.high_priority_count),
 			MPMC<Job>::create(create_info.normal_priority_count),
 			MPMC<Job>::create(create_info.low_priority_count),
 		});
-		auto& mut_task_manager = task_manager.unsafe_get_mut();
-		mut_task_manager.m_threads.reserve(create_info.thread_count);
+		auto& mut_scheduler = scheduler.unsafe_get_mut();
+		mut_scheduler.m_threads.reserve(create_info.thread_count);
 
-		mut_task_manager.m_threads.push(Thread::current().to_shared());
+		mut_scheduler.m_threads.push(Thread::current().to_shared());
+
 		for (u32 i = 0; i < create_info.thread_count - 1; i += 1) {
-			auto thread = Thread::spawn([task_manager]() {
+			auto thread = Thread::spawn([scheduler]() {
 				bool running = true;
 				while (running) {
-					const auto state = task_manager->m_state.load();
+					const auto state = scheduler->m_state.load();
 
 					switch (state) {
 					case State::Starting: {
 					} break;
 					case State::Running: {
-						auto job = task_manager->m_high_priority.pop();
+						auto job = scheduler->m_high_priority.pop();
 						if (job.is_set()) {
 							auto f = job.unwrap();
 							f();
@@ -78,14 +79,14 @@ namespace Grizzly::Core {
 
 						// Look for finished task
 
-						job = task_manager->m_normal_priority.pop();
+						job = scheduler->m_normal_priority.pop();
 						if (job.is_set()) {
 							auto f = job.unwrap();
 							f();
 							continue;
 						}
 
-						job = task_manager->m_low_priority.pop();
+						job = scheduler->m_low_priority.pop();
 						if (job.is_set()) {
 							auto f = job.unwrap();
 							f();
@@ -98,13 +99,13 @@ namespace Grizzly::Core {
 					}
 				}
 			});
-			mut_task_manager.m_threads.push(Grizzly::move(thread));
+			mut_scheduler.m_threads.push(Grizzly::move(thread));
 		}
 
-		task_manager->m_state.store(State::Running);
+		scheduler->m_state.store(State::Running);
 
-		return task_manager;
+		return scheduler;
 	}
 
-	bool TaskManager::wait_until(Duration const& duration, Task const& task) const { return false; }
+	bool Scheduler::wait_until(Duration const& duration, Task const& task) const { return false; }
 } // namespace Grizzly::Core

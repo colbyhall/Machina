@@ -4,7 +4,6 @@
  * This software is released under the MIT License.
  */
 
-#include "Core/Async/TaskManager.hpp"
 #include <Core/Debug/Assertions.hpp>
 #include <Core/Time.hpp>
 #include <GUI/Application.hpp>
@@ -19,8 +18,8 @@
 
 @end // GrizzlyApplicationDelegate
 namespace Grizzly::GUI {
-	Application::Application(Arc<Core::TaskManager>&& task_manager, Arc<GPU::Device>&& device)
-		: m_task_manager(Grizzly::forward<Arc<Core::TaskManager>>(task_manager))
+	Application::Application(Arc<Core::Scheduler>&& scheduler, Arc<GPU::Device>&& device)
+		: m_scheduler(Grizzly::forward<Arc<Core::Scheduler>>(scheduler))
 		, m_device(Grizzly::forward<Arc<GPU::Device>>(device)) {
 
 		@autoreleasepool {

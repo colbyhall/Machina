@@ -15,11 +15,11 @@
 #include <Core/Time.hpp>
 
 namespace Grizzly::Core {
-	class TaskManager;
+	class Scheduler;
 
 	class Task : public ArcFromThis<Task> {
 	public:
-		explicit Task(TaskManager const& owner);
+		explicit Task(Scheduler const& owner);
 
 		enum class Status : u8 { NotStarted, InProgress, Complete };
 		GRIZZLY_NO_DISCARD virtual Status status() const = 0;
@@ -27,21 +27,21 @@ namespace Grizzly::Core {
 		virtual ~Task() {}
 
 	private:
-		Arc<TaskManager> m_owner;
+		Arc<Scheduler> m_owner;
 	};
 
 	class TaskList final : public Task {
 	public:
 		class Builder {
 		public:
-			explicit Builder(TaskManager const& owner) : m_owner(owner) {}
+			explicit Builder(Scheduler const& owner) : m_owner(owner) {}
 
 			Builder& add(Task const& task);
 
 			Arc<TaskList> finish();
 
 		private:
-			TaskManager const& m_owner;
+			Scheduler const& m_owner;
 			Array<Arc<Task>> m_tasks;
 		};
 
@@ -51,7 +51,7 @@ namespace Grizzly::Core {
 		}
 
 	private:
-		explicit TaskList(TaskManager const& owner, Array<Arc<Task>>&& tasks)
+		explicit TaskList(Scheduler const& owner, Array<Arc<Task>>&& tasks)
 			: Task(owner)
 			, m_tasks(Grizzly::move(tasks)) {}
 		friend class Builder;
@@ -62,7 +62,7 @@ namespace Grizzly::Core {
 	template <typename T>
 	class Future final : public Task {
 	public:
-		explicit Future(TaskManager const& owner) : Task(owner) {}
+		explicit Future(Scheduler const& owner) : Task(owner) {}
 
 		Status status() const final { return m_status.load(); }
 
@@ -76,7 +76,7 @@ namespace Grizzly::Core {
 			GRIZZLY_ASSERT(updated);
 		}
 
-		friend class ThreadExecutor;
+		friend class Scheduler;
 		Atomic<Status> m_status{ Status::NotStarted };
 		Option<T> m_value;
 	};
@@ -84,7 +84,7 @@ namespace Grizzly::Core {
 	template <>
 	class Future<void> final : public Task {
 	public:
-		explicit Future(TaskManager const& owner) : Task(owner) {}
+		explicit Future(Scheduler const& owner) : Task(owner) {}
 		Status status() const final { return m_status.load(); }
 
 	private:
@@ -96,11 +96,11 @@ namespace Grizzly::Core {
 			GRIZZLY_ASSERT(updated);
 		}
 
-		friend class TaskManager;
+		friend class Scheduler;
 		Atomic<Status> m_status{ Status::NotStarted };
 	};
 
-	class TaskManager final : public ArcFromThis<TaskManager> {
+	class Scheduler final : public ArcFromThis<Scheduler> {
 	public:
 		struct CreateInfo {
 			u32 thread_count;
@@ -109,7 +109,7 @@ namespace Grizzly::Core {
 			u32 normal_priority_count = 512;
 			u32 low_priority_count = 1024;
 		};
-		static Arc<TaskManager> create(CreateInfo const& create_info);
+		static Arc<Scheduler> create(CreateInfo const& create_info);
 
 		enum class Priority : u8 { Low, Normal, High };
 		using Job = Function<void()>;
@@ -191,7 +191,7 @@ namespace Grizzly::Core {
 		}
 
 	private:
-		TaskManager(MPMC<Job>&& high_priority, MPMC<Job>&& normal_priority, MPMC<Job>&& low_priority)
+		Scheduler(MPMC<Job>&& high_priority, MPMC<Job>&& normal_priority, MPMC<Job>&& low_priority)
 			: m_high_priority(Grizzly::move(high_priority))
 			, m_normal_priority(Grizzly::move(normal_priority))
 			, m_low_priority(Grizzly::move(low_priority)) {}

@@ -4,7 +4,7 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Async/TaskManager.hpp>
+#include <Core/Async/Scheduler.hpp>
 #include <Core/Debug/Log.hpp>
 #include <Core/Math/Vector3.hpp>
 #include <Core/Memory.hpp>
@@ -16,17 +16,17 @@ using namespace Grizzly;
 
 int main(int argc, char** argv) {
 	auto app = Arc<GUI::Application>::create(
-		Core::TaskManager::create({
+		Core::Scheduler::create({
 			.thread_count = 10,
 		}),
 		GPU::Device::create({
 			.backend = GPU::Backend::Metal,
 		}));
-	auto& task_manager = app->task_manager();
+	auto& scheduler = app->scheduler();
 	auto& device = app->device();
 
 	for (int i = 0; i < 1000; i += 1) {
-		const auto future = task_manager.schedule<void>([]() { dbgln(u8"hello world"sv); });
+		const auto future = scheduler.schedule<void>([]() { dbgln(u8"hello world"sv); });
 	}
 	const auto window = app->create<GUI::Window>({
 		.title = u8"Hello World"sv,
