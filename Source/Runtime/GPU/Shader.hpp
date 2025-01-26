@@ -13,6 +13,18 @@ namespace Grizzly::GPU {
 	class VertexShader;
 	class FragmentShader;
 
+	enum class ShaderLanguage : u8 {
+		MSL,
+		GLSL,
+		HLSL,
+	};
+
+	struct ShaderSource {
+		ShaderLanguage language;
+		StringView text;
+		Option<StringView> path = nullopt;
+	};
+
 	class Library : public ArcFromThis<Library> {
 	public:
 		GRIZZLY_NO_DISCARD virtual Arc<VertexShader> create_vertex_shader(StringView function_name) const = 0;

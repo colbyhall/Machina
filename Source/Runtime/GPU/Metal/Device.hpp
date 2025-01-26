@@ -20,11 +20,11 @@ namespace Grizzly::GPU {
 
 		// Device Interace
 		Unique<Swapchain> create_swapchain(Swapchain::Owner owner) const final;
-		Arc<Buffer> create_buffer(Buffer::CreateInfo const& info) const final;
-		Arc<Texture> create_texture(Texture::CreateInfo const& info) const final;
-		Arc<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) const final;
-		Arc<Library> create_library_from_source(StringView info) const final;
-		Arc<CommandList> record(FunctionRef<void(CommandRecorder&)> f) const final;
+		Handle<Buffer> create_buffer(Buffer::CreateInfo const& info) const final;
+		Handle<Texture> create_texture(Texture::CreateInfo const& info) const final;
+		Handle<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) const final;
+		Handle<Library> create_library_from_source(ShaderSource const& info) const final;
+		Handle<CommandList> record(FunctionRef<void(CommandRecorder&)> f) const final;
 		Backend backend() const final { return Backend::Metal; }
 		// ~Device Interface
 

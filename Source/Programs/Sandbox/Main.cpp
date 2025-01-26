@@ -23,16 +23,8 @@ int main(int argc, char** argv) {
 		GPU::Device::create({
 			.backend = GPU::Backend::Metal,
 		}));
-	auto& scheduler = app->scheduler();
 	auto& device = app->device();
 
-	Core::SpinlockMutex<i32> mutex{ 0 };
-	for (int i = 0; i < 1; i += 1) {
-		const auto future = scheduler.schedule<void>([&mutex]() {
-			const auto guard = mutex.lock();
-			*guard += 1;
-		});
-	}
 	const auto window = app->create<GUI::Window>({
 		.title = u8"Hello World"sv,
 		.size = { 1280, 720 },
@@ -71,7 +63,10 @@ int main(int argc, char** argv) {
 			return float4(fragment_in.color, 1.0);
 		}
 	)"sv;
-	const auto library = device.create_library_from_source(shader_source);
+	const auto library = device.create_library_from_source({
+		.language = GPU::ShaderLanguage::MSL,
+		.text = shader_source,
+	});
 	const auto vertex_shader = library->create_vertex_shader(u8"vertex_main"sv);
 	const auto fragment_shader = library->create_fragment_shader(u8"fragment_main"sv);
 

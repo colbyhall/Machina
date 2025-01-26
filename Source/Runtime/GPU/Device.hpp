@@ -26,6 +26,9 @@ namespace Grizzly::GPU {
 		Vulkan,
 	};
 
+	template <typename T>
+	using Handle = Arc<T>;
+
 	/**
 	 * An abstraction for interacting with a graphics API.
 	 *
@@ -41,7 +44,7 @@ namespace Grizzly::GPU {
 		 * @brief Create a device with the given create info.
 		 *
 		 * @param create_info The create info for the device.
-		 * @return Rc<Device> The created device.
+		 * @return Arc<Device> The created device.
 		 */
 		GRIZZLY_NO_DISCARD static Arc<Device> create(CreateInfo const& create_info);
 
@@ -57,24 +60,24 @@ namespace Grizzly::GPU {
 		 * @brief Creates a buffer.
 		 *
 		 * @param info The data structure containg the immutable details of the buffer.
-		 * @return Rc<Buffer> The created buffer.
+		 * @return Handle<Buffer> The created buffer.
 		 */
-		GRIZZLY_NO_DISCARD virtual Arc<Buffer> create_buffer(Buffer::CreateInfo const& info) const = 0;
+		GRIZZLY_NO_DISCARD virtual Handle<Buffer> create_buffer(Buffer::CreateInfo const& info) const = 0;
 
 		/**
 		 * @brief Creates a texture.
 		 *
 		 * @param info The data structure containg the immutable details of the texture.
-		 * @return Rc<Texture> The created texture.
+		 * @return Handle<Texture> The created texture.
 		 */
-		GRIZZLY_NO_DISCARD virtual Arc<Texture> create_texture(Texture::CreateInfo const& info) const = 0;
+		GRIZZLY_NO_DISCARD virtual Handle<Texture> create_texture(Texture::CreateInfo const& info) const = 0;
 
-		GRIZZLY_NO_DISCARD virtual Arc<Library> create_library_from_source(StringView source) const = 0;
+		GRIZZLY_NO_DISCARD virtual Handle<Library> create_library_from_source(ShaderSource const& source) const = 0;
 
-		GRIZZLY_NO_DISCARD virtual Arc<GraphicsPipeline>
+		GRIZZLY_NO_DISCARD virtual Handle<GraphicsPipeline>
 		create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) const = 0;
 
-		GRIZZLY_NO_DISCARD virtual Arc<CommandList> record(FunctionRef<void(CommandRecorder&)> f) const = 0;
+		GRIZZLY_NO_DISCARD virtual Handle<CommandList> record(FunctionRef<void(CommandRecorder&)> f) const = 0;
 
 		/**
 		 * @brief Get the backend of the device.
