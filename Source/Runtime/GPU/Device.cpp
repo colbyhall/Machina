@@ -8,8 +8,9 @@
 #include <GPU/Device.hpp>
 
 namespace Grizzly::GPU {
-	// GPU/Metal/Device.hpp contains Objective-C. We can't use a static method to create the device
-	// so forwrds declare the function here.
+	// Ideally the api users would create a GPU::Device by using `Arc<GPU::BackendDevice>::create(info)`. Metals headers
+	// currently contain Objective-C code that if leaked to a non Objective-C++ translation unit would cause a
+	// compilation fail. The goal is to not need Objective-C code outside of platform abstractions.
 	Arc<Device> create_metal_device(Device::CreateInfo const& create_info);
 
 	Arc<Device> Device::create(const CreateInfo& create_info) {
