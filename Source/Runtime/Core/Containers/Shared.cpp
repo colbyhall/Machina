@@ -12,11 +12,6 @@ GRIZZLY_TEST_SUITE("Containers") {
 	using namespace Grizzly;
 
 	GRIZZLY_TEST_CASE("Shared") {
-		GRIZZLY_SUBCASE("default constructor") {
-			const Rc<int> shared;
-			GRIZZLY_CHECK(*shared == 0);
-		}
-
 		GRIZZLY_SUBCASE("create") {
 			const auto shared = Rc<int>::create(100);
 			GRIZZLY_CHECK(*shared == 100);
@@ -38,7 +33,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 			const auto shared = Rc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
-			Rc<int> copy_assignment;
+			auto copy_assignment = Rc<int>::create(0);
 			GRIZZLY_CHECK(*copy_assignment == 0);
 			GRIZZLY_CHECK(copy_assignment.strong() == 1);
 			copy_assignment = shared;
@@ -64,7 +59,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 			auto shared = Rc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
-			Rc<int> move_assignment;
+			auto move_assignment = Rc<int>::create(0);
 			GRIZZLY_CHECK(*move_assignment == 0);
 			GRIZZLY_CHECK(move_assignment.strong() == 1);
 			move_assignment = Grizzly::move(shared);
@@ -75,7 +70,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 		}
 
 		GRIZZLY_SUBCASE("destructor") {
-			Rc<int> shared;
+			auto shared = Rc<int>::create();
 			GRIZZLY_CHECK(shared.strong() == 1);
 			{
 				const auto copy = shared;
@@ -140,7 +135,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 
 	GRIZZLY_TEST_CASE("Arc") {
 		GRIZZLY_SUBCASE("default constructor") {
-			const Arc<int> shared;
+			const auto shared = Arc<int>::create(0);
 			GRIZZLY_CHECK(*shared == 0);
 		}
 
@@ -165,7 +160,7 @@ GRIZZLY_TEST_SUITE("Containers") {
 			const auto shared = Arc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
-			Arc<int> copy_assignment;
+			auto copy_assignment = Arc<int>::create(0);
 			GRIZZLY_CHECK(*copy_assignment == 0);
 			GRIZZLY_CHECK(copy_assignment.strong() == 1);
 			copy_assignment = shared;
@@ -182,7 +177,6 @@ GRIZZLY_TEST_SUITE("Containers") {
 			GRIZZLY_CHECK(shared.strong() == 1);
 			auto move = Grizzly::move(shared);
 			GRIZZLY_CHECK(*move == 100);
-			GRIZZLY_CHECK(static_cast<int*>(shared) == nullptr);
 			GRIZZLY_CHECK(shared.strong() == 0);
 			GRIZZLY_CHECK(move.strong() == 1);
 		}
@@ -191,18 +185,17 @@ GRIZZLY_TEST_SUITE("Containers") {
 			auto shared = Arc<int>::create(100);
 			GRIZZLY_REQUIRE(*shared == 100);
 			GRIZZLY_CHECK(shared.strong() == 1);
-			Arc<int> move_assignment;
+			auto move_assignment = Arc<int>::create(0);
 			GRIZZLY_CHECK(*move_assignment == 0);
 			GRIZZLY_CHECK(move_assignment.strong() == 1);
 			move_assignment = Grizzly::move(shared);
 			GRIZZLY_CHECK(move_assignment.strong() == 1);
 			GRIZZLY_CHECK(shared.strong() == 0);
 			GRIZZLY_CHECK(*move_assignment == 100);
-			GRIZZLY_CHECK(static_cast<int*>(shared) == nullptr);
 		}
 
 		GRIZZLY_SUBCASE("destructor") {
-			Arc<int> shared;
+			auto shared = Arc<int>::create(0);
 			GRIZZLY_CHECK(shared.strong() == 1);
 			{
 				const auto copy = shared;

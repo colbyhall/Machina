@@ -16,14 +16,24 @@
 using namespace Grizzly;
 
 int main(int argc, char** argv) {
-	auto app = Arc<GUI::Application>::create(
-		Core::Scheduler::create({
-			.thread_count = 10,
-		}),
-		GPU::Device::create({
-			.backend = GPU::Backend::Metal,
-		}));
-	auto& device = app->device();
+	auto scheduler = Core::Scheduler::create({
+		.thread_count = 10,
+		.fiber_count = 512,
+		.waiting_count = 1024,
+	});
+	auto device = GPU::Device::create({
+		.backend = GPU::Backend::Metal,
+	});
+	auto app = Arc<GUI::Application>::create(*scheduler, *device);
+
+	app->scheduler().schedule([app]() {
+		dbgln(u8"Hello World1"sv);
+		auto future = app->scheduler().schedule<u32>(Core::Scheduler::Priority::Normal, []() {
+			dbgln(u8"Hello World2"sv);
+			return 0;
+		});
+		app->scheduler().wait_for(*future);
+	});
 
 	const auto window = app->create<GUI::Window>({
 		.title = u8"Hello World"sv,
@@ -63,18 +73,18 @@ int main(int argc, char** argv) {
 			return float4(fragment_in.color, 1.0);
 		}
 	)"sv;
-	const auto library = device.create_library_from_source({
+	const auto library = device->create_library_from_source({
 		.language = GPU::ShaderLanguage::MSL,
 		.text = shader_source,
 	});
 	const auto vertex_shader = library->create_vertex_shader(u8"vertex_main"sv);
 	const auto fragment_shader = library->create_fragment_shader(u8"fragment_main"sv);
 
-	const auto graphics_pipeline = device.create_graphics_pipeline({
+	const auto graphics_pipeline = device->create_graphics_pipeline({
 		.vertex_shader = *vertex_shader,
 		.fragment_shader = *fragment_shader,
 		.color_attachments = {
-			{ .format = GPU::Texture::Format::BGRA_U8_SRGB },
+			{ .format = GPU::Format::BGRA_U8_SRGB },
 		},
 	});
 
@@ -83,10 +93,10 @@ int main(int argc, char** argv) {
 		time += delta_time;
 
 		const auto backbuffer = window->swapchain().next_back_buffer();
-		const auto command_list = device.record([&](auto& cr) {
-			const auto vertices = device.create_buffer({
+		const auto command_list = device->record([&](auto& cr) {
+			const auto vertices = device->create_buffer({
 				.usage = GPU::Buffer::Usage::Vertex,
-				.heap = GPU::Buffer::Heap::Upload,
+				.heap = GPU::Heap::Upload,
 				.len = 3,
 				.stride = sizeof(Vector3<f32>),
 			});

@@ -29,6 +29,7 @@ namespace Grizzly::Core {
 
 		void join() final;
 		void detach() final;
+		Id id() const final;
 		~PosixThread() final;
 		GRIZZLY_ALWAYS_INLINE bool is_ready() const { return m_ready.load(); }
 

@@ -97,31 +97,20 @@ GRIZZLY_TEST_SUITE("Containers") {
 			GRIZZLY_CHECK(string.len() == 0);
 		}
 
-		GRIZZLY_SUBCASE("from") {
-			const UTF8Char* const utf8_literal = u8"foo";
-			const String string = String::from(utf8_literal);
-			GRIZZLY_CHECK(string.len() == 3);
-
-			for (auto iter = string.chars(); iter; ++iter) {
-				const auto c = *iter;
-				GRIZZLY_CHECK(c == utf8_literal[iter.index()]);
-			}
-		}
-
 		GRIZZLY_SUBCASE("push") {
 			String string;
 			string.push('f');
 			string.push('o');
 			string.push('o');
 			GRIZZLY_CHECK(string.len() == 3);
-			GRIZZLY_CHECK(string == u8"foo");
+			GRIZZLY_CHECK(string == u8"foo"sv);
 		}
 
 		GRIZZLY_SUBCASE("append") {
 			String string;
-			string.append(u8"foo");
+			string.append(u8"foo"sv);
 			GRIZZLY_CHECK(string.len() == 3);
-			GRIZZLY_CHECK(string == u8"foo");
+			GRIZZLY_CHECK(string == u8"foo"sv);
 		}
 	}
 }

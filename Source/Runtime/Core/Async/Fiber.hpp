@@ -27,7 +27,7 @@ namespace Grizzly::Core {
 		Fiber(Fiber&&) = default;
 		Fiber& operator=(Fiber&&) = default;
 
-		void switch_to();
+		void switch_to() const;
 
 	private:
 		struct Registers {
@@ -39,12 +39,19 @@ namespace Grizzly::Core {
 	#error Unsupported CPU architecture
 #endif
 		};
-		explicit Fiber(Registers&& registers) : m_registers(Grizzly::move(registers)) {}
+		enum class State : u8 {
+			InUse,
+			Switching,
+			Dormant,
+		};
+		explicit Fiber(Registers&& registers) : m_registers(Grizzly::move(registers)), m_state{ State::InUse } {}
 		explicit Fiber(Registers&& registers, Unique<u8[]>&& stack)
 			: m_registers(Grizzly::move(registers))
-			, m_stack(Grizzly::move(stack)) {}
+			, m_stack(Grizzly::move(stack))
+			, m_state{ State::Dormant } {}
 
 		Registers m_registers;
 		Option<Unique<u8[]>> m_stack;
+		Atomic<State> m_state{ State::Dormant };
 	};
 } // namespace Grizzly::Core

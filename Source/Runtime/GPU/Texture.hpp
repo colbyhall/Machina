@@ -29,6 +29,23 @@ namespace Grizzly::GPU {
 		Wrap address_w = Wrap::Clamp;
 	};
 
+	enum class Format {
+		Undefined,
+
+		R_U8,
+
+		RGBA_U8,
+		RGBA_U8_SRGB,
+
+		RGBA_F16,
+		RGBA_F32,
+
+		BGRA_U8_SRGB,
+
+		Depth16,
+		Depth24_Stencil8,
+	};
+
 	class Texture : public Resource, public ArcFromThis<Texture> {
 	public:
 		enum class Usage : u8 {
@@ -38,23 +55,6 @@ namespace Grizzly::GPU {
 			ColorAttachment = (1 << 3),
 			DepthAttachment = (1 << 4),
 			Swapchain = (1 << 5),
-		};
-
-		enum class Format {
-			Undefined,
-
-			R_U8,
-
-			RGBA_U8,
-			RGBA_U8_SRGB,
-
-			RGBA_F16,
-			RGBA_F32,
-
-			BGRA_U8_SRGB,
-
-			Depth16,
-			Depth24_Stencil8,
 		};
 
 		struct CreateInfo {
@@ -67,7 +67,6 @@ namespace Grizzly::GPU {
 		GRIZZLY_ALWAYS_INLINE Usage usage() const { return m_usage; }
 		GRIZZLY_ALWAYS_INLINE Format format() const { return m_format; }
 		GRIZZLY_ALWAYS_INLINE Vector3<u32> size() const { return m_size; }
-		virtual ~Texture() {}
 
 	protected:
 		explicit Texture(CreateInfo const& create_info)

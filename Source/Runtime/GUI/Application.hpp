@@ -15,10 +15,10 @@
 namespace Grizzly::GUI {
 	class Application {
 	public:
-		explicit Application(Arc<Core::Scheduler>&& scheduler, Arc<GPU::Device>&& device);
+		explicit Application(const Core::Scheduler& scheduler, const GPU::Device& device);
 
-		GRIZZLY_ALWAYS_INLINE Core::Scheduler const& scheduler() const { return *m_scheduler; }
-		GRIZZLY_ALWAYS_INLINE GPU::Device const& device() const { return *m_device; }
+		GRIZZLY_ALWAYS_INLINE Core::Scheduler const& scheduler() const { return m_scheduler; }
+		GRIZZLY_ALWAYS_INLINE GPU::Device const& device() const { return m_device; }
 
 		template <typename T>
 		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Rc<T> create(T::CreateInfo const& create_info) const {
@@ -26,8 +26,8 @@ namespace Grizzly::GUI {
 		}
 
 	private:
-		Arc<Core::Scheduler> m_scheduler;
-		Arc<GPU::Device> m_device;
+		Core::Scheduler const& m_scheduler;
+		GPU::Device const& m_device;
 	};
 
 	int run(Application const& application, FunctionRef<void(float delta_time)> tick);

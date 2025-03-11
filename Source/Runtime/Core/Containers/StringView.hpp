@@ -94,7 +94,8 @@ namespace Grizzly::Core {
 
 namespace Grizzly {
 	using Core::StringView;
-	constexpr StringView operator""sv(const Core::UTF8Char* literal, usize length) noexcept {
-		return StringView(literal, length);
-	}
 } // namespace Grizzly
+
+constexpr Grizzly::StringView operator""sv(const Grizzly::Core::UTF8Char* literal, Grizzly::usize length) noexcept {
+	return Grizzly::StringView(literal, length);
+}

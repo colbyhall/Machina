@@ -86,10 +86,12 @@ namespace Grizzly::Core {
 		Base* m_ptr;
 	};
 
-	template <DefaultInitializable T>
+	template <typename T>
 	class Unique<T[]> {
 	public:
-		static GRIZZLY_ALWAYS_INLINE Unique create(usize len) {
+		static GRIZZLY_ALWAYS_INLINE Unique create(usize len)
+			requires DefaultInitializable<T>
+		{
 			GRIZZLY_ASSERT(len > 0);
 			const auto memory = Memory::alloc(Memory::Layout::array<T>(len));
 			T* const ptr = reinterpret_cast<T*>(*memory);

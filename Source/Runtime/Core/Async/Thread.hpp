@@ -27,6 +27,7 @@ namespace Grizzly::Core {
 
 		virtual void join() = 0;
 		virtual void detach() = 0;
+		virtual Id id() const = 0;
 
 		virtual ~Thread() {}
 	};

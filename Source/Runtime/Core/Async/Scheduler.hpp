@@ -71,7 +71,8 @@ namespace Grizzly::Core {
 			return m_status.compare_exchange_weak(Status::NotStarted, Status::InProgress).is_set();
 		}
 		void finish(T&& t) const {
-			m_value = Grizzly::forward<T>(t);
+			auto* mut_self = const_cast<Future<T>*>(this);
+			mut_self->m_value = Grizzly::forward<T>(t);
 			const bool updated = m_status.compare_exchange_weak(Status::InProgress, Status::Complete).is_set();
 			GRIZZLY_ASSERT(updated);
 		}
@@ -105,6 +106,9 @@ namespace Grizzly::Core {
 		struct CreateInfo {
 			u32 thread_count;
 
+			u32 fiber_count;
+			u32 waiting_count;
+
 			u32 high_priority_count = 256;
 			u32 normal_priority_count = 512;
 			u32 low_priority_count = 1024;
@@ -114,73 +118,33 @@ namespace Grizzly::Core {
 		enum class Priority : u8 { Low, Normal, High };
 		using Job = Function<void()>;
 
-		template <typename T>
-		GRIZZLY_NO_DISCARD Arc<Future<T>> schedule(Function<T()>&& f) const {
-			return schedule(Priority::Normal, Grizzly::forward<Function<T()>>(f));
+		Arc<Future<void>> schedule(Function<void()>&& f) const {
+			return schedule(Priority::Normal, Grizzly::forward<Function<void()>>(f));
 		}
 
 		template <typename T>
 		GRIZZLY_NO_DISCARD Arc<Future<T>> schedule(Priority priority, Function<T()>&& f) const {
+			auto future = Arc<Future<T>>::create(*this);
+			auto& queue = m_work_queue.get(priority);
 			if constexpr (Core::is_same<T, void>) {
-				auto future = Arc<Future<T>>::create(*this);
-
 				Function<void()> job = [f = Grizzly::move(f), future = future]() {
 					const bool successful = future->start();
 					GRIZZLY_ASSERT(successful);
 					f();
 					future->finish();
 				};
-
-				MPMC<Job> const* queue = nullptr;
-				switch (priority) {
-				case Priority::Low:
-					queue = &m_low_priority;
-					break;
-				case Priority::Normal:
-					queue = &m_normal_priority;
-					break;
-				case Priority::High:
-					queue = &m_high_priority;
-					break;
-				default:
-					GRIZZLY_UNIMPLEMENTED;
-					break;
-				}
-				GRIZZLY_ASSERT(queue != nullptr);
-
-				queue->push(Grizzly::move(job));
-
-				return future;
+				queue.push(Grizzly::move(job));
 			} else {
-				const auto future = Arc<Future<T>>::create(*this);
+				const auto started = future->start();
+				GRIZZLY_ASSERT(started);
 
 				Function<void()> job = [f = Grizzly::move(f), future = future]() {
-					const auto result = f();
-					const bool successful = future->mark_complete(Grizzly::move(result));
-					GRIZZLY_ASSERT(successful);
+					auto result = f();
+					future->finish(Grizzly::move(result));
 				};
-
-				MPMC<Job> const* queue = nullptr;
-				switch (priority) {
-				case Priority::Low:
-					queue = &m_low_priority;
-					break;
-				case Priority::Normal:
-					queue = &m_normal_priority;
-					break;
-				case Priority::High:
-					queue = &m_high_priority;
-					break;
-				default:
-					GRIZZLY_UNIMPLEMENTED;
-					break;
-				}
-				GRIZZLY_ASSERT(queue != nullptr);
-
-				queue->push(Grizzly::move(job));
-
-				return future;
+				queue.push(Grizzly::move(job));
 			}
+			return future;
 		}
 
 		GRIZZLY_NO_DISCARD bool wait_until(Duration const& duration, Task const& task) const;
@@ -190,24 +154,76 @@ namespace Grizzly::Core {
 			GRIZZLY_UNUSED(complete);
 		}
 
+		bool is_running() const;
+
 	private:
-		Scheduler(MPMC<Job>&& high_priority, MPMC<Job>&& normal_priority, MPMC<Job>&& low_priority)
-			: m_high_priority(Grizzly::move(high_priority))
-			, m_normal_priority(Grizzly::move(normal_priority))
-			, m_low_priority(Grizzly::move(low_priority)) {}
-
-		enum class State : u8 {
-			Starting,
-			Running,
-			ShuttingDown,
+		struct ThreadController {
+			Array<Arc<Thread>> threads;
+			Atomic<u32> ready_count{ 0 };
 		};
-		Atomic<State> m_state{ State::Starting };
+		struct WaitingTask {
+			struct Inner {
+				Arc<Task> task;
+				u32 fiber;
+				Option<Thread::Id> thread;
+			};
+			enum class State : u8 {
+				Vacant,
+				Updating,
+				Filled,
+			};
+			Atomic<State> state{ State::Vacant };
+			Option<Inner> inner;
+		};
 
-		Array<Arc<Thread>> m_threads;
-		Array<Arc<Fiber>> m_fibers;
+		struct TaskTracker {
+			Unique<WaitingTask[]> waiting_task;
+			MPMC<u32> vacant_waiting_task;
+		};
 
-		MPMC<Job> m_high_priority;
-		MPMC<Job> m_normal_priority;
-		MPMC<Job> m_low_priority;
+		struct FiberController {
+			Array<Arc<Fiber>> fibers;
+			MPMC<u32> dormant_fibers;
+		};
+
+		struct WorkQueue {
+			MPMC<Job> high_priority;
+			MPMC<Job> normal_priority;
+			MPMC<Job> low_priority;
+
+			GRIZZLY_ALWAYS_INLINE MPMC<Job> const& get(Priority priority) const {
+				switch (priority) {
+				case Priority::Low:
+					return low_priority;
+					break;
+				case Priority::Normal:
+					return normal_priority;
+					break;
+				case Priority::High:
+					return high_priority;
+					break;
+				default:
+					GRIZZLY_UNIMPLEMENTED;
+					break;
+				}
+			}
+		};
+
+		void worker_main(u32 fiber_index) const;
+
+		ThreadController m_thread_controller;
+		FiberController m_fiber_controller;
+		TaskTracker m_task_tracker;
+		WorkQueue m_work_queue;
+
+		Scheduler(
+			ThreadController&& thread_controller,
+			FiberController&& fiber_controller,
+			TaskTracker&& task_tracker,
+			WorkQueue&& work_queue)
+			: m_thread_controller(Grizzly::move(thread_controller))
+			, m_fiber_controller(Grizzly::move(fiber_controller))
+			, m_task_tracker(Grizzly::move(task_tracker))
+			, m_work_queue(Grizzly::move(work_queue)) {}
 	};
 } // namespace Grizzly::Core

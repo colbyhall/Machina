@@ -87,7 +87,7 @@ namespace Grizzly::GPU {
 		};
 
 		struct ColorAttachment {
-			Texture::Format format;
+			Format format;
 
 			bool blend_enabled = false;
 
@@ -103,7 +103,7 @@ namespace Grizzly::GPU {
 		};
 
 		struct DepthAttachment {
-			Texture::Format format;
+			Format format;
 
 			bool depth_test = false;
 			bool depth_write = false;

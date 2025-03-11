@@ -12,6 +12,12 @@
 #include <GPU/Resource.hpp>
 
 namespace Grizzly::GPU {
+	enum class Heap : u8 {
+		Storage,
+		Upload,
+		Download,
+	};
+
 	class Buffer : public Resource, public ArcFromThis<Buffer> {
 	public:
 		enum class Usage : u8 {
@@ -20,12 +26,6 @@ namespace Grizzly::GPU {
 			Vertex = (1 << 2),
 			Index = (1 << 3),
 			Constant = (1 << 4),
-		};
-
-		enum class Heap : u8 {
-			Storage,
-			Upload,
-			Download,
 		};
 
 		struct CreateInfo {
@@ -41,7 +41,6 @@ namespace Grizzly::GPU {
 		GRIZZLY_ALWAYS_INLINE usize stride() const { return m_stride; }
 
 		virtual void map(FunctionRef<void(Slice<u8>)> f) const = 0;
-		virtual ~Buffer() {}
 
 	protected:
 		explicit Buffer(CreateInfo const& create_info)

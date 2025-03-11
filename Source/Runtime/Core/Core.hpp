@@ -126,4 +126,21 @@ namespace Grizzly::Core {
 	void trap();
 	GRIZZLY_NO_RETURN void abort();
 	GRIZZLY_NO_RETURN void exit(int status);
+
+	template <typename F>
+	struct Defer {
+		F f;
+		Defer(F f) : f(f) {}
+		~Defer() { f(); }
+	};
+
+	template <typename F>
+	Defer<F> defer_func(F f) {
+		return Defer<F>(f);
+	}
 } // namespace Grizzly::Core
+
+#define _GRIZZLY_DEFER_1(x, y) x##y
+#define _GRIZZLY_DEFER_2(x, y) _GRIZZLY_DEFER_1(x, y)
+#define _GRIZZLY_DEFER_3(x)	   _GRIZZLY_DEFER_2(x, __COUNTER__)
+#define GRIZZLY_DEFER(code)	   auto _GRIZZLY_DEFER_3(_defer_) = Grizzly::Core::defer_func([&]() { code; })

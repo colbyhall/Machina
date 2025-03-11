@@ -14,7 +14,7 @@
 namespace Grizzly::Core {
 	// Source: Dmitry Vyukov's MPMC
 	// http://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mpmc-queue
-	template <typename T>
+	template <Movable T>
 	class MPMC {
 		struct Cell {
 			Atomic<usize> sequence;
@@ -72,6 +72,13 @@ namespace Grizzly::Core {
 				Memory::free(m_buffer);
 				m_buffer = nullptr;
 			}
+		}
+
+		bool push(const T& t) const
+			requires Copyable<T>
+		{
+			T copy = t;
+			return push(Grizzly::move(copy));
 		}
 
 		bool push(T&& t) const {

@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Core/Core.hpp"
+#include "Core/TypeTraits.hpp"
 #include <Core/Atomic.hpp>
 #include <Core/Concepts.hpp>
 #include <Core/Memory.hpp>
@@ -76,8 +77,6 @@ namespace Grizzly::Core {
 	class Shared {
 	public:
 		using Counter = SharedCounter<Type>;
-
-		explicit Shared() : Shared{ Base{} } {}
 
 		template <typename... Args>
 		static GRIZZLY_ALWAYS_INLINE Shared<Base, Type> create(Args&&... args)

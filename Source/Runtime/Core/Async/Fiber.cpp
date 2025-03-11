@@ -42,9 +42,25 @@ namespace Grizzly::Core {
 		return *g_current_fiber.as_ref().unwrap();
 	}
 
-	void Fiber::switch_to() {
+	void Fiber::switch_to() const {
 		auto& current_fiber = current();
+
+		bool current_set_to_switching = false;
+		bool next_set_to_switching = false;
+		while (!(current_set_to_switching && next_set_to_switching)) {
+			// Convert ourselves to Switching from Dormant
+			if (m_state.compare_exchange_weak(State::Dormant, State::Switching, Order::AcqRel).is_set()) {
+				next_set_to_switching = true;
+			}
+			// Convert the current in use fiber to Switching from InUse
+			if (current_fiber.m_state.compare_exchange_weak(State::InUse, State::Switching, Order::AcqRel).is_set()) {
+				current_set_to_switching = true;
+			}
+		}
+
 		g_current_fiber = to_shared();
+		g_current_fiber.as_const_ref().unwrap()->m_state.store(State::InUse, Order::Release);
+
 		auto* current_registers = &current_fiber.m_registers;
 		auto* next_registers = &m_registers;
 #if GRIZZLY_CPU == GRIZZLY_CPU_ARM
@@ -60,6 +76,13 @@ namespace Grizzly::Core {
 			adrp x19, next@PAGE
 			add x19, x19, next@PAGEOFF
 			str x19, [%0, #80]
+			)"
+			: /* No outputs */
+			: "r"(current_registers), "r"(next_registers)
+			: "x19", "memory");
+		current_fiber.m_state.store(State::Dormant, Order::Release);
+		asm volatile(
+			R"(
 			ldp x0, x1, [%1, #0]
 			ldp x2, x3, [%1, #16]
 			ldp x4, x5, [%1, #32]

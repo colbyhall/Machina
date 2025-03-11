@@ -15,6 +15,8 @@ namespace Grizzly::GPU {
 		using BindlessIndex = u32;
 		GRIZZLY_ALWAYS_INLINE Option<BindlessIndex> bindless() const { return m_bindless; }
 
+		virtual ~Resource() {}
+
 	protected:
 		Option<BindlessIndex> m_bindless = nullopt;
 	};

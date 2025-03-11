@@ -72,6 +72,8 @@ namespace Grizzly::Core {
 		m_thread = nullptr;
 	}
 
+	Thread::Id PosixThread::id() const { return (Thread::Id)m_thread; }
+
 	PosixThread::~PosixThread() {
 		if (m_thread != nullptr) {
 			// join();

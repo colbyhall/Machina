@@ -60,19 +60,19 @@ namespace Grizzly::Core {
 			return nullopt;
 		}
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE T fetch_add(T arg, Order order = Order::SeqCst) const noexcept {
+		GRIZZLY_ALWAYS_INLINE T fetch_add(T arg, Order order = Order::SeqCst) const noexcept {
 			return m_atomic.fetch_add(arg, to_std(order));
 		}
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE T fetch_sub(T arg, Order order = Order::SeqCst) const noexcept {
+		GRIZZLY_ALWAYS_INLINE T fetch_sub(T arg, Order order = Order::SeqCst) const noexcept {
 			return m_atomic.fetch_sub(arg, to_std(order));
 		}
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE T fetch_and(T arg, Order order = Order::SeqCst) const noexcept {
+		GRIZZLY_ALWAYS_INLINE T fetch_and(T arg, Order order = Order::SeqCst) const noexcept {
 			return m_atomic.fetch_and(arg, to_std(order));
 		}
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE T fetch_or(T arg, Order order = Order::SeqCst) const noexcept {
+		GRIZZLY_ALWAYS_INLINE T fetch_or(T arg, Order order = Order::SeqCst) const noexcept {
 			return m_atomic.fetch_or(arg, to_std(order));
 		}
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE T fetch_xor(T arg, Order order = Order::SeqCst) const noexcept {
+		GRIZZLY_ALWAYS_INLINE T fetch_xor(T arg, Order order = Order::SeqCst) const noexcept {
 			return m_atomic.fetch_xor(arg, to_std(order));
 		}
 
