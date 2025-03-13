@@ -1,5 +1,5 @@
 # Set the root
-set(GUI_ROOT ${RUNTIME_ROOT}/GUI)
+set(GUI_ROOT ${SOURCE_ROOT}/GUI)
 
 # Source files
 set(GUI_SRC_FILES
@@ -24,7 +24,7 @@ elseif(WIN32)
 	)
 endif()
 
-add_runtime_library(GUI ${GUI_ROOT} ${GUI_SRC_FILES})
+add_forge_library(GUI ${GUI_ROOT} ${GUI_SRC_FILES})
 target_link_libraries(GUI Core GPU)
 
 if (APPLE)

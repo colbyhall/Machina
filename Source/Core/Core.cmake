@@ -108,9 +108,10 @@ elseif(WIN32)
 	)
 endif()
 
-add_runtime_library(Core ${CORE_ROOT} ${CORE_SRC_FILES})
-test_runtime_library(Core ${CORE_SRC_FILES})
+add_forge_library(Core ${CORE_ROOT} ${CORE_SRC_FILES})
+test_forge_library(Core ${CORE_SRC_FILES})
 
 if (WIN32)
-target_link_libraries(Core PRIVATE "dbghelp")
+	# Link dbghelp for call stack symbol loading
+	target_link_libraries(Core PRIVATE "dbghelp")
 endif()

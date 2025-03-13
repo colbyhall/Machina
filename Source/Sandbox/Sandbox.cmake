@@ -1,5 +1,5 @@
 # Set the root
-set(SANDBOX_ROOT ${PROGRAMS_ROOT}/Sandbox)
+set(SANDBOX_ROOT ${SOURCE_ROOT}/Sandbox)
 
 # Source files
 set(SANDBOX_SRC_FILES

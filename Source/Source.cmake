@@ -1,18 +1,48 @@
 # Set the src root
 set(SOURCE_ROOT ${FORGE_ROOT}/Source)
 
-# Set the programs root
-set(PROGRAMS_ROOT ${SOURCE_ROOT}/Programs)
+function(add_forge_executable target root)
+    add_executable(${target} ${ARGN})
+	target_include_directories(${target} PRIVATE ${SOURCE_ROOT})
+    source_group(TREE ${root} FILES ${ARGN})
 
-# Set the runtime root
-set(RUNTIME_ROOT ${SOURCE_ROOT}/Runtime)
+	# Append this list of programs to sign if on MacOS
+	if(APPLE)
+		set(TARGETS_TO_SIGN ${TARGETS_TO_SIGN} ${target} PARENT_SCOPE)
+	endif()
+endfunction()
 
-# Set the third_party root
-set(THIRD_PARTY_ROOT ${SOURCE_ROOT}/ThirdParty)
+# Special case: Set the core root early so it may be used in the 'test_runtime_library' function
+set(CORE_ROOT ${SOURCE_ROOT}/Core)
 
-# Enable folders for visual studio
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+function(add_forge_library target root)
+    add_library(${target} ${ARGN})
+	target_include_directories(${target} PRIVATE ${SOURCE_ROOT})
+    source_group(TREE ${root} FILES ${ARGN})
+endfunction()
 
-include(${SOURCE_ROOT}/Runtime/Runtime.cmake)
-include(${SOURCE_ROOT}/ThirdParty/ThirdParty.cmake)
-include(${SOURCE_ROOT}/Programs/Programs.cmake)
+# Creates a test executable for the given library.
+#
+# We include a main.cpp in the library to build an executable that will run the test in the given library. We also maintain
+# the libraries the given library is linked to along with the doctest library.
+#
+# Finally, we turn on the compilation flag FORGE_ENABLE_TEST to enable the test code to be compiled in the library.
+function(test_forge_library target)
+    add_executable(${target}Test ${ARGN} ${CORE_ROOT}/Debug/TestMain.cpp)
+	target_include_directories(${target}Test PRIVATE ${SOURCE_ROOT})
+    set_target_properties(${target}Test PROPERTIES LINKER_LANGUAGE CXX)
+    get_target_property(OUT ${target}Test LINK_LIBRARIES)
+    target_compile_definitions(${target}Test PRIVATE FORGE_ENABLE_TEST)
+    if (NOT OUT)
+        target_link_libraries(${target}Test Doctest)
+    else ()
+        target_link_libraries(${target}Test Doctest ${OUT})
+    endif ()
+    add_test(${target}Test ${target}Test)
+endfunction()
+
+include(${SOURCE_ROOT}/Core/Core.cmake)
+include(${SOURCE_ROOT}/Doctest/Doctest.cmake)
+include(${SOURCE_ROOT}/GPU/GPU.cmake)
+include(${SOURCE_ROOT}/GUI/GUI.cmake)
+include(${SOURCE_ROOT}/Sandbox/Sandbox.cmake)

@@ -1,5 +1,5 @@
 # Set the root
-set(GPU_ROOT ${RUNTIME_ROOT}/GPU)
+set(GPU_ROOT ${SOURCE_ROOT}/GPU)
 
 # Source files
 set(GPU_SRC_FILES
@@ -38,7 +38,7 @@ if (APPLE)
 elseif(WIN32)
 endif()
 
-add_runtime_library(GPU ${GPU_ROOT} ${GPU_SRC_FILES})
+add_forge_library(GPU ${GPU_ROOT} ${GPU_SRC_FILES})
 
 if (APPLE)
 	target_link_libraries(GPU Core "-framework AppKit" "-framework Metal" "-framework QuartzCore")
