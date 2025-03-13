@@ -8,20 +8,20 @@
 #include <GPU/Metal/Swapchain.hpp>
 #include <GPU/Metal/Texture.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	Unique<Backbuffer> MetalSwapchain::next_back_buffer() {
 		@autoreleasepool {
 			id<CAMetalDrawable> drawable = [m_layer nextDrawable];
 			auto texture = Arc<MetalTexture>::create(
 				Texture::CreateInfo{
 					.usage = Texture::Usage::Swapchain,
-					.format = Texture::Format::BGRA_U8_SRGB,
+					.format = Format::BGRA_U8_SRGB,
 					.size = { static_cast<u32>(drawable.texture.width),
 							  static_cast<u32>(drawable.texture.height),
 							  static_cast<u32>(drawable.texture.depth) },
 				},
 				drawable.texture);
-			return Unique<MetalBackbuffer>::create(Grizzly::move(texture), drawable);
+			return Unique<MetalBackbuffer>::create(Forge::move(texture), drawable);
 		}
 	}
 
@@ -33,4 +33,4 @@ namespace Grizzly::GPU {
 			[m_drawable present];
 		}
 	}
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

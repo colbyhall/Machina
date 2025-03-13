@@ -8,7 +8,7 @@
 
 #include <Core/Math/Vector3.hpp>
 
-namespace Grizzly::Core::Math {
+namespace Forge::Core::Math {
 	/**
 	 * @class Quaternion
 	 * @brief A template class for representing and manipulating quaternions.
@@ -22,7 +22,7 @@ namespace Grizzly::Core::Math {
 		/**
 		 * @brief Default constructor. Initializes the quaternion to the identity rotation (no rotation).
 		 */
-		GRIZZLY_ALWAYS_INLINE constexpr Quaternion() : x(0), y(0), z(0), w(1) {}
+		FORGE_ALWAYS_INLINE constexpr Quaternion() : x(0), y(0), z(0), w(1) {}
 
 		/**
 		 * @brief Parameterized constructor for directly setting the quaternion's components.
@@ -31,7 +31,7 @@ namespace Grizzly::Core::Math {
 		 * @param _z The z component of the quaternion.
 		 * @param _w The w component of the quaternion (real part).
 		 */
-		GRIZZLY_ALWAYS_INLINE explicit Quaternion(T _x, T _y, T _z, T _w) : x(_x), y(_y), z(_z), w(_w) {}
+		FORGE_ALWAYS_INLINE explicit Quaternion(T _x, T _y, T _z, T _w) : x(_x), y(_y), z(_z), w(_w) {}
 
 		/**
 		 * @brief Creates a quaternion from an axis and an angle.
@@ -60,40 +60,40 @@ namespace Grizzly::Core::Math {
 		 * @brief Calculates the squared length of the quaternion.
 		 * @return The squared length of the quaternion.
 		 */
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE T len_sq() const;
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE T len_sq() const;
 
 		/**
 		 * @brief Calculates the length of the quaternion.
 		 * @return The length of the quaternion.
 		 */
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE T len() const;
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE T len() const;
 
 		/**
 		 * @brief Normalizes the quaternion.
 		 * @return An optional containing the normalized quaternion if it has a non-zero length, otherwise an empty
 		 * optional.
 		 */
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<Quaternion> normalized() const;
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Option<Quaternion> normalized() const;
 
 		/**
 		 * @brief Calculates the inverse of the quaternion.
 		 * @return The inverse of the quaternion.
 		 */
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Quaternion inverse() const;
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Quaternion inverse() const;
 
 		/**
 		 * @brief Rotates a vector by the quaternion.
 		 * @param xyz The vector to rotate.
 		 * @return The rotated vector.
 		 */
-		GRIZZLY_NO_DISCARD Vector3<T> rotate(const Vector3<T>& xyz) const;
+		FORGE_NO_DISCARD Vector3<T> rotate(const Vector3<T>& xyz) const;
 
 		/**
 		 * @brief Multiplies this quaternion by another quaternion.
 		 * @param rhs The right-hand side quaternion to multiply with.
 		 * @return The result of the quaternion multiplication.
 		 */
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Quaternion operator*(const Quaternion& rhs) const;
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Quaternion operator*(const Quaternion& rhs) const;
 	};
 
 	template <FloatingPoint T>
@@ -133,17 +133,17 @@ namespace Grizzly::Core::Math {
 	}
 
 	template <FloatingPoint T>
-	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE T Quaternion<T>::len_sq() const {
+	FORGE_NO_DISCARD FORGE_ALWAYS_INLINE T Quaternion<T>::len_sq() const {
 		return x * x + y * y + z * z + w * w;
 	}
 
 	template <FloatingPoint T>
-	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE T Quaternion<T>::len() const {
+	FORGE_NO_DISCARD FORGE_ALWAYS_INLINE T Quaternion<T>::len() const {
 		return Math::sqrt(len_sq());
 	}
 
 	template <FloatingPoint T>
-	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<Quaternion<T>> Quaternion<T>::normalized() const {
+	FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Option<Quaternion<T>> Quaternion<T>::normalized() const {
 		if (len_sq() >= kinda_small_number<T>) {
 			const auto len_reciprocal = T{ 1 } / len();
 			return Quaternion{ x * len_reciprocal, y * len_reciprocal, z * len_reciprocal, w * len_reciprocal };
@@ -152,26 +152,26 @@ namespace Grizzly::Core::Math {
 	}
 
 	template <FloatingPoint T>
-	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Quaternion<T> Quaternion<T>::inverse() const {
+	FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Quaternion<T> Quaternion<T>::inverse() const {
 		return Quaternion{ -x, -y, -z, w };
 	}
 
 	template <FloatingPoint T>
-	GRIZZLY_NO_DISCARD Vector3<T> Quaternion<T>::rotate(const Vector3<T>& xyz) const {
+	FORGE_NO_DISCARD Vector3<T> Quaternion<T>::rotate(const Vector3<T>& xyz) const {
 		const Vector3<T> this_xyz = { x, y, z };
 		const auto t = this_xyz.cross(xyz) * T{ 2 };
 		return xyz + (t * w) + this_xyz.cross(t);
 	}
 
 	template <FloatingPoint T>
-	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Quaternion<T> Quaternion<T>::operator*(const Quaternion<T>& rhs) const {
+	FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Quaternion<T> Quaternion<T>::operator*(const Quaternion<T>& rhs) const {
 		return Quaternion{ w * rhs.x + x * rhs.w + y * rhs.z - z * rhs.y,
 						   w * rhs.y + y * rhs.w + z * rhs.x - x * rhs.z,
 						   w * rhs.z + z * rhs.w + x * rhs.y - y * rhs.x,
 						   w * rhs.w - x * rhs.x - y * rhs.y - z * rhs.z };
 	}
-} // namespace Grizzly::Core::Math
+} // namespace Forge::Core::Math
 
-namespace Grizzly {
+namespace Forge {
 	using Core::Math::Quaternion;
-} // namespace Grizzly
+} // namespace Forge

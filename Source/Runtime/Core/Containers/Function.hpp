@@ -8,7 +8,7 @@
 
 #include <Core/Memory.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	namespace hidden {
 		template <typename Functor, typename FuncType>
 		struct FunctionRefCaller;
@@ -16,13 +16,13 @@ namespace Grizzly::Core {
 		template <typename Functor, typename R, typename... P>
 		struct FunctionRefCaller<Functor, R(P...)> {
 			static R call(void* obj, P&... params) {
-				return Core::invoke(*(Functor*)obj, Grizzly::forward<P>(params)...);
+				return Core::invoke(*(Functor*)obj, Forge::forward<P>(params)...);
 			}
 		};
 
 		template <typename Functor, typename... P>
 		struct FunctionRefCaller<Functor, void(P...)> {
-			static void call(void* obj, P&... params) { Core::invoke(*(Functor*)obj, Grizzly::forward<P>(params)...); }
+			static void call(void* obj, P&... params) { Core::invoke(*(Functor*)obj, Forge::forward<P>(params)...); }
 		};
 
 		template <typename S, typename F>
@@ -37,10 +37,10 @@ namespace Grizzly::Core {
 
 			template <typename F>
 			FunctionBase(F&& f)
-				requires(!Grizzly::Core::is_same<FunctionBase, Grizzly::Core::Decay<F>>)
+				requires(!Forge::Core::is_same<FunctionBase, Forge::Core::Decay<F>>)
 			{
-				if (auto* binding = m_storage.bind(Grizzly::forward<F>(f))) {
-					GRIZZLY_UNUSED(binding);
+				if (auto* binding = m_storage.bind(Forge::forward<F>(f))) {
+					FORGE_UNUSED(binding);
 					using DecayedFunctor = RemovePointer<decltype(binding)>;
 					m_callable = &FunctionRefCaller<DecayedFunctor, R(Param...)>::call;
 				}
@@ -49,20 +49,20 @@ namespace Grizzly::Core {
 			FunctionBase& operator=(const FunctionBase& copy) noexcept = delete;
 			FunctionBase(FunctionBase&& move) noexcept
 				: m_callable(move.m_callable)
-				, m_storage(Grizzly::move(move.m_storage)) {
+				, m_storage(Forge::move(move.m_storage)) {
 				move.m_callable = nullptr;
 			}
 			FunctionBase& operator=(FunctionBase&& move) noexcept {
 				this->~FunctionBase();
 
-				m_callable = Grizzly::move(move.m_callable);
+				m_callable = Forge::move(move.m_callable);
 				move.m_callable = nullptr;
 
-				m_storage = Grizzly::move(move.m_storage);
+				m_storage = Forge::move(move.m_storage);
 			}
 
 			R operator()(Param... params) const {
-				GRIZZLY_ASSERT(m_callable != nullptr);
+				FORGE_ASSERT(m_callable != nullptr);
 				return (m_callable)(m_storage.ptr(), params...);
 			}
 
@@ -107,11 +107,11 @@ namespace Grizzly::Core {
 			template <typename... Args>
 			explicit FunctorWrapper(Args&&... args)
 				requires is_constructible<F, Args...>
-				: f{ Grizzly::forward<Args>(args)... } {}
+				: f{ Forge::forward<Args>(args)... } {}
 			~FunctorWrapper() final = default;
 			FunctorWrapper(const FunctorWrapper& copy) = delete;
 			FunctorWrapper& operator=(const FunctorWrapper& copy) = delete;
-			FunctorWrapper(FunctorWrapper&& m) : f(Grizzly::move(f)) {}
+			FunctorWrapper(FunctorWrapper&& m) : f(Forge::move(f)) {}
 
 			void* ptr() override { return &f; }
 
@@ -144,7 +144,7 @@ namespace Grizzly::Core {
 			template <typename F>
 			RemoveReference<F>* bind(F&& f) {
 				void* memory = Memory::alloc(Memory::Layout::single<FunctorWrapper<F>>());
-				m_ptr = Memory::emplace<FunctorWrapper<F>>(memory, Grizzly::forward<F>(f));
+				m_ptr = Memory::emplace<FunctorWrapper<F>>(memory, Forge::forward<F>(f));
 
 				return static_cast<RemoveReference<F>*>(m_ptr->ptr());
 			}
@@ -159,29 +159,29 @@ namespace Grizzly::Core {
 
 		template <typename F, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible =
-			Grizzly::Core::is_constructible<R, decltype(declval<F>()(declval<P>()...))>;
+			Forge::Core::is_constructible<R, decltype(declval<F>()(declval<P>()...))>;
 		template <typename MR, typename Class, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR Class::*, R, P...> =
-			Grizzly::Core::is_constructible<R, MR>;
+			Forge::Core::is_constructible<R, MR>;
 		template <typename MR, typename Class, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR Class::* const, R, P...> =
-			Grizzly::Core::is_constructible<R, MR>;
+			Forge::Core::is_constructible<R, MR>;
 		template <typename MR, typename Class, typename... MP, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR (Class::*)(MP...), R, P...> =
-			Grizzly::Core::is_constructible<R, MR>;
+			Forge::Core::is_constructible<R, MR>;
 		template <typename MR, typename Class, typename... MP, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR (Class::*)(MP...) const, R, P...> =
-			Grizzly::Core::is_constructible<R, MR>;
+			Forge::Core::is_constructible<R, MR>;
 
 		template <typename A, typename B>
 		inline constexpr bool func_can_bind_to_functor = false;
 
 		template <typename F, typename R, typename... P>
 		inline constexpr bool func_can_bind_to_functor<R(P...), F> =
-			Grizzly::Core::is_invocable<F, P...> && functor_return_type_is_compatible<F, R, P...>;
+			Forge::Core::is_invocable<F, P...> && functor_return_type_is_compatible<F, R, P...>;
 
 		template <typename F, typename... P>
-		inline constexpr bool func_can_bind_to_functor<void(P...), F> = Grizzly::Core::is_invocable<F, P...>;
+		inline constexpr bool func_can_bind_to_functor<void(P...), F> = Forge::Core::is_invocable<F, P...>;
 	} // namespace hidden
 
 	template <typename F>
@@ -210,7 +210,7 @@ namespace Grizzly::Core {
 
 		template <typename Functor>
 			requires(!is_function_ref<Decay<Functor>> && hidden::func_can_bind_to_functor<F, Decay<Functor>>)
-		FunctionRef(Functor&& f) : Super(Grizzly::forward<Functor>(f)) {}
+		FunctionRef(Functor&& f) : Super(Forge::forward<Functor>(f)) {}
 		FunctionRef(const FunctionRef& copy) noexcept = delete;
 		FunctionRef& operator=(const FunctionRef& copy) const noexcept = delete;
 		FunctionRef(FunctionRef&& move) noexcept = default;
@@ -227,16 +227,16 @@ namespace Grizzly::Core {
 
 		template <typename Functor>
 			requires(!is_op_function<Decay<Functor>> && hidden::func_can_bind_to_functor<F, Decay<Functor>>)
-		Function(Functor&& f) : Super{ Grizzly::forward<Functor>(f) } {}
+		Function(Functor&& f) : Super{ Forge::forward<Functor>(f) } {}
 		Function(const Function& copy) noexcept = delete;
 		Function& operator=(const Function& copy) noexcept = delete;
 		Function(Function&& move) noexcept = default;
 		Function& operator=(Function&& move) noexcept = default;
 		~Function() = default;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core
 
-namespace Grizzly {
+namespace Forge {
 	using Core::Function;
 	using Core::FunctionRef;
-} // namespace Grizzly
+} // namespace Forge

@@ -7,7 +7,7 @@
 #include <Foundation/Foundation.h>
 #include <GPU/Metal/Shader.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	static id<MTLFunction> get_function_from_library(id<MTLLibrary> library, StringView function_name) {
 		@autoreleasepool {
 			NSString* name = [[NSString alloc] initWithBytesNoCopy:(void*)*function_name
@@ -22,8 +22,8 @@ namespace Grizzly::GPU {
 	Arc<VertexShader> MetalLibrary::create_vertex_shader(StringView function_name) const {
 		@autoreleasepool {
 			id<MTLFunction> function = get_function_from_library(m_library, function_name);
-			GRIZZLY_ASSERT(function != nil);
-			GRIZZLY_ASSERT(function.functionType == MTLFunctionTypeVertex);
+			FORGE_ASSERT(function != nil);
+			FORGE_ASSERT(function.functionType == MTLFunctionTypeVertex);
 			return Arc<MetalVertexShader>::create(function);
 		}
 	}
@@ -31,9 +31,9 @@ namespace Grizzly::GPU {
 	Arc<FragmentShader> MetalLibrary::create_fragment_shader(StringView function_name) const {
 		@autoreleasepool {
 			id<MTLFunction> function = get_function_from_library(m_library, function_name);
-			GRIZZLY_ASSERT(function != nil);
-			GRIZZLY_ASSERT(function.functionType == MTLFunctionTypeFragment);
+			FORGE_ASSERT(function != nil);
+			FORGE_ASSERT(function.functionType == MTLFunctionTypeFragment);
 			return Arc<MetalFragmentShader>::create(function);
 		}
 	}
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

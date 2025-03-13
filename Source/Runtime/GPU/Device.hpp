@@ -16,7 +16,7 @@
 #include <GPU/Swapchain.hpp>
 #include <GPU/Texture.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	/**
 	 * Defines the supported graphic api backends.
 	 */
@@ -46,7 +46,7 @@ namespace Grizzly::GPU {
 		 * @param create_info The create info for the device.
 		 * @return Arc<Device> The created device.
 		 */
-		GRIZZLY_NO_DISCARD static Arc<Device> create(CreateInfo const& create_info);
+		FORGE_NO_DISCARD static Arc<Device> create(CreateInfo const& create_info);
 
 		/**
 		 * @brief Create a swapchain for the given owner.
@@ -54,7 +54,7 @@ namespace Grizzly::GPU {
 		 * @param owner The owner of the swapchain.
 		 * @return Unique<Swapchain> The created swapchain.
 		 */
-		GRIZZLY_NO_DISCARD virtual Unique<Swapchain> create_swapchain(Swapchain::Owner owner) const = 0;
+		FORGE_NO_DISCARD virtual Unique<Swapchain> create_swapchain(Swapchain::Owner owner) const = 0;
 
 		/**
 		 * @brief Creates a buffer.
@@ -62,7 +62,7 @@ namespace Grizzly::GPU {
 		 * @param info The data structure containg the immutable details of the buffer.
 		 * @return Handle<Buffer> The created buffer.
 		 */
-		GRIZZLY_NO_DISCARD virtual Handle<Buffer> create_buffer(Buffer::CreateInfo const& info) const = 0;
+		FORGE_NO_DISCARD virtual Handle<Buffer> create_buffer(Buffer::CreateInfo const& info) const = 0;
 
 		/**
 		 * @brief Creates a texture.
@@ -70,22 +70,22 @@ namespace Grizzly::GPU {
 		 * @param info The data structure containg the immutable details of the texture.
 		 * @return Handle<Texture> The created texture.
 		 */
-		GRIZZLY_NO_DISCARD virtual Handle<Texture> create_texture(Texture::CreateInfo const& info) const = 0;
+		FORGE_NO_DISCARD virtual Handle<Texture> create_texture(Texture::CreateInfo const& info) const = 0;
 
-		GRIZZLY_NO_DISCARD virtual Handle<Library> create_library_from_source(ShaderSource const& source) const = 0;
+		FORGE_NO_DISCARD virtual Handle<Library> create_library_from_source(ShaderSource const& source) const = 0;
 
-		GRIZZLY_NO_DISCARD virtual Handle<GraphicsPipeline>
+		FORGE_NO_DISCARD virtual Handle<GraphicsPipeline>
 		create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) const = 0;
 
-		GRIZZLY_NO_DISCARD virtual Handle<CommandList> record(FunctionRef<void(CommandRecorder&)> f) const = 0;
+		FORGE_NO_DISCARD virtual Handle<CommandList> record(FunctionRef<void(CommandRecorder&)> f) const = 0;
 
 		/**
 		 * @brief Get the backend of the device.
 		 *
 		 * @return Backend The backend of the device.
 		 */
-		GRIZZLY_NO_DISCARD virtual Backend backend() const = 0;
+		FORGE_NO_DISCARD virtual Backend backend() const = 0;
 
 		virtual ~Device() {}
 	};
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

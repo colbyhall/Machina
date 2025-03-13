@@ -7,7 +7,7 @@
 #include <Core/Async/Win32/Thread.hpp>
 #include <Core/Memory.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	static DWORD WINAPI ThreadProc(_In_ LPVOID lpParameter) {
 		auto* param = static_cast<Thread::SpawnInfo::Function*>(lpParameter);
 		(*param)();
@@ -23,7 +23,7 @@ namespace Grizzly::Core {
 		}
 
 		auto param = Memory::alloc(Memory::Layout::single<SpawnInfo::Function>());
-		Memory::emplace<SpawnInfo::Function>(param, Grizzly::move(info.f));
+		Memory::emplace<SpawnInfo::Function>(param, Forge::move(info.f));
 
 		auto stack_size = info.stack_size.unwrap_or(0);
 
@@ -48,4 +48,4 @@ namespace Grizzly::Core {
 			join();
 		}
 	}
-} // namespace Grizzly::Core
+} // namespace Forge::Core

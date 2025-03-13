@@ -8,7 +8,7 @@
 
 #include <Core/Containers/Slice.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	class Hasher {
 	public:
 		virtual u64 finish() = 0;
@@ -31,9 +31,9 @@ namespace Grizzly::Core {
 	private:
 		u64 m_result = 0;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core
 
-namespace Grizzly {
+namespace Forge {
 	template <typename Hasher>
 	void hash(Hasher& hasher, const u8& value) {
 		hasher.write({ reinterpret_cast<const u8*>(&value), sizeof(u8) });
@@ -74,4 +74,4 @@ namespace Grizzly {
 	void hash(Hasher& hasher, const f64& value) {
 		hasher.write({ reinterpret_cast<const u8*>(&value), sizeof(f64) });
 	}
-} // namespace Grizzly
+} // namespace Forge

@@ -9,7 +9,7 @@
 
 #include <windows.h>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	Win32File Win32File::stdin(GetStdHandle(STD_INPUT_HANDLE), OpenFlags::Read);
 	Win32File Win32File::stdout(GetStdHandle(STD_OUTPUT_HANDLE), OpenFlags::Write);
 	Win32File Win32File::stderr(GetStdHandle(STD_ERROR_HANDLE), OpenFlags::Write);
@@ -19,7 +19,7 @@ namespace Grizzly::Core {
 		const bool write = (flags & OpenFlags::Write) == OpenFlags::Write;
 		const bool create = (flags & OpenFlags::Create) == OpenFlags::Create;
 
-		GRIZZLY_ASSERT(read || write);
+		FORGE_ASSERT(read || write);
 
 		DWORD access = 0;
 		if (read) access |= GENERIC_READ;
@@ -45,8 +45,8 @@ namespace Grizzly::Core {
 	}
 
 	Win32File& Win32File::operator=(Win32File&& move) {
-		auto to_destroy = Grizzly::move(*this);
-		GRIZZLY_UNUSED(to_destroy);
+		auto to_destroy = Forge::move(*this);
+		FORGE_UNUSED(to_destroy);
 
 		m_handle = move.m_handle;
 		move.m_handle = nullptr;
@@ -62,12 +62,12 @@ namespace Grizzly::Core {
 	}
 
 	usize Win32File::read(Slice<u8> bytes) {
-		GRIZZLY_ASSERT(m_handle != nullptr);
-		GRIZZLY_ASSERT((m_flags & OpenFlags::Read) == OpenFlags::Read);
+		FORGE_ASSERT(m_handle != nullptr);
+		FORGE_ASSERT((m_flags & OpenFlags::Read) == OpenFlags::Read);
 
 		DWORD amount_read = 0;
 		const bool ok = ::ReadFile(m_handle, bytes.begin(), static_cast<DWORD>(bytes.len()), &amount_read, nullptr);
-		GRIZZLY_ASSERT(ok);
+		FORGE_ASSERT(ok);
 
 		m_cursor += amount_read;
 
@@ -75,15 +75,15 @@ namespace Grizzly::Core {
 	}
 
 	usize Win32File::write(Slice<u8 const> bytes) {
-		GRIZZLY_ASSERT(m_handle != nullptr);
-		GRIZZLY_ASSERT((m_flags & OpenFlags::Write) == OpenFlags::Write);
+		FORGE_ASSERT(m_handle != nullptr);
+		FORGE_ASSERT((m_flags & OpenFlags::Write) == OpenFlags::Write);
 
 		DWORD amount_written = 0;
 		const bool ok = ::WriteFile(m_handle, bytes.begin(), static_cast<DWORD>(bytes.len()), &amount_written, nullptr);
-		GRIZZLY_ASSERT(ok);
+		FORGE_ASSERT(ok);
 
 		m_cursor += amount_written;
 
 		return amount_written;
 	}
-} // namespace Grizzly::Core
+} // namespace Forge::Core

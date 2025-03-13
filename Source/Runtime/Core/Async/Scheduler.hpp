@@ -14,7 +14,7 @@
 #include <Core/Containers/Shared.hpp>
 #include <Core/Time.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	class Scheduler;
 
 	class Task : public ArcFromThis<Task> {
@@ -22,7 +22,7 @@ namespace Grizzly::Core {
 		explicit Task(Scheduler const& owner);
 
 		enum class Status : u8 { NotStarted, InProgress, Complete };
-		GRIZZLY_NO_DISCARD virtual Status status() const = 0;
+		FORGE_NO_DISCARD virtual Status status() const = 0;
 
 		virtual ~Task() {}
 
@@ -46,14 +46,12 @@ namespace Grizzly::Core {
 		};
 
 		Status status() const;
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Slice<Arc<Task> const> tasks() const {
-			return m_tasks.as_const_slice();
-		}
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Slice<Arc<Task> const> tasks() const { return m_tasks.as_const_slice(); }
 
 	private:
 		explicit TaskList(Scheduler const& owner, Array<Arc<Task>>&& tasks)
 			: Task(owner)
-			, m_tasks(Grizzly::move(tasks)) {}
+			, m_tasks(Forge::move(tasks)) {}
 		friend class Builder;
 
 		Array<Arc<Task>> m_tasks;
@@ -67,14 +65,14 @@ namespace Grizzly::Core {
 		Status status() const final { return m_status.load(); }
 
 	private:
-		GRIZZLY_NO_DISCARD bool start() const {
+		FORGE_NO_DISCARD bool start() const {
 			return m_status.compare_exchange_weak(Status::NotStarted, Status::InProgress).is_set();
 		}
 		void finish(T&& t) const {
 			auto* mut_self = const_cast<Future<T>*>(this);
-			mut_self->m_value = Grizzly::forward<T>(t);
+			mut_self->m_value = Forge::forward<T>(t);
 			const bool updated = m_status.compare_exchange_weak(Status::InProgress, Status::Complete).is_set();
-			GRIZZLY_ASSERT(updated);
+			FORGE_ASSERT(updated);
 		}
 
 		friend class Scheduler;
@@ -89,12 +87,12 @@ namespace Grizzly::Core {
 		Status status() const final { return m_status.load(); }
 
 	private:
-		GRIZZLY_NO_DISCARD bool start() const {
+		FORGE_NO_DISCARD bool start() const {
 			return m_status.compare_exchange_weak(Status::NotStarted, Status::InProgress).is_set();
 		}
 		void finish() const {
 			const bool updated = m_status.compare_exchange_weak(Status::InProgress, Status::Complete).is_set();
-			GRIZZLY_ASSERT(updated);
+			FORGE_ASSERT(updated);
 		}
 
 		friend class Scheduler;
@@ -119,39 +117,39 @@ namespace Grizzly::Core {
 		using Job = Function<void()>;
 
 		Arc<Future<void>> schedule(Function<void()>&& f) const {
-			return schedule(Priority::Normal, Grizzly::forward<Function<void()>>(f));
+			return schedule(Priority::Normal, Forge::forward<Function<void()>>(f));
 		}
 
 		template <typename T>
-		GRIZZLY_NO_DISCARD Arc<Future<T>> schedule(Priority priority, Function<T()>&& f) const {
+		FORGE_NO_DISCARD Arc<Future<T>> schedule(Priority priority, Function<T()>&& f) const {
 			auto future = Arc<Future<T>>::create(*this);
 			auto& queue = m_work_queue.get(priority);
 			if constexpr (Core::is_same<T, void>) {
-				Function<void()> job = [f = Grizzly::move(f), future = future]() {
+				Function<void()> job = [f = Forge::move(f), future = future]() {
 					const bool successful = future->start();
-					GRIZZLY_ASSERT(successful);
+					FORGE_ASSERT(successful);
 					f();
 					future->finish();
 				};
-				queue.push(Grizzly::move(job));
+				queue.push(Forge::move(job));
 			} else {
 				const auto started = future->start();
-				GRIZZLY_ASSERT(started);
+				FORGE_ASSERT(started);
 
-				Function<void()> job = [f = Grizzly::move(f), future = future]() {
+				Function<void()> job = [f = Forge::move(f), future = future]() {
 					auto result = f();
-					future->finish(Grizzly::move(result));
+					future->finish(Forge::move(result));
 				};
-				queue.push(Grizzly::move(job));
+				queue.push(Forge::move(job));
 			}
 			return future;
 		}
 
-		GRIZZLY_NO_DISCARD bool wait_until(Duration const& duration, Task const& task) const;
-		GRIZZLY_ALWAYS_INLINE void wait_for(Task const& task) const {
+		FORGE_NO_DISCARD bool wait_until(Duration const& duration, Task const& task) const;
+		FORGE_ALWAYS_INLINE void wait_for(Task const& task) const {
 			// Not infinite but 584.9 billion years seems like enough time
 			const bool complete = wait_until(Duration{ NumericLimits<u64>::max(), 0 }, task);
-			GRIZZLY_UNUSED(complete);
+			FORGE_UNUSED(complete);
 		}
 
 		bool is_running() const;
@@ -191,7 +189,7 @@ namespace Grizzly::Core {
 			MPMC<Job> normal_priority;
 			MPMC<Job> low_priority;
 
-			GRIZZLY_ALWAYS_INLINE MPMC<Job> const& get(Priority priority) const {
+			FORGE_ALWAYS_INLINE MPMC<Job> const& get(Priority priority) const {
 				switch (priority) {
 				case Priority::Low:
 					return low_priority;
@@ -203,7 +201,7 @@ namespace Grizzly::Core {
 					return high_priority;
 					break;
 				default:
-					GRIZZLY_UNIMPLEMENTED;
+					FORGE_UNIMPLEMENTED;
 					break;
 				}
 			}
@@ -221,9 +219,9 @@ namespace Grizzly::Core {
 			FiberController&& fiber_controller,
 			TaskTracker&& task_tracker,
 			WorkQueue&& work_queue)
-			: m_thread_controller(Grizzly::move(thread_controller))
-			, m_fiber_controller(Grizzly::move(fiber_controller))
-			, m_task_tracker(Grizzly::move(task_tracker))
-			, m_work_queue(Grizzly::move(work_queue)) {}
+			: m_thread_controller(Forge::move(thread_controller))
+			, m_fiber_controller(Forge::move(fiber_controller))
+			, m_task_tracker(Forge::move(task_tracker))
+			, m_work_queue(Forge::move(work_queue)) {}
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

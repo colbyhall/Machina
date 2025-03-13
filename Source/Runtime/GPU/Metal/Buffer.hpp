@@ -11,7 +11,7 @@
 #include <Core/ObjectiveC/Protocol.hpp>
 #include <GPU/Buffer.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	class MetalBuffer final : public Buffer {
 	public:
 		explicit MetalBuffer(Buffer::CreateInfo const& create_info, id<MTLBuffer> buffer)
@@ -20,9 +20,9 @@ namespace Grizzly::GPU {
 
 		void map(FunctionRef<void(Slice<u8>)> f) const final;
 
-		GRIZZLY_ALWAYS_INLINE Core::Protocol buffer() const { return m_buffer; }
+		FORGE_ALWAYS_INLINE Core::Protocol buffer() const { return m_buffer; }
 
 	private:
 		Core::Protocol m_buffer; // MTLBuffer
 	};
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

@@ -9,7 +9,7 @@
 #include <Core/Core.hpp>
 #include <Core/Primitives.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	enum class Backend : u8;
 	class Device;
 	class Swapchain;
@@ -21,4 +21,4 @@ namespace Grizzly::GPU {
 
 	class MetalDevice;
 	class MetalSwapchain;
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

@@ -10,7 +10,7 @@
 #include <Core/Math/Vector3.hpp>
 #include <GPU/Resource.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	struct Sampler {
 		enum class Filter : u8 {
 			Linear,
@@ -64,9 +64,9 @@ namespace Grizzly::GPU {
 			u32 mip_levels = 1;
 		};
 
-		GRIZZLY_ALWAYS_INLINE Usage usage() const { return m_usage; }
-		GRIZZLY_ALWAYS_INLINE Format format() const { return m_format; }
-		GRIZZLY_ALWAYS_INLINE Vector3<u32> size() const { return m_size; }
+		FORGE_ALWAYS_INLINE Usage usage() const { return m_usage; }
+		FORGE_ALWAYS_INLINE Format format() const { return m_format; }
+		FORGE_ALWAYS_INLINE Vector3<u32> size() const { return m_size; }
 
 	protected:
 		explicit Texture(CreateInfo const& create_info)
@@ -78,5 +78,5 @@ namespace Grizzly::GPU {
 		Format m_format;
 		Vector3<u32> m_size;
 	};
-	GRIZZLY_ENUM_CLASS_BITFIELD(Texture::Usage);
-} // namespace Grizzly::GPU
+	FORGE_ENUM_CLASS_BITFIELD(Texture::Usage);
+} // namespace Forge::GPU

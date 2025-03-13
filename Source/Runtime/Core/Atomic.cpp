@@ -7,107 +7,107 @@
 #include <Core/Atomic.hpp>
 #include <Core/Debug/Test.hpp>
 
-#if GRIZZLY_ENABLE_TEST
-GRIZZLY_TEST_SUITE("Core") {
-	using namespace Grizzly::Core;
+#if FORGE_ENABLE_TEST
+FORGE_TEST_SUITE("Core") {
+	using namespace Forge::Core;
 
-	GRIZZLY_TEST_CASE("Atomic") {
-		GRIZZLY_SUBCASE("default constructor") {
+	FORGE_TEST_CASE("Atomic") {
+		FORGE_SUBCASE("default constructor") {
 			Atomic<int> atomic;
-			GRIZZLY_CHECK(atomic.load() == 0);
+			FORGE_CHECK(atomic.load() == 0);
 		}
 
-		GRIZZLY_SUBCASE("value constructor") {
+		FORGE_SUBCASE("value constructor") {
 			Atomic<int> atomic{ 5 };
-			GRIZZLY_CHECK(atomic.load() == 5);
+			FORGE_CHECK(atomic.load() == 5);
 		}
 
-		GRIZZLY_SUBCASE("copy constructor") {
+		FORGE_SUBCASE("copy constructor") {
 			Atomic<int> atomic{ 5 };
 			Atomic<int> copy{ atomic };
-			GRIZZLY_CHECK(copy.load() == 5);
+			FORGE_CHECK(copy.load() == 5);
 		}
 
-		GRIZZLY_SUBCASE("copy assignment") {
+		FORGE_SUBCASE("copy assignment") {
 			Atomic<int> atomic{ 5 };
 			Atomic<int> copy;
 			copy = atomic;
-			GRIZZLY_CHECK(copy.load() == 5);
+			FORGE_CHECK(copy.load() == 5);
 		}
 
-		GRIZZLY_SUBCASE("move constructor") {
+		FORGE_SUBCASE("move constructor") {
 			Atomic<int> atomic{ 5 };
-			Atomic<int> move{ Grizzly::move(atomic) };
-			GRIZZLY_CHECK(move.load() == 5);
-			GRIZZLY_CHECK(atomic.load() == 5);
+			Atomic<int> move{ Forge::move(atomic) };
+			FORGE_CHECK(move.load() == 5);
+			FORGE_CHECK(atomic.load() == 5);
 		}
 
-		GRIZZLY_SUBCASE("move assignment") {
+		FORGE_SUBCASE("move assignment") {
 			Atomic<int> atomic{ 5 };
 			Atomic<int> move;
-			move = Grizzly::move(atomic);
-			GRIZZLY_CHECK(move.load() == 5);
-			GRIZZLY_CHECK(atomic.load() == 5);
+			move = Forge::move(atomic);
+			FORGE_CHECK(move.load() == 5);
+			FORGE_CHECK(atomic.load() == 5);
 		}
 
-		GRIZZLY_SUBCASE("load") {
+		FORGE_SUBCASE("load") {
 			Atomic<int> atomic{ 5 };
-			GRIZZLY_CHECK(atomic.load() == 5);
+			FORGE_CHECK(atomic.load() == 5);
 		}
 
-		GRIZZLY_SUBCASE("store") {
+		FORGE_SUBCASE("store") {
 			Atomic<int> atomic;
 			atomic.store(5);
-			GRIZZLY_CHECK(atomic.load() == 5);
+			FORGE_CHECK(atomic.load() == 5);
 		}
 
-		GRIZZLY_SUBCASE("exchange") {
+		FORGE_SUBCASE("exchange") {
 			Atomic<int> atomic{ 5 };
-			GRIZZLY_CHECK(atomic.exchange(10) == 5);
-			GRIZZLY_CHECK(atomic.load() == 10);
+			FORGE_CHECK(atomic.exchange(10) == 5);
+			FORGE_CHECK(atomic.load() == 10);
 		}
 
-		GRIZZLY_SUBCASE("compare_exchange_weak") {
+		FORGE_SUBCASE("compare_exchange_weak") {
 			Atomic<int> atomic{ 5 };
-			GRIZZLY_CHECK(atomic.compare_exchange_weak(5, 10).unwrap() == 5);
-			GRIZZLY_CHECK(atomic.load() == 10);
+			FORGE_CHECK(atomic.compare_exchange_weak(5, 10).unwrap() == 5);
+			FORGE_CHECK(atomic.load() == 10);
 		}
 
-		GRIZZLY_SUBCASE("compare_exchange_strong") {
+		FORGE_SUBCASE("compare_exchange_strong") {
 			Atomic<int> atomic{ 5 };
-			GRIZZLY_CHECK(atomic.compare_exchange_strong(5, 10).unwrap() == 5);
-			GRIZZLY_CHECK(atomic.load() == 10);
+			FORGE_CHECK(atomic.compare_exchange_strong(5, 10).unwrap() == 5);
+			FORGE_CHECK(atomic.load() == 10);
 		}
 
-		GRIZZLY_SUBCASE("fetch_add") {
+		FORGE_SUBCASE("fetch_add") {
 			Atomic<int> atomic{ 5 };
-			GRIZZLY_CHECK(atomic.fetch_add(5) == 5);
-			GRIZZLY_CHECK(atomic.load() == 10);
+			FORGE_CHECK(atomic.fetch_add(5) == 5);
+			FORGE_CHECK(atomic.load() == 10);
 		}
 
-		GRIZZLY_SUBCASE("fetch_sub") {
+		FORGE_SUBCASE("fetch_sub") {
 			Atomic<int> atomic{ 5 };
-			GRIZZLY_CHECK(atomic.fetch_sub(5) == 5);
-			GRIZZLY_CHECK(atomic.load() == 0);
+			FORGE_CHECK(atomic.fetch_sub(5) == 5);
+			FORGE_CHECK(atomic.load() == 0);
 		}
 
-		GRIZZLY_SUBCASE("fetch_and") {
+		FORGE_SUBCASE("fetch_and") {
 			Atomic<int> atomic{ 5 };
-			GRIZZLY_CHECK(atomic.fetch_and(3) == 5);
-			GRIZZLY_CHECK(atomic.load() == 1);
+			FORGE_CHECK(atomic.fetch_and(3) == 5);
+			FORGE_CHECK(atomic.load() == 1);
 		}
 
-		GRIZZLY_SUBCASE("fetch_or") {
+		FORGE_SUBCASE("fetch_or") {
 			Atomic<int> atomic{ 5 };
-			GRIZZLY_CHECK(atomic.fetch_or(3) == 5);
-			GRIZZLY_CHECK(atomic.load() == 7);
+			FORGE_CHECK(atomic.fetch_or(3) == 5);
+			FORGE_CHECK(atomic.load() == 7);
 		}
 
-		GRIZZLY_SUBCASE("fetch_xor") {
+		FORGE_SUBCASE("fetch_xor") {
 			Atomic<int> atomic{ 5 };
-			GRIZZLY_CHECK(atomic.fetch_xor(3) == 5);
-			GRIZZLY_CHECK(atomic.load() == 6);
+			FORGE_CHECK(atomic.fetch_xor(3) == 5);
+			FORGE_CHECK(atomic.load() == 6);
 		}
 	}
 }
-#endif // GRIZZLY_ENABLE_TEST
+#endif // FORGE_ENABLE_TEST

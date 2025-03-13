@@ -10,7 +10,7 @@
 
 #include <pthread.h>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	class PosixThread final : public Thread {
 	public:
 		explicit PosixThread(pthread_t thread) : m_thread(thread) {}
@@ -18,8 +18,8 @@ namespace Grizzly::Core {
 		PosixThread& operator=(const PosixThread&) = delete;
 		PosixThread(PosixThread&& move) : m_thread(move.m_thread) { move.m_thread = nullptr; }
 		PosixThread& operator=(PosixThread&& move) {
-			auto to_destroy = Grizzly::move(*this);
-			GRIZZLY_UNUSED(to_destroy);
+			auto to_destroy = Forge::move(*this);
+			FORGE_UNUSED(to_destroy);
 
 			m_thread = move.m_thread;
 			move.m_thread = nullptr;
@@ -31,11 +31,11 @@ namespace Grizzly::Core {
 		void detach() final;
 		Id id() const final;
 		~PosixThread() final;
-		GRIZZLY_ALWAYS_INLINE bool is_ready() const { return m_ready.load(); }
+		FORGE_ALWAYS_INLINE bool is_ready() const { return m_ready.load(); }
 
 	private:
 		friend class Thread;
 		pthread_t m_thread;
 		Atomic<bool> m_ready{ false };
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

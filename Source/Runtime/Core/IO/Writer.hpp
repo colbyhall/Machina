@@ -9,12 +9,12 @@
 #include <Core/Containers/Array.hpp>
 #include <Core/Containers/StringView.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	class Writer {
 	public:
 		virtual ~Writer() = default;
 		virtual usize write(Slice<u8 const> bytes) = 0;
-		GRIZZLY_ALWAYS_INLINE usize write(StringView string) {
+		FORGE_ALWAYS_INLINE usize write(StringView string) {
 			return write(Slice<u8 const>((const u8*)*string, string.len()));
 		}
 	};
@@ -52,4 +52,4 @@ namespace Grizzly::Core {
 		Writer& m_parent;
 		Array<u8, InlineAllocator<Size>> m_buffer;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

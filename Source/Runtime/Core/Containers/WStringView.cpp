@@ -7,7 +7,7 @@
 #include <Core/Containers/WStringView.hpp>
 #include <Core/Debug/Test.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	bool WStringView::operator==(const WStringView& rhs) const {
 		if (len() != rhs.len()) {
 			return false;
@@ -21,15 +21,15 @@ namespace Grizzly::Core {
 
 		return true;
 	}
-} // namespace Grizzly::Core
+} // namespace Forge::Core
 
-#if GRIZZLY_ENABLE_TEST
-GRIZZLY_TEST_SUITE("Containers") {
-	using namespace Grizzly::Core;
+#if FORGE_ENABLE_TEST
+FORGE_TEST_SUITE("Containers") {
+	using namespace Forge::Core;
 
-	GRIZZLY_TEST_CASE("WStringView") {
+	FORGE_TEST_CASE("WStringView") {
 		WStringView view = L"Hello World";
-		GRIZZLY_CHECK(view.len() == 11);
+		FORGE_CHECK(view.len() == 11);
 	}
 }
-#endif // GRIZZLY_ENABLE_TEST
+#endif // FORGE_ENABLE_TEST

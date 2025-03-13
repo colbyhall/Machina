@@ -11,7 +11,7 @@
 #include <Core/ObjectiveC/Protocol.hpp>
 #include <GPU/Device.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	class MetalDevice final : public Device {
 	public:
 		explicit MetalDevice(id<MTLDevice> device, id<MTLCommandQueue> command_queue)
@@ -34,4 +34,4 @@ namespace Grizzly::GPU {
 	};
 
 	Arc<Device> create_metal_device(Device::CreateInfo const& create_info);
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

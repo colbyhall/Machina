@@ -6,22 +6,29 @@
 
 #pragma once
 
-#include <Core/Async/Scheduler.hpp>
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/Shared.hpp>
 #include <Core/Containers/Unique.hpp>
-#include <GPU/Device.hpp>
 
-namespace Grizzly::GUI {
+namespace Forge {
+	namespace Core {
+		class Scheduler;
+	}
+	namespace GPU {
+		class Device;
+	}
+} // namespace Forge
+
+namespace Forge::GUI {
 	class Application {
 	public:
 		explicit Application(const Core::Scheduler& scheduler, const GPU::Device& device);
 
-		GRIZZLY_ALWAYS_INLINE Core::Scheduler const& scheduler() const { return m_scheduler; }
-		GRIZZLY_ALWAYS_INLINE GPU::Device const& device() const { return m_device; }
+		FORGE_ALWAYS_INLINE Core::Scheduler const& scheduler() const { return m_scheduler; }
+		FORGE_ALWAYS_INLINE GPU::Device const& device() const { return m_device; }
 
 		template <typename T>
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Rc<T> create(T::CreateInfo const& create_info) const {
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Rc<T> create(T::CreateInfo const& create_info) const {
 			return T::create(*this, create_info);
 		}
 
@@ -31,4 +38,4 @@ namespace Grizzly::GUI {
 	};
 
 	int run(Application const& application, FunctionRef<void(float delta_time)> tick);
-} // namespace Grizzly::GUI
+} // namespace Forge::GUI

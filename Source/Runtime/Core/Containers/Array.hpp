@@ -14,7 +14,7 @@
 #include <Core/Memory.hpp>
 #include <Core/Primitives.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	template <typename T>
 	inline constexpr bool is_array_allocator = false;
 	struct HeapAllocator;
@@ -46,37 +46,37 @@ namespace Grizzly::Core {
 		Array& operator=(Array&& move) noexcept;
 		~Array();
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize len() const { return m_len; }
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize cap() const { return m_storage.cap(); }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize len() const { return m_len; }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize cap() const { return m_storage.cap(); }
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE bool is_empty() const { return len() == 0; }
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE explicit operator bool() const { return !is_empty(); }
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE bool is_valid_index(usize index) const { return index < len(); }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_empty() const { return len() == 0; }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE explicit operator bool() const { return !is_empty(); }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_valid_index(usize index) const { return index < len(); }
 
-		GRIZZLY_ALWAYS_INLINE Element* begin() { return m_storage.data(); }
-		GRIZZLY_ALWAYS_INLINE Element* end() { return m_storage.data() + m_len; }
-		GRIZZLY_ALWAYS_INLINE const Element* begin() const { return m_storage.data(); }
-		GRIZZLY_ALWAYS_INLINE const Element* end() const { return m_storage.data() + m_len; }
-		GRIZZLY_ALWAYS_INLINE const Element* cbegin() const { return m_storage.data(); }
-		GRIZZLY_ALWAYS_INLINE const Element* cend() const { return m_storage.data() + m_len; }
+		FORGE_ALWAYS_INLINE Element* begin() { return m_storage.data(); }
+		FORGE_ALWAYS_INLINE Element* end() { return m_storage.data() + m_len; }
+		FORGE_ALWAYS_INLINE const Element* begin() const { return m_storage.data(); }
+		FORGE_ALWAYS_INLINE const Element* end() const { return m_storage.data() + m_len; }
+		FORGE_ALWAYS_INLINE const Element* cbegin() const { return m_storage.data(); }
+		FORGE_ALWAYS_INLINE const Element* cend() const { return m_storage.data() + m_len; }
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Slice<T> as_slice() { return Slice{ m_storage.data(), m_len }; }
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Slice<const T> as_const_slice() const
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Slice<T> as_slice() { return Slice{ m_storage.data(), m_len }; }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Slice<const T> as_const_slice() const
 			requires(!is_const<T>)
 		{
 			return Slice<const T>{ m_storage.data(), m_len };
 		}
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Element& operator[](usize index);
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE const Element& operator[](usize index) const;
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Element& operator[](usize index);
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE const Element& operator[](usize index) const;
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<Element&> get(usize index);
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<Element const&> get(usize index) const;
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Option<Element&> get(usize index);
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Option<Element const&> get(usize index) const;
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<Element&> last();
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<Element const&> last() const;
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Option<Element&> last();
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Option<Element const&> last() const;
 
-		GRIZZLY_ALWAYS_INLINE void reserve(usize amount)
+		FORGE_ALWAYS_INLINE void reserve(usize amount)
 			requires allocator_supports_reserve;
 
 		void insert(usize index, Element&& item)
@@ -84,15 +84,15 @@ namespace Grizzly::Core {
 		void insert(usize index, const Element& item)
 			requires CopyConstructible<Element>;
 
-		GRIZZLY_ALWAYS_INLINE usize push(Element&& item)
+		FORGE_ALWAYS_INLINE usize push(Element&& item)
 			requires MoveConstructible<Element>;
-		GRIZZLY_ALWAYS_INLINE usize push(const Element& item)
+		FORGE_ALWAYS_INLINE usize push(const Element& item)
 			requires CopyConstructible<Element>;
 
 		Element remove(usize index)
 			requires Movable<Element> || Copyable<Element>;
 
-		GRIZZLY_ALWAYS_INLINE Option<Element> pop()
+		FORGE_ALWAYS_INLINE Option<Element> pop()
 			requires Movable<Element> or Copyable<Element>;
 
 		void set_len(usize len)
@@ -170,8 +170,8 @@ namespace Grizzly::Core {
 	Array<T, Allocator>& Array<T, Allocator>::operator=(const Array& copy) noexcept
 		requires CopyConstructible<Element>
 	{
-		auto to_destroy = Grizzly::move(*this);
-		GRIZZLY_UNUSED(to_destroy);
+		auto to_destroy = Forge::move(*this);
+		FORGE_UNUSED(to_destroy);
 
 		m_len = copy.m_len;
 		if constexpr (allocator_supports_reserve) {
@@ -185,7 +185,7 @@ namespace Grizzly::Core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	Array<T, Allocator>::Array(Array&& move) noexcept : m_storage(Grizzly::move(move.m_storage))
+	Array<T, Allocator>::Array(Array&& move) noexcept : m_storage(Forge::move(move.m_storage))
 													  , m_len(move.m_len) {
 		move.m_len = 0;
 	}
@@ -197,7 +197,7 @@ namespace Grizzly::Core {
 		m_len = move.m_len;
 		move.m_len = 0;
 
-		m_storage = Grizzly::move(move.m_storage);
+		m_storage = Forge::move(move.m_storage);
 
 		return *this;
 	}
@@ -212,19 +212,19 @@ namespace Grizzly::Core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	GRIZZLY_ALWAYS_INLINE Array<T, Allocator>::Element& Array<T, Allocator>::operator[](usize index) {
-		GRIZZLY_ASSERT(is_valid_index(index), "Index out of bounds");
+	FORGE_ALWAYS_INLINE Array<T, Allocator>::Element& Array<T, Allocator>::operator[](usize index) {
+		FORGE_ASSERT(is_valid_index(index), "Index out of bounds");
 		return m_storage.data()[index];
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	GRIZZLY_ALWAYS_INLINE const Array<T, Allocator>::Element& Array<T, Allocator>::operator[](usize index) const {
-		GRIZZLY_ASSERT(is_valid_index(index), "Index out of bounds");
+	FORGE_ALWAYS_INLINE const Array<T, Allocator>::Element& Array<T, Allocator>::operator[](usize index) const {
+		FORGE_ASSERT(is_valid_index(index), "Index out of bounds");
 		return m_storage.data()[index];
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element&>
+	FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element&>
 	Array<T, Allocator>::get(usize index) {
 		if (is_valid_index(index)) {
 			return m_storage.data()[index];
@@ -233,7 +233,7 @@ namespace Grizzly::Core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element const&>
+	FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element const&>
 	Array<T, Allocator>::get(usize index) const {
 		if (is_valid_index(index)) {
 			return m_storage.data()[index];
@@ -242,8 +242,7 @@ namespace Grizzly::Core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element&>
-	Array<T, Allocator>::last() {
+	FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element&> Array<T, Allocator>::last() {
 		if (!is_empty()) {
 			return m_storage.data()[m_len - 1];
 		}
@@ -251,7 +250,7 @@ namespace Grizzly::Core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element const&>
+	FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element const&>
 	Array<T, Allocator>::last() const {
 		if (!is_empty()) {
 			return m_storage.data()[m_len - 1];
@@ -260,7 +259,7 @@ namespace Grizzly::Core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	GRIZZLY_ALWAYS_INLINE void Array<T, Allocator>::reserve(usize amount)
+	FORGE_ALWAYS_INLINE void Array<T, Allocator>::reserve(usize amount)
 		requires allocator_supports_reserve
 	{
 		m_storage.reserve(amount);
@@ -270,24 +269,24 @@ namespace Grizzly::Core {
 	void Array<T, Allocator>::insert(usize index, Element&& item)
 		requires MoveConstructible<Element>
 	{
-		GRIZZLY_ASSERT(index <= m_len);
+		FORGE_ASSERT(index <= m_len);
 		if (len() == cap()) {
 			if constexpr (allocator_supports_reserve) {
 				reserve(1);
 			} else {
-				GRIZZLY_PANIC("Ran out of space in array to insert item into.");
+				FORGE_PANIC("Ran out of space in array to insert item into.");
 			}
 		}
 
 		auto* src = m_storage.data() + index;
 		if (index != len()) {
 			Memory::move(src + 1, src, (len() - index) * sizeof(Element));
-#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
+#if FORGE_BUILD == FORGE_BUILD_DEBUG
 			Memory::set(src, 0, sizeof(Element));
 #endif
 		}
 
-		new (src) Element{ Grizzly::forward<Element>(item) };
+		new (src) Element{ Forge::forward<Element>(item) };
 		m_len += 1;
 	}
 
@@ -295,19 +294,19 @@ namespace Grizzly::Core {
 	void Array<T, Allocator>::insert(usize index, const Element& item)
 		requires CopyConstructible<Element>
 	{
-		GRIZZLY_ASSERT(index <= m_len);
+		FORGE_ASSERT(index <= m_len);
 		if (len() == cap()) {
 			if constexpr (allocator_supports_reserve) {
 				reserve(1);
 			} else {
-				GRIZZLY_PANIC("Ran out of space in array to insert item into.");
+				FORGE_PANIC("Ran out of space in array to insert item into.");
 			}
 		}
 
 		auto* src = m_storage.data() + index;
 		if (index != len()) {
 			Memory::move(src + 1, src, (len() - index) * sizeof(Element));
-#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
+#if FORGE_BUILD == FORGE_BUILD_DEBUG
 			Memory::set(src, 0, sizeof(Element));
 #endif
 		}
@@ -317,16 +316,16 @@ namespace Grizzly::Core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	GRIZZLY_ALWAYS_INLINE usize Array<T, Allocator>::push(Element&& item)
+	FORGE_ALWAYS_INLINE usize Array<T, Allocator>::push(Element&& item)
 		requires MoveConstructible<Element>
 	{
 		const auto index = len();
-		insert(index, Grizzly::forward<T>(item));
+		insert(index, Forge::forward<T>(item));
 		return index;
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	GRIZZLY_ALWAYS_INLINE usize Array<T, Allocator>::push(const Element& item)
+	FORGE_ALWAYS_INLINE usize Array<T, Allocator>::push(const Element& item)
 		requires CopyConstructible<Element>
 	{
 		const auto index = len();
@@ -338,16 +337,16 @@ namespace Grizzly::Core {
 	T Array<T, Allocator>::remove(usize index)
 		requires Movable<Element> || Copyable<Element>
 	{
-		GRIZZLY_ASSERT(is_valid_index(index), "Index out of bounds");
+		FORGE_ASSERT(is_valid_index(index), "Index out of bounds");
 
 		Option<Element> result = nullopt;
 		if constexpr (Movable<Element>) {
-			result = Grizzly::move(m_storage.data()[index]);
+			result = Forge::move(m_storage.data()[index]);
 		} else {
 			result = m_storage.data()[index];
 		}
 
-#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
+#if FORGE_BUILD == FORGE_BUILD_DEBUG
 		// Set memory that element used to occupy to 0
 		void* clear = &m_storage.data()[index];
 		Memory::set(clear, 0, sizeof(Element));
@@ -366,14 +365,14 @@ namespace Grizzly::Core {
 	}
 
 	template <typename T, ArrayAllocator Allocator>
-	GRIZZLY_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element> Array<T, Allocator>::pop()
+	FORGE_ALWAYS_INLINE Option<typename Array<T, Allocator>::Element> Array<T, Allocator>::pop()
 		requires Movable<Element> or Copyable<Element>
 	{
 		if (m_len > 0) {
 			m_len -= 1;
 
 			if constexpr (Movable<Element>) {
-				return Grizzly::move(m_storage.data()[m_len]);
+				return Forge::move(m_storage.data()[m_len]);
 			} else {
 				return m_storage.data()[m_len];
 			}
@@ -404,7 +403,7 @@ namespace Grizzly::Core {
 				if constexpr (allocator_supports_reserve) {
 					reserve(len - m_len);
 				} else {
-					GRIZZLY_PANIC("Ran out of space in array to insert item into.");
+					FORGE_PANIC("Ran out of space in array to insert item into.");
 				}
 			}
 
@@ -432,7 +431,7 @@ namespace Grizzly::Core {
 				if constexpr (allocator_supports_reserve) {
 					reserve(len - m_len);
 				} else {
-					GRIZZLY_PANIC("Ran out of space in array to insert item into.");
+					FORGE_PANIC("Ran out of space in array to insert item into.");
 				}
 			}
 		}
@@ -489,8 +488,8 @@ namespace Grizzly::Core {
 				}
 			}
 
-			GRIZZLY_ALWAYS_INLINE T* data() const { return m_ptr; }
-			GRIZZLY_ALWAYS_INLINE usize cap() const { return m_cap; }
+			FORGE_ALWAYS_INLINE T* data() const { return m_ptr; }
+			FORGE_ALWAYS_INLINE usize cap() const { return m_cap; }
 
 		private:
 			T* m_ptr = nullptr;
@@ -512,22 +511,22 @@ namespace Grizzly::Core {
 			Storage& operator=(const Storage& copy) noexcept = delete;
 			Storage(Storage&& move) noexcept {
 				Memory::copy(m_bytes, move.m_bytes, sizeof(m_bytes));
-#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
+#if FORGE_BUILD == FORGE_BUILD_DEBUG
 				Memory::set(move.m_bytes, 0, sizeof(move.m_bytes));
 #endif
 			}
 			Storage& operator=(Storage&& move) noexcept {
 				Memory::copy(m_bytes, move.m_bytes, sizeof(m_bytes));
-#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
+#if FORGE_BUILD == FORGE_BUILD_DEBUG
 				Memory::set(move.m_bytes, 0, sizeof(move.m_bytes));
 #endif
 
 				return *this;
 			}
 
-			GRIZZLY_ALWAYS_INLINE T* data() { return reinterpret_cast<T*>(&m_bytes[0]); }
-			GRIZZLY_ALWAYS_INLINE const T* data() const { return reinterpret_cast<const T*>(&m_bytes[0]); }
-			GRIZZLY_ALWAYS_INLINE usize cap() const { return Count; }
+			FORGE_ALWAYS_INLINE T* data() { return reinterpret_cast<T*>(&m_bytes[0]); }
+			FORGE_ALWAYS_INLINE const T* data() const { return reinterpret_cast<const T*>(&m_bytes[0]); }
+			FORGE_ALWAYS_INLINE usize cap() const { return Count; }
 
 		private:
 			alignas(T) u8 m_bytes[sizeof(T) * Count];
@@ -535,10 +534,10 @@ namespace Grizzly::Core {
 	};
 	template <usize Count>
 	inline constexpr bool is_array_allocator<InlineAllocator<Count>> = true;
-} // namespace Grizzly::Core
+} // namespace Forge::Core
 
-namespace Grizzly {
+namespace Forge {
 	using Core::Array;
 	using Core::HeapAllocator;
 	using Core::InlineAllocator;
-} // namespace Grizzly
+} // namespace Forge

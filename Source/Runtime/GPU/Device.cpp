@@ -7,7 +7,7 @@
 #include "Core/Debug/Assertions.hpp"
 #include <GPU/Device.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	// Ideally the api users would create a GPU::Device by using `Arc<GPU::BackendDevice>::create(info)`. Metals headers
 	// currently contain Objective-C code that if leaked to a non Objective-C++ translation unit would cause a
 	// compilation fail. The goal is to not need Objective-C code outside of platform abstractions.
@@ -26,9 +26,9 @@ namespace Grizzly::GPU {
 			// VulkanDevice::create();
 			break;
 		default:
-			GRIZZLY_UNREACHABLE;
+			FORGE_UNREACHABLE;
 			break;
 		}
 		return result.unwrap();
 	}
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

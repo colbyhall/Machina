@@ -11,7 +11,7 @@
 #include <Core/Memory.hpp>
 #include <Core/Primitives.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	// Source: Dmitry Vyukov's MPMC
 	// http://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mpmc-queue
 	template <Movable T>
@@ -24,7 +24,7 @@ namespace Grizzly::Core {
 	public:
 		static MPMC create(u32 capacity) {
 			// Verify that size is a power of 2
-			GRIZZLY_ASSERT(capacity >= 2 && (capacity & capacity - 1) == 0);
+			FORGE_ASSERT(capacity >= 2 && (capacity & capacity - 1) == 0);
 
 			auto ptr = Memory::alloc(Memory::Layout::array<Cell>(capacity));
 			Cell* const buffer = static_cast<Cell*>(*ptr);
@@ -38,7 +38,7 @@ namespace Grizzly::Core {
 		MPMC(const MPMC&) = delete;
 		MPMC& operator=(const MPMC&) = delete;
 
-		GRIZZLY_ALWAYS_INLINE MPMC(MPMC<T>&& move) noexcept
+		FORGE_ALWAYS_INLINE MPMC(MPMC<T>&& move) noexcept
 			: m_buffer(move.m_buffer)
 			, m_buffer_mask(move.m_buffer_mask)
 			, m_enqueue_pos(move.m_enqueue_pos.load(Order::Relaxed))
@@ -46,7 +46,7 @@ namespace Grizzly::Core {
 			move.m_buffer = nullptr;
 			move.m_buffer_mask = 0;
 		}
-		GRIZZLY_ALWAYS_INLINE MPMC& operator=(MPMC<T>&& move) noexcept {
+		FORGE_ALWAYS_INLINE MPMC& operator=(MPMC<T>&& move) noexcept {
 			~MPMC();
 
 			m_buffer = move.m_buffer;
@@ -78,7 +78,7 @@ namespace Grizzly::Core {
 			requires Copyable<T>
 		{
 			T copy = t;
-			return push(Grizzly::move(copy));
+			return push(Forge::move(copy));
 		}
 
 		bool push(T&& t) const {
@@ -99,13 +99,13 @@ namespace Grizzly::Core {
 				}
 			}
 
-			cell->data = Grizzly::move(t);
+			cell->data = Forge::move(t);
 			cell->sequence.store(pos + 1, Order::Release);
 
 			return true;
 		}
 
-		GRIZZLY_NO_DISCARD Option<T> pop() const {
+		FORGE_NO_DISCARD Option<T> pop() const {
 			Cell* cell = nullptr;
 
 			auto pos = m_dequeue_pos.load(Order::Relaxed);
@@ -131,7 +131,7 @@ namespace Grizzly::Core {
 
 	private:
 		struct CacheLinePad {
-			u8 internal[GRIZZLY_CACHE_LINE_SIZE];
+			u8 internal[FORGE_CACHE_LINE_SIZE];
 			CacheLinePad() : internal{} {}
 		};
 		MPMC(Cell* buffer, u32 size) : m_buffer(buffer), m_buffer_mask(size - 1) {}
@@ -145,4 +145,4 @@ namespace Grizzly::Core {
 		Atomic<usize> m_dequeue_pos{ 0 };
 		CacheLinePad m_pad3;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

@@ -12,29 +12,29 @@
 
 #import <Metal/Metal.h>
 
-namespace Grizzly::GPU {
-	inline MTLPixelFormat format_to_mtl_pixel_format(Texture::Format format) {
+namespace Forge::GPU {
+	inline MTLPixelFormat format_to_mtl_pixel_format(Format format) {
 		switch (format) {
-		case Texture::Format::Undefined:
+		case Format::Undefined:
 			return MTLPixelFormatInvalid;
-		case Texture::Format::R_U8:
+		case Format::R_U8:
 			return MTLPixelFormatR8Unorm;
-		case Texture::Format::RGBA_U8:
+		case Format::RGBA_U8:
 			return MTLPixelFormatRGBA8Unorm;
-		case Texture::Format::RGBA_U8_SRGB:
+		case Format::RGBA_U8_SRGB:
 			return MTLPixelFormatRGBA8Unorm_sRGB;
-		case Texture::Format::RGBA_F16:
+		case Format::RGBA_F16:
 			return MTLPixelFormatRGBA16Float;
-		case Texture::Format::RGBA_F32:
+		case Format::RGBA_F32:
 			return MTLPixelFormatRGBA32Float;
-		case Texture::Format::BGRA_U8_SRGB:
+		case Format::BGRA_U8_SRGB:
 			return MTLPixelFormatBGRA8Unorm;
-		case Texture::Format::Depth16:
+		case Format::Depth16:
 			return MTLPixelFormatDepth16Unorm;
-		case Texture::Format::Depth24_Stencil8:
+		case Format::Depth24_Stencil8:
 			return MTLPixelFormatDepth24Unorm_Stencil8;
 		default:
-			GRIZZLY_UNIMPLEMENTED;
+			FORGE_UNIMPLEMENTED;
 			break;
 		}
 		return MTLPixelFormatInvalid;
@@ -59,7 +59,7 @@ namespace Grizzly::GPU {
 		case GraphicsPipeline::CompareOp::Always:
 			return MTLCompareFunctionAlways;
 		default:
-			GRIZZLY_UNIMPLEMENTED;
+			FORGE_UNIMPLEMENTED;
 			break;
 		}
 	}
@@ -77,7 +77,7 @@ namespace Grizzly::GPU {
 		case GraphicsPipeline::BlendOp::Max:
 			return MTLBlendOperationMax;
 		default:
-			GRIZZLY_UNIMPLEMENTED;
+			FORGE_UNIMPLEMENTED;
 			break;
 		}
 		return MTLBlendOperationAdd;
@@ -102,7 +102,7 @@ namespace Grizzly::GPU {
 		case GraphicsPipeline::BlendFactor::OneMinusSrcAlpha:
 			return MTLBlendFactorOneMinusSourceAlpha;
 		default:
-			GRIZZLY_UNIMPLEMENTED;
+			FORGE_UNIMPLEMENTED;
 			break;
 		}
 		return MTLBlendFactorZero;
@@ -117,7 +117,7 @@ namespace Grizzly::GPU {
 		case GraphicsPipeline::DrawMode::Fill:
 			return MTLPrimitiveTopologyClassTriangle;
 		default:
-			GRIZZLY_UNIMPLEMENTED;
+			FORGE_UNIMPLEMENTED;
 			break;
 		}
 		return MTLPrimitiveTopologyClassUnspecified;
@@ -130,7 +130,7 @@ namespace Grizzly::GPU {
 		case GraphicsPipeline::Winding::CounterClockwise:
 			return MTLWindingCounterClockwise;
 		default:
-			GRIZZLY_UNIMPLEMENTED;
+			FORGE_UNIMPLEMENTED;
 			break;
 		}
 		return MTLWindingClockwise;
@@ -145,7 +145,7 @@ namespace Grizzly::GPU {
 		case LoadAction::DontCare:
 			return MTLLoadActionDontCare;
 		default:
-			GRIZZLY_UNIMPLEMENTED;
+			FORGE_UNIMPLEMENTED;
 			break;
 		}
 		return MTLLoadActionDontCare;
@@ -158,7 +158,7 @@ namespace Grizzly::GPU {
 		case StoreAction::DontCare:
 			return MTLStoreActionDontCare;
 		default:
-			GRIZZLY_UNIMPLEMENTED;
+			FORGE_UNIMPLEMENTED;
 			break;
 		}
 		return MTLStoreActionDontCare;
@@ -173,10 +173,10 @@ namespace Grizzly::GPU {
 		case GraphicsPipeline::CullMode::Back:
 			return MTLCullModeBack;
 		default:
-			GRIZZLY_UNIMPLEMENTED;
+			FORGE_UNIMPLEMENTED;
 			break;
 		}
 		return MTLCullModeNone;
 	}
 
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

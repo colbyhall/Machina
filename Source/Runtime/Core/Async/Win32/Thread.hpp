@@ -10,7 +10,7 @@
 
 #include <windows.h>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	class Win32Thread final : public Thread {
 	public:
 		explicit Win32Thread(HANDLE thread, DWORD id) : m_thread(thread), m_id(id) {}
@@ -18,8 +18,8 @@ namespace Grizzly::Core {
 		Win32Thread& operator=(const Win32Thread&) = delete;
 		Win32Thread(Win32Thread&& move) : m_thread(move.m_thread), m_id(move.m_id) { move.m_thread = nullptr; }
 		Win32Thread& operator=(Win32Thread&& move) {
-			auto to_destroy = Grizzly::move(*this);
-			GRIZZLY_UNUSED(to_destroy);
+			auto to_destroy = Forge::move(*this);
+			FORGE_UNUSED(to_destroy);
 			m_thread = move.m_thread;
 			m_id = move.m_id;
 			move.m_thread = nullptr;
@@ -36,4 +36,4 @@ namespace Grizzly::Core {
 		HANDLE m_thread;
 		DWORD m_id;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

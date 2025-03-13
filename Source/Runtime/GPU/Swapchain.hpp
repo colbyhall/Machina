@@ -11,23 +11,23 @@
 #include <GPU/Forward.hpp>
 #include <GPU/Texture.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	class Backbuffer;
 
 	class Swapchain {
 	public:
 		using Owner = void*;
 
-		GRIZZLY_NO_DISCARD virtual Unique<Backbuffer> next_back_buffer() = 0;
+		FORGE_NO_DISCARD virtual Unique<Backbuffer> next_back_buffer() = 0;
 
 		virtual ~Swapchain() {}
 	};
 
 	class Backbuffer {
 	public:
-		GRIZZLY_NO_DISCARD virtual Texture const& texture() const = 0;
+		FORGE_NO_DISCARD virtual Texture const& texture() const = 0;
 		virtual void present(Receipt const& wait_on) = 0;
 
 		virtual ~Backbuffer() {}
 	};
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

@@ -7,11 +7,11 @@
 #include "Core/Containers/StringView.hpp"
 #include <Core/Debug/StackTrace.hpp>
 
-#if GRIZZLY_PLATFORM == GRIZZLY_PLATFORM_WINDOWS
+#if FORGE_PLATFORM == FORGE_PLATFORM_WINDOWS
 	#include <DbgHelp.h>
 	#include <Windows.h>
 
-namespace Grizzly::Core::StackTrace {
+namespace Forge::Core::StackTrace {
 	Array<Frame> capture() {
 		constexpr int max_frames = 128;
 		Array<Frame> result;
@@ -37,12 +37,12 @@ namespace Grizzly::Core::StackTrace {
 		free(symbol);
 		return result;
 	}
-} // namespace Grizzly::Core::StackTrace
+} // namespace Forge::Core::StackTrace
 
 #else
 	#include <execinfo.h>
 
-namespace Grizzly::Core::StackTrace {
+namespace Forge::Core::StackTrace {
 	Array<Frame> capture() {
 		constexpr int max_frames = 128;
 		Array<Frame> result;
@@ -63,5 +63,5 @@ namespace Grizzly::Core::StackTrace {
 
 		return result;
 	}
-} // namespace Grizzly::Core::StackTrace
+} // namespace Forge::Core::StackTrace
 #endif

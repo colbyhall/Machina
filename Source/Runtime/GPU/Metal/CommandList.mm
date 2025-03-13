@@ -10,7 +10,7 @@
 #include <GPU/Metal/GraphicsPipeline.hpp>
 #include <GPU/Metal/Texture.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	void MetalReceipt::wait_until_complete() const {
 		@autoreleasepool {
 			[m_command_buffer waitUntilCompleted];
@@ -103,4 +103,4 @@ namespace Grizzly::GPU {
 		return *this;
 	}
 	RenderPassRecorder& MetalRenderPassRecorder::draw_indexed(usize index_count, usize first_index) { return *this; }
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

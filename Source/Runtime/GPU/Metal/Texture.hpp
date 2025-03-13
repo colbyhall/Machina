@@ -11,7 +11,7 @@
 #include <Core/ObjectiveC/Protocol.hpp>
 #include <GPU/Texture.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	class MetalTexture final : public Texture {
 	public:
 		explicit MetalTexture(Texture::CreateInfo const& create_info, id<MTLTexture> texture)
@@ -23,4 +23,4 @@ namespace Grizzly::GPU {
 	private:
 		Core::Protocol m_texture; // MTLTexture
 	};
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

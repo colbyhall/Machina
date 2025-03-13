@@ -7,7 +7,7 @@
 #include <GUI/Application.hpp>
 #include <GUI/Win32/Window.hpp>
 
-namespace Grizzly::GUI {
+namespace Forge::GUI {
 	static LRESULT CALLBACK window_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		return DefWindowProcW(hwnd, msg, wparam, lparam);
 	}
@@ -24,7 +24,7 @@ namespace Grizzly::GUI {
 		window_class.lpszClassName = window_class_name;
 
 		if (::RegisterClassExW(&window_class) == 0) {
-			GRIZZLY_PANIC("Failure when registering window class.");
+			FORGE_PANIC("Failure when registering window class.");
 		}
 
 		return Application(device);
@@ -45,4 +45,4 @@ namespace Grizzly::GUI {
 			DispatchMessageA(&msg);
 		}
 	}
-} // namespace Grizzly::GUI
+} // namespace Forge::GUI

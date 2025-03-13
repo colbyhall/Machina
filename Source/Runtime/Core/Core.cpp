@@ -11,9 +11,9 @@
 #include <Core/Format.hpp>
 #include <Core/IO/File.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	void trap() {
-#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
+#if FORGE_BUILD == FORGE_BUILD_DEBUG
 		Formatter formatter{ File::stderr };
 		formatter.format(u8"\n{red}Abort Triggered:\n\n{yellow}CallStack:{default}\n");
 		const auto stack_trace = StackTrace::capture();
@@ -21,9 +21,9 @@ namespace Grizzly::Core {
 			formatter.format(u8"{}\n", stack_trace[i]);
 		}
 #endif
-#if GRIZZLY_COMPILER == GRIZZLY_COMPILER_MSVC
+#if FORGE_COMPILER == FORGE_COMPILER_MSVC
 		__debugbreak();
-#elif GRIZZLY_COMPILER == GRIZZLY_COMPILER_CLANG
+#elif FORGE_COMPILER == FORGE_COMPILER_CLANG
 		__builtin_trap();
 #else
 	#error Unknown trap
@@ -40,4 +40,4 @@ namespace Grizzly::Core {
 		std::abort();
 	}
 	void exit(int status) { std::exit(status); }
-} // namespace Grizzly::Core
+} // namespace Forge::Core

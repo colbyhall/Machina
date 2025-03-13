@@ -7,127 +7,127 @@
 #include <Core/Containers/NonNull.hpp>
 #include <Core/Debug/Test.hpp>
 
-#if GRIZZLY_ENABLE_TEST
-GRIZZLY_TEST_SUITE("Containers") {
-	using namespace Grizzly::Core;
+#if FORGE_ENABLE_TEST
+FORGE_TEST_SUITE("Containers") {
+	using namespace Forge::Core;
 
-	GRIZZLY_TEST_CASE("NonNull") {
-		GRIZZLY_SUBCASE("constructor") {
+	FORGE_TEST_CASE("NonNull") {
+		FORGE_SUBCASE("constructor") {
 			int value = 5;
 			const NonNull<int> ptr = &value;
-			GRIZZLY_CHECK(ptr == &value);
+			FORGE_CHECK(ptr == &value);
 		}
 
 		struct Foo {
 			int a = 0;
 		};
 
-		GRIZZLY_SUBCASE("operator->") {
+		FORGE_SUBCASE("operator->") {
 			Foo value{ .a = 120 };
 			const NonNull<Foo> ptr = &value;
-			GRIZZLY_CHECK(ptr->a == 120);
+			FORGE_CHECK(ptr->a == 120);
 		}
 
-		GRIZZLY_SUBCASE("operator*") {
+		FORGE_SUBCASE("operator*") {
 			Foo value{ .a = 120 };
 			const NonNull<Foo> ptr = &value;
-			GRIZZLY_CHECK((*ptr).a == 120);
+			FORGE_CHECK((*ptr).a == 120);
 		}
 
-		GRIZZLY_SUBCASE("operator[]") {
+		FORGE_SUBCASE("operator[]") {
 			Foo value[] = { Foo{ .a = 120 }, Foo{ .a = 121 } };
 			const NonNull<Foo> ptr = value;
-			GRIZZLY_CHECK(ptr[0].a == 120);
-			GRIZZLY_CHECK(ptr[1].a == 121);
+			FORGE_CHECK(ptr[0].a == 120);
+			FORGE_CHECK(ptr[1].a == 121);
 		}
 
-		GRIZZLY_SUBCASE("operator==") {
+		FORGE_SUBCASE("operator==") {
 			int value = 5;
 			const NonNull<int> ptr = &value;
-			GRIZZLY_CHECK(ptr == &value);
+			FORGE_CHECK(ptr == &value);
 		}
 
-		GRIZZLY_SUBCASE("operator!=") {
+		FORGE_SUBCASE("operator!=") {
 			int value = 5;
 			const NonNull<int> ptr = &value;
-			GRIZZLY_CHECK(ptr != nullptr);
+			FORGE_CHECK(ptr != nullptr);
 		}
 	}
 
-	GRIZZLY_TEST_CASE("NonNull<void>") {
-		GRIZZLY_SUBCASE("constructor") {
+	FORGE_TEST_CASE("NonNull<void>") {
+		FORGE_SUBCASE("constructor") {
 			int value = 5;
 			const NonNull<void> ptr = &value;
-			GRIZZLY_CHECK(ptr == &value);
+			FORGE_CHECK(ptr == &value);
 		}
 
-		GRIZZLY_SUBCASE("operator void*") {
+		FORGE_SUBCASE("operator void*") {
 			int value = 5;
 			const NonNull<void> ptr = &value;
-			GRIZZLY_CHECK(static_cast<void*>(ptr) == &value);
+			FORGE_CHECK(static_cast<void*>(ptr) == &value);
 		}
 
-		GRIZZLY_SUBCASE("operator*") {
+		FORGE_SUBCASE("operator*") {
 			int value = 5;
 			const NonNull<void> ptr = &value;
-			GRIZZLY_CHECK(*ptr == &value);
+			FORGE_CHECK(*ptr == &value);
 		}
 
-		GRIZZLY_SUBCASE("operator==") {
+		FORGE_SUBCASE("operator==") {
 			int value = 5;
 			const NonNull<void> ptr = &value;
-			GRIZZLY_CHECK(ptr == &value);
+			FORGE_CHECK(ptr == &value);
 		}
 
-		GRIZZLY_SUBCASE("operator!=") {
+		FORGE_SUBCASE("operator!=") {
 			int value = 5;
 			const NonNull<void> ptr = &value;
-			GRIZZLY_CHECK(ptr != nullptr);
+			FORGE_CHECK(ptr != nullptr);
 		}
 
-		GRIZZLY_SUBCASE("as") {
+		FORGE_SUBCASE("as") {
 			int value = 5;
 			const NonNull<void> ptr = &value;
-			GRIZZLY_CHECK(ptr.as<int>() == &value);
+			FORGE_CHECK(ptr.as<int>() == &value);
 		}
 	}
 
-	GRIZZLY_TEST_CASE("NonNull<void const>") {
-		GRIZZLY_SUBCASE("constructor") {
+	FORGE_TEST_CASE("NonNull<void const>") {
+		FORGE_SUBCASE("constructor") {
 			int value = 5;
 			const NonNull<void const> ptr = &value;
-			GRIZZLY_CHECK(ptr == &value);
+			FORGE_CHECK(ptr == &value);
 		}
 
-		GRIZZLY_SUBCASE("operator void const*") {
+		FORGE_SUBCASE("operator void const*") {
 			int value = 5;
 			const NonNull<void const> ptr = &value;
-			GRIZZLY_CHECK(static_cast<void const*>(ptr) == &value);
+			FORGE_CHECK(static_cast<void const*>(ptr) == &value);
 		}
 
-		GRIZZLY_SUBCASE("operator*") {
+		FORGE_SUBCASE("operator*") {
 			int value = 5;
 			const NonNull<void const> ptr = &value;
-			GRIZZLY_CHECK(*ptr == &value);
+			FORGE_CHECK(*ptr == &value);
 		}
 
-		GRIZZLY_SUBCASE("operator==") {
+		FORGE_SUBCASE("operator==") {
 			int value = 5;
 			const NonNull<void const> ptr = &value;
-			GRIZZLY_CHECK(ptr == &value);
+			FORGE_CHECK(ptr == &value);
 		}
 
-		GRIZZLY_SUBCASE("operator!=") {
+		FORGE_SUBCASE("operator!=") {
 			int value = 5;
 			const NonNull<void const> ptr = &value;
-			GRIZZLY_CHECK(ptr != nullptr);
+			FORGE_CHECK(ptr != nullptr);
 		}
 
-		GRIZZLY_SUBCASE("as") {
+		FORGE_SUBCASE("as") {
 			int value = 5;
 			const NonNull<void const> ptr = &value;
-			GRIZZLY_CHECK(ptr.as<const int>() == &value);
+			FORGE_CHECK(ptr.as<const int>() == &value);
 		}
 	}
 }
-#endif // GRIZZLY_ENABLE_TEST
+#endif // FORGE_ENABLE_TEST

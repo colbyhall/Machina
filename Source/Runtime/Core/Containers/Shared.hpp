@@ -12,7 +12,7 @@
 #include <Core/Concepts.hpp>
 #include <Core/Memory.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	enum class SharedType { NonAtomic, Atomic };
 
 	template <SharedType Type>
@@ -28,23 +28,23 @@ namespace Grizzly::Core {
 	public:
 		SharedCounter() = default;
 
-		GRIZZLY_ALWAYS_INLINE u32 strong() const { return m_strong; }
-		GRIZZLY_ALWAYS_INLINE u32 weak() const { return m_weak; }
+		FORGE_ALWAYS_INLINE u32 strong() const { return m_strong; }
+		FORGE_ALWAYS_INLINE u32 weak() const { return m_weak; }
 
-		GRIZZLY_ALWAYS_INLINE u32 add_strong() const {
+		FORGE_ALWAYS_INLINE u32 add_strong() const {
 			m_strong += 1;
 			return m_strong - 1;
 		}
-		GRIZZLY_ALWAYS_INLINE u32 remove_strong() const {
+		FORGE_ALWAYS_INLINE u32 remove_strong() const {
 			m_strong -= 1;
 			return m_strong + 1;
 		}
 
-		GRIZZLY_ALWAYS_INLINE u32 add_weak() const {
+		FORGE_ALWAYS_INLINE u32 add_weak() const {
 			m_weak += 1;
 			return m_weak - 1;
 		}
-		GRIZZLY_ALWAYS_INLINE u32 remove_weak() const {
+		FORGE_ALWAYS_INLINE u32 remove_weak() const {
 			m_weak -= 1;
 			return m_weak + 1;
 		}
@@ -59,14 +59,14 @@ namespace Grizzly::Core {
 	public:
 		SharedCounter() = default;
 
-		GRIZZLY_ALWAYS_INLINE u32 strong() const { return m_strong.load(Order::Acquire); }
-		GRIZZLY_ALWAYS_INLINE u32 weak() const { return m_weak.load(Order::Acquire); }
+		FORGE_ALWAYS_INLINE u32 strong() const { return m_strong.load(Order::Acquire); }
+		FORGE_ALWAYS_INLINE u32 weak() const { return m_weak.load(Order::Acquire); }
 
-		GRIZZLY_ALWAYS_INLINE u32 add_strong() const { return m_strong.fetch_add(1, Order::AcqRel); }
-		GRIZZLY_ALWAYS_INLINE u32 remove_strong() const { return m_strong.fetch_sub(1, Order::AcqRel); }
+		FORGE_ALWAYS_INLINE u32 add_strong() const { return m_strong.fetch_add(1, Order::AcqRel); }
+		FORGE_ALWAYS_INLINE u32 remove_strong() const { return m_strong.fetch_sub(1, Order::AcqRel); }
 
-		GRIZZLY_ALWAYS_INLINE u32 add_weak() const { return m_weak.fetch_add(1, Order::AcqRel); }
-		GRIZZLY_ALWAYS_INLINE u32 remove_weak() const { return m_weak.fetch_sub(1, Order::AcqRel); }
+		FORGE_ALWAYS_INLINE u32 add_weak() const { return m_weak.fetch_add(1, Order::AcqRel); }
+		FORGE_ALWAYS_INLINE u32 remove_weak() const { return m_weak.fetch_sub(1, Order::AcqRel); }
 
 	private:
 		Atomic<u32> m_strong{ 1 };
@@ -79,7 +79,7 @@ namespace Grizzly::Core {
 		using Counter = SharedCounter<Type>;
 
 		template <typename... Args>
-		static GRIZZLY_ALWAYS_INLINE Shared<Base, Type> create(Args&&... args)
+		static FORGE_ALWAYS_INLINE Shared<Base, Type> create(Args&&... args)
 			requires ConstructibleFrom<Base, Args...>
 		{
 			struct Combined {
@@ -92,7 +92,7 @@ namespace Grizzly::Core {
 				Memory::alloc(layout),
 				Combined{
 					.counter = SharedCounter<Type>{},
-					.base = Base{ Grizzly::forward<Args>(args)... },
+					.base = Base{ Forge::forward<Args>(args)... },
 				});
 
 			auto* counter = &ptr->counter;
@@ -190,68 +190,66 @@ namespace Grizzly::Core {
 			}
 		}
 
-		GRIZZLY_ALWAYS_INLINE Weak<Base, Type> downgrade() const {
+		FORGE_ALWAYS_INLINE Weak<Base, Type> downgrade() const {
 			auto& c = counter();
 			c.add_weak();
 			return Weak<Base, Type>{ m_counter, m_base };
 		}
 
 		// Non Atomic Accessors
-		GRIZZLY_ALWAYS_INLINE explicit operator Base*() const
+		FORGE_ALWAYS_INLINE explicit operator Base*() const
 			requires(Type == SharedType::NonAtomic)
 		{
 			return &value();
 		}
-		GRIZZLY_ALWAYS_INLINE explicit operator Base&() const
+		FORGE_ALWAYS_INLINE explicit operator Base&() const
 			requires(Type == SharedType::NonAtomic)
 		{
 			return value();
 		}
-		GRIZZLY_ALWAYS_INLINE Base* operator->() const
+		FORGE_ALWAYS_INLINE Base* operator->() const
 			requires(Type == SharedType::NonAtomic)
 		{
 			return &value();
 		}
-		GRIZZLY_ALWAYS_INLINE Base& operator*() const
+		FORGE_ALWAYS_INLINE Base& operator*() const
 			requires(Type == SharedType::NonAtomic)
 		{
 			return value();
 		}
 
 		// Atomic Accessors are const only
-		GRIZZLY_NO_DISCARD Base& unsafe_get_mut() const
+		FORGE_NO_DISCARD Base& unsafe_get_mut() const
 			requires(Type == SharedType::Atomic)
 		{
 			return value();
 		}
 
-		GRIZZLY_ALWAYS_INLINE explicit operator Base const*() const
+		FORGE_ALWAYS_INLINE explicit operator Base const*() const
 			requires(Type == SharedType::Atomic)
 		{
 			return &value();
 		}
-		GRIZZLY_ALWAYS_INLINE explicit operator Base const&() const
+		FORGE_ALWAYS_INLINE explicit operator Base const&() const
 			requires(Type == SharedType::Atomic)
 		{
 			return value();
 		}
-		GRIZZLY_ALWAYS_INLINE Base const* operator->() const
+		FORGE_ALWAYS_INLINE Base const* operator->() const
 			requires(Type == SharedType::Atomic)
 		{
 			return &value();
 		}
-		GRIZZLY_ALWAYS_INLINE Base const& operator*() const
+		FORGE_ALWAYS_INLINE Base const& operator*() const
 			requires(Type == SharedType::Atomic)
 		{
 			return value();
 		}
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE u32 strong() const {
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE u32 strong() const {
 			return m_counter != nullptr ? counter().strong() : 0;
 		}
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE u32 weak() const {
-			return m_counter != nullptr ? counter().weak() : 0;
-		}
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE u32 weak() const { return m_counter != nullptr ? counter().weak() : 0; }
 
 	private:
 		explicit Shared(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
@@ -262,8 +260,8 @@ namespace Grizzly::Core {
 		template <typename, SharedType>
 		friend class Weak;
 
-		GRIZZLY_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
-		GRIZZLY_ALWAYS_INLINE Base& value() const { return *m_base; }
+		FORGE_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
+		FORGE_ALWAYS_INLINE Base& value() const { return *m_base; }
 
 		Counter* m_counter = nullptr;
 		Base* m_base = nullptr;
@@ -333,7 +331,7 @@ namespace Grizzly::Core {
 			}
 		}
 
-		GRIZZLY_NO_DISCARD Option<Shared<Base, Type>> upgrade() const {
+		FORGE_NO_DISCARD Option<Shared<Base, Type>> upgrade() const {
 			auto& c = counter();
 			const auto strong_count = c.strong();
 			if (strong_count > 0) {
@@ -343,15 +341,13 @@ namespace Grizzly::Core {
 			return nullopt;
 		}
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE u32 strong() const {
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE u32 strong() const {
 			return m_counter != nullptr ? counter().strong() : 0;
 		}
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE u32 weak() const {
-			return m_counter != nullptr ? counter().weak() : 0;
-		}
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE u32 weak() const { return m_counter != nullptr ? counter().weak() : 0; }
 
 	private:
-		GRIZZLY_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
+		FORGE_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
 
 		explicit Weak(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
 
@@ -370,7 +366,7 @@ namespace Grizzly::Core {
 	public:
 		using Counter = SharedCounter<Type>;
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE Shared<T, Type> to_shared() const {
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Shared<T, Type> to_shared() const {
 			return m_this.as_const_ref().unwrap().upgrade().unwrap();
 		}
 
@@ -380,9 +376,9 @@ namespace Grizzly::Core {
 
 		Option<Weak<T, Type>> m_this = nullopt;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core
 
-namespace Grizzly {
+namespace Forge {
 	template <typename T>
 	using Rc = Core::Shared<T, Core::SharedType::NonAtomic>;
 
@@ -400,4 +396,4 @@ namespace Grizzly {
 
 	template <typename T>
 	using ArcWeak = Core::Weak<T, Core::SharedType::Atomic>;
-} // namespace Grizzly
+} // namespace Forge

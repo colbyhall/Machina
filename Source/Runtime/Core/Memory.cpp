@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <cstring>
 
-namespace Grizzly::Core::Memory {
+namespace Forge::Core::Memory {
 	NonNull<void> alloc(const Layout& layout) {
 		// TODO: Alignment
 		void* result = std::malloc(static_cast<std::size_t>(layout.size));
@@ -17,7 +17,7 @@ namespace Grizzly::Core::Memory {
 	}
 
 	NonNull<void> realloc(NonNull<void> old_ptr, const Layout& old_layout, const Layout& new_layout) {
-		GRIZZLY_UNUSED(old_layout);
+		FORGE_UNUSED(old_layout);
 
 		// TODO: Alignment
 		void* result = std::realloc(old_ptr, static_cast<std::size_t>(new_layout.size));
@@ -50,4 +50,4 @@ namespace Grizzly::Core::Memory {
 #undef B4
 #undef B6
 #undef COUNT_BITS
-} // namespace Grizzly::Core::Memory
+} // namespace Forge::Core::Memory

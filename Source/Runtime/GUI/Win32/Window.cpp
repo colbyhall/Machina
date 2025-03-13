@@ -8,7 +8,7 @@
 #include <GUI/Application.hpp>
 #include <GUI/Win32/Window.hpp>
 
-namespace Grizzly::GUI {
+namespace Forge::GUI {
 	Rc<Window> Window::create(Application& app, const CreateInfo& create_info) {
 		const auto dpi = static_cast<f32>(::GetDpiForSystem()) / 96.f;
 
@@ -48,7 +48,7 @@ namespace Grizzly::GUI {
 		// TODO: Error handling
 
 		auto swapchain = app.device().create_swapchain(handle);
-		auto result = Rc<Win32Window>::create(handle, Grizzly::move(swapchain));
+		auto result = Rc<Win32Window>::create(handle, Forge::move(swapchain));
 		::SetWindowLongPtrW(handle, GWLP_USERDATA, (LONG_PTR) & *result);
 		return result;
 	}
@@ -63,4 +63,4 @@ namespace Grizzly::GUI {
 	bool Win32Window::hide() { return ::ShowWindow(m_handle, SW_HIDE) > 0; }
 	bool Win32Window::maximize() { return ::ShowWindow(m_handle, SW_MAXIMIZE) > 0; }
 	bool Win32Window::minimize() { return ::ShowWindow(m_handle, SW_MINIMIZE) > 0; }
-} // namespace Grizzly::GUI
+} // namespace Forge::GUI

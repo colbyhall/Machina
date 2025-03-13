@@ -12,22 +12,22 @@
 
 #include <limits>
 
-namespace Grizzly::Core::Math {
+namespace Forge::Core::Math {
 	template <typename T>
 	concept Number = FloatingPoint<T> || Integral<T>;
 
 	template <Number T>
-	constexpr GRIZZLY_ALWAYS_INLINE T min(T a, T b) {
+	constexpr FORGE_ALWAYS_INLINE T min(T a, T b) {
 		return a < b ? a : b;
 	}
 
 	template <Number T>
-	constexpr GRIZZLY_ALWAYS_INLINE T max(T a, T b) {
+	constexpr FORGE_ALWAYS_INLINE T max(T a, T b) {
 		return a > b ? a : b;
 	}
 
 	template <Number T>
-	constexpr GRIZZLY_ALWAYS_INLINE T clamp(T value, T min, T max) {
+	constexpr FORGE_ALWAYS_INLINE T clamp(T value, T min, T max) {
 		return Math::min<T>(Math::max<T>(value, min), max);
 	}
 
@@ -76,63 +76,63 @@ namespace Grizzly::Core::Math {
 	template <FloatingPoint T>
 	inline constexpr T nan = std::numeric_limits<T>::signaling_NaN();
 
-	GRIZZLY_NO_DISCARD f32 cos(f32 x);
-	GRIZZLY_NO_DISCARD f64 cos(f64 x);
+	FORGE_NO_DISCARD f32 cos(f32 x);
+	FORGE_NO_DISCARD f64 cos(f64 x);
 
-	GRIZZLY_NO_DISCARD f32 sin(f32 x);
-	GRIZZLY_NO_DISCARD f64 sin(f64 x);
+	FORGE_NO_DISCARD f32 sin(f32 x);
+	FORGE_NO_DISCARD f64 sin(f64 x);
 
-	GRIZZLY_NO_DISCARD f32 tan(f32 x);
-	GRIZZLY_NO_DISCARD f64 tan(f64 x);
+	FORGE_NO_DISCARD f32 tan(f32 x);
+	FORGE_NO_DISCARD f64 tan(f64 x);
 
-	GRIZZLY_NO_DISCARD f32 acos(f32 x);
-	GRIZZLY_NO_DISCARD f64 acos(f64 x);
+	FORGE_NO_DISCARD f32 acos(f32 x);
+	FORGE_NO_DISCARD f64 acos(f64 x);
 
-	GRIZZLY_NO_DISCARD f32 asin(f32 x);
-	GRIZZLY_NO_DISCARD f64 asin(f64 x);
+	FORGE_NO_DISCARD f32 asin(f32 x);
+	FORGE_NO_DISCARD f64 asin(f64 x);
 
-	GRIZZLY_NO_DISCARD f32 atan(f32 x);
-	GRIZZLY_NO_DISCARD f64 atan(f64 x);
+	FORGE_NO_DISCARD f32 atan(f32 x);
+	FORGE_NO_DISCARD f64 atan(f64 x);
 
-	GRIZZLY_NO_DISCARD f32 atan2(f32 y, f32 x);
-	GRIZZLY_NO_DISCARD f64 atan2(f64 y, f64 x);
+	FORGE_NO_DISCARD f32 atan2(f32 y, f32 x);
+	FORGE_NO_DISCARD f64 atan2(f64 y, f64 x);
 
-	GRIZZLY_NO_DISCARD f32 sqrt(f32 x);
-	GRIZZLY_NO_DISCARD f64 sqrt(f64 x);
+	FORGE_NO_DISCARD f32 sqrt(f32 x);
+	FORGE_NO_DISCARD f64 sqrt(f64 x);
 
-	GRIZZLY_NO_DISCARD f32 fmod(f32 numerator, f32 denominator);
-	GRIZZLY_NO_DISCARD f64 fmod(f64 numerator, f64 denominator);
+	FORGE_NO_DISCARD f32 fmod(f32 numerator, f32 denominator);
+	FORGE_NO_DISCARD f64 fmod(f64 numerator, f64 denominator);
 
-	GRIZZLY_NO_DISCARD f32 powf(f32 x, f32 y);
-	GRIZZLY_NO_DISCARD f64 pow(f64 x, f64 y);
+	FORGE_NO_DISCARD f32 powf(f32 x, f32 y);
+	FORGE_NO_DISCARD f64 pow(f64 x, f64 y);
 
 	template <Number T>
-	constexpr GRIZZLY_ALWAYS_INLINE T abs(T x) {
+	constexpr FORGE_ALWAYS_INLINE T abs(T x) {
 		return x < 0 ? -x : x;
 	}
 
 	template <FloatingPoint T>
-	constexpr GRIZZLY_ALWAYS_INLINE bool is_near_zero(T a) {
+	constexpr FORGE_ALWAYS_INLINE bool is_near_zero(T a) {
 		return abs<T>(a) <= small_number<T>;
 	}
 
 	template <FloatingPoint T>
-	constexpr GRIZZLY_ALWAYS_INLINE T lerp(T a, T b, T t) {
+	constexpr FORGE_ALWAYS_INLINE T lerp(T a, T b, T t) {
 		return (T{ 1 } - t) * a + t * b;
 	}
 
 	template <Number T>
-	constexpr GRIZZLY_ALWAYS_INLINE T square(T value) {
+	constexpr FORGE_ALWAYS_INLINE T square(T value) {
 		return value * value;
 	}
 
 	template <Number T>
-	constexpr GRIZZLY_ALWAYS_INLINE T equals(T a, T b, T tolerance = kinda_small_number<T>) {
+	constexpr FORGE_ALWAYS_INLINE T equals(T a, T b, T tolerance = kinda_small_number<T>) {
 		return abs<T>(a - b) <= tolerance;
 	}
-} // namespace Grizzly::Core::Math
+} // namespace Forge::Core::Math
 
-namespace Grizzly::Math {
+namespace Forge::Math {
 	using Core::Math::Number;
 
 	using Core::Math::abs;
@@ -172,4 +172,4 @@ namespace Grizzly::Math {
 
 	template <Number T>
 	inline constexpr T nan = Core::Math::nan<T>;
-} // namespace Grizzly::Math
+} // namespace Forge::Math

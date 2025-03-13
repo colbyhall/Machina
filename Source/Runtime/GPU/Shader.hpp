@@ -9,7 +9,7 @@
 #include <Core/Containers/Shared.hpp>
 #include <Core/Containers/String.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	class VertexShader;
 	class FragmentShader;
 
@@ -27,8 +27,8 @@ namespace Grizzly::GPU {
 
 	class Library : public ArcFromThis<Library> {
 	public:
-		GRIZZLY_NO_DISCARD virtual Arc<VertexShader> create_vertex_shader(StringView function_name) const = 0;
-		GRIZZLY_NO_DISCARD virtual Arc<FragmentShader> create_fragment_shader(StringView function_name) const = 0;
+		FORGE_NO_DISCARD virtual Arc<VertexShader> create_vertex_shader(StringView function_name) const = 0;
+		FORGE_NO_DISCARD virtual Arc<FragmentShader> create_fragment_shader(StringView function_name) const = 0;
 
 		virtual ~Library() {}
 	};
@@ -42,4 +42,4 @@ namespace Grizzly::GPU {
 	public:
 		virtual ~FragmentShader() {}
 	};
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

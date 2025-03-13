@@ -9,20 +9,20 @@
 #include <Core/Containers/Array.hpp>
 #include <Core/Hash.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	template <typename Key, typename Value>
 		requires Copyable<Key> && EqualityComparable<Key>
 	class HashMap {
 	public:
 		constexpr HashMap() = default;
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize len() const { return m_buckets.len(); }
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize cap() const { return m_buckets.cap(); }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize len() const { return m_buckets.len(); }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize cap() const { return m_buckets.cap(); }
 
 		void insert(const Key& key, Value&& value)
 			requires Movable<Value>
 		{
-			m_buckets.push(Bucket{ .key = key, .value = Grizzly::forward<Value>(value) });
+			m_buckets.push(Bucket{ .key = key, .value = Forge::forward<Value>(value) });
 			refresh_layout();
 		}
 		void insert(const Key& key, const Value& value)
@@ -152,4 +152,4 @@ namespace Grizzly::Core {
 		Array<Bucket> m_buckets;
 		Array<Option<usize>> m_layout;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

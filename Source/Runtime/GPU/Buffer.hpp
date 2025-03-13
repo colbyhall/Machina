@@ -11,7 +11,7 @@
 #include <Core/Containers/Slice.hpp>
 #include <GPU/Resource.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	enum class Heap : u8 {
 		Storage,
 		Upload,
@@ -35,10 +35,10 @@ namespace Grizzly::GPU {
 			usize stride;
 		};
 
-		GRIZZLY_ALWAYS_INLINE Usage usage() const { return m_usage; }
-		GRIZZLY_ALWAYS_INLINE Heap heap() const { return m_heap; }
-		GRIZZLY_ALWAYS_INLINE usize len() const { return m_len; }
-		GRIZZLY_ALWAYS_INLINE usize stride() const { return m_stride; }
+		FORGE_ALWAYS_INLINE Usage usage() const { return m_usage; }
+		FORGE_ALWAYS_INLINE Heap heap() const { return m_heap; }
+		FORGE_ALWAYS_INLINE usize len() const { return m_len; }
+		FORGE_ALWAYS_INLINE usize stride() const { return m_stride; }
 
 		virtual void map(FunctionRef<void(Slice<u8>)> f) const = 0;
 
@@ -54,5 +54,5 @@ namespace Grizzly::GPU {
 		usize m_len;
 		usize m_stride;
 	};
-	GRIZZLY_ENUM_CLASS_BITFIELD(Buffer::Usage)
-} // namespace Grizzly::GPU
+	FORGE_ENUM_CLASS_BITFIELD(Buffer::Usage)
+} // namespace Forge::GPU

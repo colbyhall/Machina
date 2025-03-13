@@ -6,7 +6,7 @@
 
 #include <Core/Containers/String.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	constexpr u32 utf8_reject = 12;
 
 	usize utf8_encode(Char c, UTF8Char* dest, u32& errors) {
@@ -40,7 +40,7 @@ namespace Grizzly::Core {
 		UTF8Char local[4] = {};
 		u32 error;
 		const usize char_len = utf8_encode(c, local, error);
-		GRIZZLY_ASSERT(error != utf8_reject);
+		FORGE_ASSERT(error != utf8_reject);
 
 		// Preallocate enough space to add the bytes
 		const usize slag = m_bytes.cap() - m_bytes.len();
@@ -83,35 +83,35 @@ namespace Grizzly::Core {
 		}
 		return written;
 	}
-} // namespace Grizzly::Core
+} // namespace Forge::Core
 
 #include <Core/Debug/Test.hpp>
 
-#if GRIZZLY_ENABLE_TEST
-GRIZZLY_TEST_SUITE("Containers") {
-	using namespace Grizzly::Core;
+#if FORGE_ENABLE_TEST
+FORGE_TEST_SUITE("Containers") {
+	using namespace Forge::Core;
 
-	GRIZZLY_TEST_CASE("String") {
-		GRIZZLY_SUBCASE("default constructor") {
+	FORGE_TEST_CASE("String") {
+		FORGE_SUBCASE("default constructor") {
 			String string;
-			GRIZZLY_CHECK(string.len() == 0);
+			FORGE_CHECK(string.len() == 0);
 		}
 
-		GRIZZLY_SUBCASE("push") {
+		FORGE_SUBCASE("push") {
 			String string;
 			string.push('f');
 			string.push('o');
 			string.push('o');
-			GRIZZLY_CHECK(string.len() == 3);
-			GRIZZLY_CHECK(string == u8"foo"sv);
+			FORGE_CHECK(string.len() == 3);
+			FORGE_CHECK(string == u8"foo"sv);
 		}
 
-		GRIZZLY_SUBCASE("append") {
+		FORGE_SUBCASE("append") {
 			String string;
 			string.append(u8"foo"sv);
-			GRIZZLY_CHECK(string.len() == 3);
-			GRIZZLY_CHECK(string == u8"foo"sv);
+			FORGE_CHECK(string.len() == 3);
+			FORGE_CHECK(string == u8"foo"sv);
 		}
 	}
 }
-#endif // GRIZZLY_ENABLE_TEST
+#endif // FORGE_ENABLE_TEST

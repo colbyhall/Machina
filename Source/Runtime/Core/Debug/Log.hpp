@@ -9,7 +9,7 @@
 #include <Core/Format.hpp>
 #include <Core/IO/File.hpp>
 
-namespace Grizzly {
+namespace Forge {
 	template <typename... Args>
 	void dbgln(const StringView& fmt, const Args&... args) {
 		Core::BufferedWriter writer{ Core::File::stderr };
@@ -19,4 +19,4 @@ namespace Grizzly {
 		formatter.format(u8"\n{default}"sv);
 		writer.flush();
 	}
-} // namespace Grizzly
+} // namespace Forge

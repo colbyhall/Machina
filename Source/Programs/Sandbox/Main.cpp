@@ -13,7 +13,7 @@
 #include <GUI/Application.hpp>
 #include <GUI/Window.hpp>
 
-using namespace Grizzly;
+using namespace Forge;
 
 int main(int argc, char** argv) {
 	auto scheduler = Core::Scheduler::create({

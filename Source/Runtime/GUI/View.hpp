@@ -8,9 +8,9 @@
 
 #include <Core/Containers/Shared.hpp>
 
-namespace Grizzly::GUI {
+namespace Forge::GUI {
 	class View : public RcFromThis<View> {
 	public:
 		virtual ~View() {}
 	};
-} // namespace Grizzly::GUI
+} // namespace Forge::GUI

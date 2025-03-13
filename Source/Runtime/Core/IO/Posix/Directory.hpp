@@ -9,7 +9,7 @@
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/String.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	class PosixDirectory {
 	public:
 		static Option<PosixDirectory> open(const StringView& path);
@@ -23,8 +23,8 @@ namespace Grizzly::Core {
 		void for_each(FunctionRef<bool()> f);
 
 	private:
-		explicit PosixDirectory(String&& path) : m_path(Grizzly::move(path)) {}
+		explicit PosixDirectory(String&& path) : m_path(Forge::move(path)) {}
 		String m_path;
 	};
 
-} // namespace Grizzly::Core
+} // namespace Forge::Core

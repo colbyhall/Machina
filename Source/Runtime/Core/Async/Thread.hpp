@@ -10,7 +10,7 @@
 #include <Core/Containers/Shared.hpp>
 #include <Core/Containers/StringView.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	class Thread : public ArcFromThis<Thread> {
 	public:
 		using Function = Function<void()>;
@@ -31,4 +31,4 @@ namespace Grizzly::Core {
 
 		virtual ~Thread() {}
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

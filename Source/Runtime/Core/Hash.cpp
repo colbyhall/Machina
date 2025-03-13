@@ -6,7 +6,7 @@
 
 #include <Core/Hash.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	const u64 FNV1Hasher::offset_basic = 0xcbf29ce484222325ULL;
 	const u64 FNV1Hasher::prime = 0x100000001b3ULL;
 
@@ -20,4 +20,4 @@ namespace Grizzly::Core {
 		}
 		m_result |= hash;
 	}
-} // namespace Grizzly::Core
+} // namespace Forge::Core

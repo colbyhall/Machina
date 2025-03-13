@@ -13,7 +13,7 @@
 #include <Core/Math/Vector4.hpp>
 #include <GPU/Forward.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	enum class Layout : u8 {
 		Undefined,
 		General,
@@ -34,7 +34,7 @@ namespace Grizzly::GPU {
 
 	class CommandList : public ArcFromThis<CommandList> {
 	public:
-		GRIZZLY_NO_DISCARD virtual Arc<Receipt> submit() const = 0;
+		FORGE_NO_DISCARD virtual Arc<Receipt> submit() const = 0;
 
 		virtual ~CommandList() {}
 	};
@@ -90,4 +90,4 @@ namespace Grizzly::GPU {
 
 		virtual ~CommandRecorder() {}
 	};
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

@@ -8,20 +8,20 @@
 
 #include <Core/Core.hpp>
 
-#if GRIZZLY_PLATFORM == GRIZZLY_PLATFORM_WINDOWS
+#if FORGE_PLATFORM == FORGE_PLATFORM_WINDOWS
 
 	#include <Core/IO/Win32/Directory.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	using Directory = Win32Directory;
-} // namespace Grizzly::Core
+} // namespace Forge::Core
 
 #else
 
 	#include <Core/IO/Posix/Directory.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	using Directory = PosixDirectory;
-} // namespace Grizzly::Core
+} // namespace Forge::Core
 
 #endif

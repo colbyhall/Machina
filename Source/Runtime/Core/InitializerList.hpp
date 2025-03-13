@@ -9,7 +9,7 @@
 #include <Core/Core.hpp>
 #include <initializer_list>
 
-namespace Grizzly {
+namespace Forge {
 	template <typename T>
 	using InitializerList = std::initializer_list<T>;
-} // namespace Grizzly
+} // namespace Forge

@@ -7,7 +7,7 @@
 #include <Core/Format.hpp>
 #include <cstdio>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	struct ANSIIdentifier {
 		enum Code : u8 {
 			Default = 0,
@@ -142,7 +142,7 @@ namespace Grizzly::Core {
 								}
 							}
 							if (!found) {
-								GRIZZLY_PANIC("Unknown ANSI identifier");
+								FORGE_PANIC("Unknown ANSI identifier");
 							}
 							break;
 						} else if (f) {
@@ -150,14 +150,14 @@ namespace Grizzly::Core {
 							(f.as_ref().unwrap())(rest);
 							return;
 						} else {
-							GRIZZLY_PANIC("Not enough arguments were provided");
+							FORGE_PANIC("Not enough arguments were provided");
 						}
 					}
 				}
 			}
 		}
 
-		GRIZZLY_ASSERT(!f.is_set(), "Too many arguments were provided");
+		FORGE_ASSERT(!f.is_set(), "Too many arguments were provided");
 
 		if (base != fmt.len()) {
 			m_bytes_written += m_writer.write(fmt.substring(base, fmt.len()));
@@ -186,4 +186,4 @@ namespace Grizzly::Core {
 		const auto written = std::snprintf(buffer, 32, "%f", value);
 		return writer.write(Slice<u8 const>{ (const u8*)buffer, static_cast<usize>(written) });
 	}
-} // namespace Grizzly::Core
+} // namespace Forge::Core

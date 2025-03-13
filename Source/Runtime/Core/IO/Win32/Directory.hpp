@@ -9,7 +9,7 @@
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/String.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	class Win32Directory {
 	public:
 		static Option<Win32Directory> open(const StringView& path);
@@ -23,7 +23,7 @@ namespace Grizzly::Core {
 		void for_each(FunctionRef<bool()> f);
 
 	private:
-		explicit Win32Directory(String&& path) : m_path(Grizzly::move(path)) {}
+		explicit Win32Directory(String&& path) : m_path(Forge::move(path)) {}
 		String m_path;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

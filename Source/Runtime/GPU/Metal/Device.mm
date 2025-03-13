@@ -17,7 +17,7 @@
 #import <AppKit/AppKit.h>
 #import <Metal/Metal.h>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	Arc<Device> create_metal_device(Device::CreateInfo const& create_info) {
 		@autoreleasepool {
 			id<MTLDevice> device = MTLCreateSystemDefaultDevice();
@@ -49,7 +49,7 @@ namespace Grizzly::GPU {
 	Handle<Buffer> MetalDevice::create_buffer(Buffer::CreateInfo const& create_info) const {
 		@autoreleasepool {
 			MTLResourceOptions options = MTLResourceStorageModeShared;
-			if (create_info.heap == Buffer::Heap::Storage) {
+			if (create_info.heap == Heap::Storage) {
 				options = MTLResourceStorageModePrivate;
 			}
 
@@ -78,7 +78,7 @@ namespace Grizzly::GPU {
 	}
 
 	Handle<Library> MetalDevice::create_library_from_source(ShaderSource const& source) const {
-		GRIZZLY_ASSERT(source.language == ShaderLanguage::MSL);
+		FORGE_ASSERT(source.language == ShaderLanguage::MSL);
 		@autoreleasepool {
 			NSString* objc_source = [[NSString alloc] initWithBytesNoCopy:(void*)*source.text
 																   length:static_cast<NSUInteger>(source.text.len())
@@ -91,7 +91,7 @@ namespace Grizzly::GPU {
 			if (error != nil) {
 				NSString* message = [error localizedDescription];
 				NSLog(@"Error: %@", message);
-				Grizzly::Core::abort();
+				Forge::Core::abort();
 			}
 			return Handle<MetalLibrary>::create(library);
 		}
@@ -158,7 +158,7 @@ namespace Grizzly::GPU {
 			NSError* error = nil;
 			id<MTLRenderPipelineState> pipeline_state =
 				[m_device newRenderPipelineStateWithDescriptor:pipeline_descriptor error:&error];
-			GRIZZLY_ASSERT(error == nil);
+			FORGE_ASSERT(error == nil);
 			return Handle<MetalGraphicsPipeline>::create(create_info, pipeline_state);
 		}
 	}
@@ -175,4 +175,4 @@ namespace Grizzly::GPU {
 		}
 	}
 
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

@@ -12,7 +12,7 @@
 #include <Core/ObjectiveC/Protocol.hpp>
 #include <GPU/Swapchain.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	class MetalSwapchain final : public Swapchain {
 	public:
 		explicit MetalSwapchain(CAMetalLayer* layer) : m_layer(layer) {}
@@ -26,7 +26,7 @@ namespace Grizzly::GPU {
 	class MetalBackbuffer final : public Backbuffer {
 	public:
 		explicit MetalBackbuffer(Arc<Texture>&& texture, id<CAMetalDrawable> drawable)
-			: m_texture(Grizzly::move(texture))
+			: m_texture(Forge::move(texture))
 			, m_drawable(drawable) {}
 
 		Texture const& texture() const final;
@@ -36,4 +36,4 @@ namespace Grizzly::GPU {
 		Arc<Texture> m_texture;
 		Core::Protocol m_drawable; // CAMetalDrawable
 	};
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

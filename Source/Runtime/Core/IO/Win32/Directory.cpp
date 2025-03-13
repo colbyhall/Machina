@@ -8,11 +8,11 @@
 #include <Core/IO/Directory.hpp>
 #include <windows.h>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	Win32Directory Win32Directory::cwd() {
 		// Query the length of the path
 		const auto len = (usize)::GetCurrentDirectoryW(0, nullptr);
-		GRIZZLY_ASSERT(len > 0);
+		FORGE_ASSERT(len > 0);
 
 		// Create a wide string buffer to get the cwd path
 		WString buffer;
@@ -26,6 +26,6 @@ namespace Grizzly::Core {
 		for (const auto c : buffer) {
 			result.push(utf16_to_utf32(c));
 		}
-		return Win32Directory(Grizzly::move(result));
+		return Win32Directory(Forge::move(result));
 	}
-} // namespace Grizzly::Core
+} // namespace Forge::Core

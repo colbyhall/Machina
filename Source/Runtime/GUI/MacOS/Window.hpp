@@ -13,12 +13,12 @@
 #include <GPU/Swapchain.hpp>
 #include <GUI/Window.hpp>
 
-namespace Grizzly::GUI {
+namespace Forge::GUI {
 	class MacOSWindow final : public Window {
 	public:
 		explicit MacOSWindow(NSWindow* window, Unique<GPU::Swapchain>&& swapchain)
 			: m_window{ window }
-			, m_swapchain(Grizzly::forward<Unique<GPU::Swapchain>>(swapchain)) {}
+			, m_swapchain(Forge::forward<Unique<GPU::Swapchain>>(swapchain)) {}
 
 		// Window interface
 		bool close() final;
@@ -33,4 +33,4 @@ namespace Grizzly::GUI {
 		Core::Interface<NSWindow> m_window;
 		Unique<GPU::Swapchain> m_swapchain;
 	};
-} // namespace Grizzly::GUI
+} // namespace Forge::GUI

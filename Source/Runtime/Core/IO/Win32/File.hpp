@@ -10,7 +10,7 @@
 #include <Core/IO/Reader.hpp>
 #include <Core/IO/Writer.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	enum class OpenFlags : u8;
 
 	class Win32File final : public Reader, public Writer {
@@ -19,7 +19,7 @@ namespace Grizzly::Core {
 		static Win32File stdout;
 		static Win32File stderr;
 
-		GRIZZLY_NO_DISCARD static Option<Win32File> open(const StringView& path, OpenFlags flags);
+		FORGE_NO_DISCARD static Option<Win32File> open(const StringView& path, OpenFlags flags);
 
 		Win32File(const Win32File&) = delete;
 		Win32File& operator=(const Win32File&) = delete;
@@ -28,7 +28,7 @@ namespace Grizzly::Core {
 		~Win32File();
 
 		// Reader interface
-		GRIZZLY_NO_DISCARD usize read(Slice<u8> bytes) final;
+		FORGE_NO_DISCARD usize read(Slice<u8> bytes) final;
 		// ~Reader interface
 
 		// Writer interface
@@ -42,4 +42,4 @@ namespace Grizzly::Core {
 		OpenFlags m_flags;
 		usize m_cursor = 0;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

@@ -9,7 +9,7 @@
 #include <Core/ObjectiveC/Protocol.hpp>
 #include <GPU/GraphicsPipeline.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	class MetalGraphicsPipeline final : public GraphicsPipeline {
 	public:
 		explicit MetalGraphicsPipeline(
@@ -18,9 +18,9 @@ namespace Grizzly::GPU {
 			: GraphicsPipeline(create_info)
 			, m_render_pipeline_state(render_pipeline_state) {}
 
-		GRIZZLY_ALWAYS_INLINE Core::Protocol render_pipeline_state() const { return m_render_pipeline_state; }
+		FORGE_ALWAYS_INLINE Core::Protocol render_pipeline_state() const { return m_render_pipeline_state; }
 
 	private:
 		Core::Protocol m_render_pipeline_state;
 	};
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

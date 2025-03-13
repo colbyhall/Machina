@@ -13,14 +13,14 @@
 	({                                                                                                                 \
 		auto&& _temp_result = (expression);                                                                            \
 		if (!_temp_result.is_set()) {                                                                                  \
-			return Grizzly::Core::nullopt;                                                                             \
+			return Forge::Core::nullopt;                                                                               \
 		}                                                                                                              \
 		_temp_result.unwrap();                                                                                         \
 	})
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	struct NullOpt {
-		constexpr explicit NullOpt(int){};
+		constexpr explicit NullOpt(int) {};
 	};
 	constexpr NullOpt nullopt{ 0 };
 
@@ -33,15 +33,15 @@ namespace Grizzly::Core {
 	public:
 		// Constructors
 		Option() = default;
-		GRIZZLY_ALWAYS_INLINE constexpr Option(NullOpt) : m_set(false), m_data() {}
-		GRIZZLY_ALWAYS_INLINE Option(T&& t)
+		FORGE_ALWAYS_INLINE constexpr Option(NullOpt) : m_set(false), m_data() {}
+		FORGE_ALWAYS_INLINE Option(T&& t)
 			requires MoveConstructible<T>
 			: m_set(true)
 			, m_data() {
 			auto* p = m_data;
-			Memory::emplace<T>(p, Grizzly::forward<T>(t));
+			Memory::emplace<T>(p, Forge::forward<T>(t));
 		}
-		GRIZZLY_ALWAYS_INLINE Option& operator=(T&& t)
+		FORGE_ALWAYS_INLINE Option& operator=(T&& t)
 			requires MoveConstructible<T>
 		{
 			if (m_set) {
@@ -50,18 +50,18 @@ namespace Grizzly::Core {
 			}
 			auto* p = m_data;
 			m_set = true;
-			Memory::emplace<T>(p, Grizzly::forward<T>(t));
+			Memory::emplace<T>(p, Forge::forward<T>(t));
 			return *this;
 		}
 
-		GRIZZLY_ALWAYS_INLINE Option(const T& t)
+		FORGE_ALWAYS_INLINE Option(const T& t)
 			requires CopyConstructible<T>
 			: m_set(true)
 			, m_data() {
 			auto* p = m_data;
 			Memory::emplace<T>(p, t);
 		}
-		GRIZZLY_ALWAYS_INLINE Option& operator=(const T& t)
+		FORGE_ALWAYS_INLINE Option& operator=(const T& t)
 			requires CopyConstructible<T>
 		{
 			if (m_set) {
@@ -74,7 +74,7 @@ namespace Grizzly::Core {
 			return *this;
 		}
 
-		GRIZZLY_ALWAYS_INLINE Option(const Option<T>& copy)
+		FORGE_ALWAYS_INLINE Option(const Option<T>& copy)
 			requires CopyConstructible<T>
 		{
 			m_set = copy.m_set;
@@ -84,11 +84,11 @@ namespace Grizzly::Core {
 			}
 		}
 
-		GRIZZLY_ALWAYS_INLINE Option& operator=(const Option<T>& copy)
+		FORGE_ALWAYS_INLINE Option& operator=(const Option<T>& copy)
 			requires CopyConstructible<T>
 		{
-			auto to_destroy = Grizzly::move(*this);
-			GRIZZLY_UNUSED(to_destroy);
+			auto to_destroy = Forge::move(*this);
+			FORGE_UNUSED(to_destroy);
 
 			m_set = copy.m_set;
 			if (m_set) {
@@ -99,7 +99,7 @@ namespace Grizzly::Core {
 			return *this;
 		}
 
-		GRIZZLY_ALWAYS_INLINE Option(Option<T>&& move) noexcept : m_set(move.m_set) {
+		FORGE_ALWAYS_INLINE Option(Option<T>&& move) noexcept : m_set(move.m_set) {
 			if (m_set) {
 				Memory::copy(m_data, move.m_data, sizeof(T));
 				Memory::set(move.m_data, 0, sizeof(T));
@@ -107,23 +107,23 @@ namespace Grizzly::Core {
 			move.m_set = false;
 		}
 
-		GRIZZLY_ALWAYS_INLINE Option& operator=(Option<T>&& move) noexcept {
-			auto to_destroy = Grizzly::move(*this);
-			GRIZZLY_UNUSED(to_destroy);
+		FORGE_ALWAYS_INLINE Option& operator=(Option<T>&& move) noexcept {
+			auto to_destroy = Forge::move(*this);
+			FORGE_UNUSED(to_destroy);
 
 			m_set = move.m_set;
 			move.m_set = false;
 
 			if (m_set) {
 				Memory::copy(m_data, move.m_data, sizeof(T));
-#if GRIZZLY_BUILD == GRIZZLY_BUILD_DEBUG
+#if FORGE_BUILD == FORGE_BUILD_DEBUG
 				Memory::set(move.m_data, 0, sizeof(T));
 #endif
 			}
 			return *this;
 		}
 
-		GRIZZLY_ALWAYS_INLINE ~Option() {
+		FORGE_ALWAYS_INLINE ~Option() {
 			if (m_set) {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				p->~T();
@@ -132,25 +132,25 @@ namespace Grizzly::Core {
 			}
 		}
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE bool is_set() const { return m_set; }
-		GRIZZLY_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_set() const { return m_set; }
+		FORGE_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
 
-		GRIZZLY_ALWAYS_INLINE T unwrap()
+		FORGE_ALWAYS_INLINE T unwrap()
 			requires Movable<T> || Copyable<T>
 		{
-			GRIZZLY_ASSERT(is_set(), "Value must be set to be unwrapped");
+			FORGE_ASSERT(is_set(), "Value must be set to be unwrapped");
 			m_set = false;
 
 			auto* p = reinterpret_cast<T*>(&m_data[0]);
 
 			if constexpr (Movable<T>) {
-				return Grizzly::move(*p);
+				return Forge::move(*p);
 			} else {
 				return *p;
 			}
 		}
 
-		GRIZZLY_ALWAYS_INLINE T unwrap_or_default()
+		FORGE_ALWAYS_INLINE T unwrap_or_default()
 			requires is_default_constructible<T>
 		{
 			if (is_set()) {
@@ -159,16 +159,16 @@ namespace Grizzly::Core {
 			return T{};
 		}
 
-		GRIZZLY_ALWAYS_INLINE T unwrap_or(T&& t)
+		FORGE_ALWAYS_INLINE T unwrap_or(T&& t)
 			requires Movable<T>
 		{
 			if (is_set()) {
 				return unwrap();
 			}
-			return Grizzly::move(t);
+			return Forge::move(t);
 		}
 
-		GRIZZLY_ALWAYS_INLINE T unwrap_or(const T& t)
+		FORGE_ALWAYS_INLINE T unwrap_or(const T& t)
 			requires Copyable<T>
 		{
 			if (is_set()) {
@@ -177,7 +177,7 @@ namespace Grizzly::Core {
 			return t;
 		}
 
-		GRIZZLY_ALWAYS_INLINE Option<T&> as_ref() {
+		FORGE_ALWAYS_INLINE Option<T&> as_ref() {
 			if (is_set()) {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				return Option<T&>{ *p };
@@ -186,7 +186,7 @@ namespace Grizzly::Core {
 			return nullopt;
 		}
 
-		GRIZZLY_ALWAYS_INLINE Option<T const&> as_const_ref() const {
+		FORGE_ALWAYS_INLINE Option<T const&> as_const_ref() const {
 			if (is_set()) {
 				auto* p = reinterpret_cast<T const*>(&m_data[0]);
 				return Option<T const&>{ *p };
@@ -205,13 +205,13 @@ namespace Grizzly::Core {
 	class Option<T> {
 	public:
 		Option() = default;
-		GRIZZLY_ALWAYS_INLINE constexpr Option(NullOpt) : m_set(false), m_data() {}
-		GRIZZLY_ALWAYS_INLINE Option(const T& t) : m_set(true), m_data() {
+		FORGE_ALWAYS_INLINE constexpr Option(NullOpt) : m_set(false), m_data() {}
+		FORGE_ALWAYS_INLINE Option(const T& t) : m_set(true), m_data() {
 			auto* p = m_data;
 			Memory::emplace<T>(p, t);
 		}
 
-		GRIZZLY_ALWAYS_INLINE Option& operator=(const T& t) {
+		FORGE_ALWAYS_INLINE Option& operator=(const T& t) {
 			if (m_set) {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				*p = t;
@@ -224,19 +224,19 @@ namespace Grizzly::Core {
 			return *this;
 		}
 
-		GRIZZLY_ALWAYS_INLINE Option(const Option<T>& copy) {
+		FORGE_ALWAYS_INLINE Option(const Option<T>& copy) {
 			Memory::copy(m_data, copy.m_data, sizeof(m_data));
 			m_set = copy.m_set;
 		}
 
-		GRIZZLY_ALWAYS_INLINE Option& operator=(const Option<T>& copy) {
+		FORGE_ALWAYS_INLINE Option& operator=(const Option<T>& copy) {
 			Memory::copy(m_data, copy.m_data, sizeof(m_data));
 			m_set = copy.m_set;
 
 			return *this;
 		}
 
-		GRIZZLY_ALWAYS_INLINE ~Option() {
+		FORGE_ALWAYS_INLINE ~Option() {
 			if (m_set) {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				p->~T();
@@ -244,11 +244,11 @@ namespace Grizzly::Core {
 			}
 		}
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE bool is_set() const { return m_set; }
-		GRIZZLY_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_set() const { return m_set; }
+		FORGE_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
 
-		GRIZZLY_ALWAYS_INLINE T unwrap() const {
-			GRIZZLY_ASSERT(is_set(), "Value must be set to be unwrapped");
+		FORGE_ALWAYS_INLINE T unwrap() const {
+			FORGE_ASSERT(is_set(), "Value must be set to be unwrapped");
 
 			// Do not reset m_set for trivially copyable types
 
@@ -256,7 +256,7 @@ namespace Grizzly::Core {
 			return *p;
 		}
 
-		GRIZZLY_ALWAYS_INLINE T unwrap_or_default() const
+		FORGE_ALWAYS_INLINE T unwrap_or_default() const
 			requires is_default_constructible<T>
 		{
 			if (is_set()) {
@@ -265,14 +265,14 @@ namespace Grizzly::Core {
 			return T{};
 		}
 
-		GRIZZLY_ALWAYS_INLINE T unwrap_or(const T& t) const {
+		FORGE_ALWAYS_INLINE T unwrap_or(const T& t) const {
 			if (is_set()) {
 				return unwrap();
 			}
 			return t;
 		}
 
-		GRIZZLY_ALWAYS_INLINE Option<T&> as_ref() {
+		FORGE_ALWAYS_INLINE Option<T&> as_ref() {
 			if (is_set()) {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				return Option<T&>(*p);
@@ -281,7 +281,7 @@ namespace Grizzly::Core {
 			}
 		}
 
-		GRIZZLY_ALWAYS_INLINE Option<T const&> as_const_ref() const {
+		FORGE_ALWAYS_INLINE Option<T const&> as_const_ref() const {
 			if (is_set()) {
 				auto* p = reinterpret_cast<T const*>(&m_data[0]);
 				return Option<T const&>(*p);
@@ -300,23 +300,23 @@ namespace Grizzly::Core {
 	class Option<T> {
 	public:
 		explicit Option() = default;
-		GRIZZLY_ALWAYS_INLINE constexpr Option(NullOpt) : m_ptr(nullptr) {}
-		GRIZZLY_ALWAYS_INLINE constexpr Option(T t) : m_ptr(&t) {}
+		FORGE_ALWAYS_INLINE constexpr Option(NullOpt) : m_ptr(nullptr) {}
+		FORGE_ALWAYS_INLINE constexpr Option(T t) : m_ptr(&t) {}
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE bool is_set() const { return m_ptr != nullptr; }
-		GRIZZLY_ALWAYS_INLINE operator bool() const { return is_set(); }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_set() const { return m_ptr != nullptr; }
+		FORGE_ALWAYS_INLINE operator bool() const { return is_set(); }
 
-		GRIZZLY_ALWAYS_INLINE T& unwrap() {
-			GRIZZLY_ASSERT(is_set());
+		FORGE_ALWAYS_INLINE T& unwrap() {
+			FORGE_ASSERT(is_set());
 			return *m_ptr;
 		}
 
 	private:
 		RemoveReference<T>* m_ptr = nullptr;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core
 
-namespace Grizzly {
+namespace Forge {
 	using Core::nullopt;
 	using Core::Option;
-} // namespace Grizzly
+} // namespace Forge

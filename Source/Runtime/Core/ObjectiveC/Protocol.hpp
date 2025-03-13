@@ -9,7 +9,7 @@
 #include <Core/Core.hpp>
 #include <Core/TypeTraits.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	/**
 	 * Type erased Unique ptr for Objective-C protocols.
 	 *
@@ -50,10 +50,10 @@ namespace Grizzly::Core {
 				}
 			}
 		}
-		GRIZZLY_ALWAYS_INLINE id operator*() const { return m_internal; }
-		GRIZZLY_ALWAYS_INLINE operator id() const { return m_internal; }
+		FORGE_ALWAYS_INLINE id operator*() const { return m_internal; }
+		FORGE_ALWAYS_INLINE operator id() const { return m_internal; }
 
 	private:
 		id m_internal;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

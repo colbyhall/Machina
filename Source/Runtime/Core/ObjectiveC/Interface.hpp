@@ -9,7 +9,7 @@
 #include <Core/Core.hpp>
 #include <Core/TypeTraits.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	template <typename T>
 	class Interface {
 	public:
@@ -45,10 +45,10 @@ namespace Grizzly::Core {
 				}
 			}
 		}
-		GRIZZLY_ALWAYS_INLINE T* operator*() const { return m_internal; }
-		GRIZZLY_ALWAYS_INLINE operator T*() const { return m_internal; }
+		FORGE_ALWAYS_INLINE T* operator*() const { return m_internal; }
+		FORGE_ALWAYS_INLINE operator T*() const { return m_internal; }
 
 	private:
 		T* m_internal;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

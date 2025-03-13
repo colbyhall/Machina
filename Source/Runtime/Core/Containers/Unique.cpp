@@ -7,82 +7,82 @@
 #include <Core/Containers/Unique.hpp>
 #include <Core/Debug/Test.hpp>
 
-GRIZZLY_TEST_SUITE("Containers") {
-	using namespace Grizzly::Core;
+FORGE_TEST_SUITE("Containers") {
+	using namespace Forge::Core;
 
-	GRIZZLY_TEST_CASE("Unique") {
+	FORGE_TEST_CASE("Unique") {
 		struct Foo {
 			int a = 0;
 		};
 
-		GRIZZLY_SUBCASE("default constructor") {
+		FORGE_SUBCASE("default constructor") {
 			const Unique<Foo> unique;
-			GRIZZLY_CHECK(unique->a == 0);
+			FORGE_CHECK(unique->a == 0);
 		}
 
-		GRIZZLY_SUBCASE("create") {
+		FORGE_SUBCASE("create") {
 			const auto unique = Unique<Foo>::create(Foo{ .a = 100 });
-			GRIZZLY_CHECK(unique->a == 100);
+			FORGE_CHECK(unique->a == 100);
 		}
 
-		GRIZZLY_SUBCASE("copy constructor") {
+		FORGE_SUBCASE("copy constructor") {
 			const auto unique = Unique<Foo>::create(Foo{ .a = 100 });
-			GRIZZLY_REQUIRE(unique->a == 100);
+			FORGE_REQUIRE(unique->a == 100);
 			const auto copy = unique;
-			GRIZZLY_CHECK(copy->a == 100);
+			FORGE_CHECK(copy->a == 100);
 		}
 
-		GRIZZLY_SUBCASE("copy assignment") {
+		FORGE_SUBCASE("copy assignment") {
 			const auto unique = Unique<Foo>::create(Foo{ .a = 100 });
-			GRIZZLY_REQUIRE(unique->a == 100);
+			FORGE_REQUIRE(unique->a == 100);
 			Unique<Foo> copy_assignment;
-			GRIZZLY_CHECK(copy_assignment->a == 0);
+			FORGE_CHECK(copy_assignment->a == 0);
 			copy_assignment = unique;
-			GRIZZLY_CHECK(copy_assignment->a == 100);
+			FORGE_CHECK(copy_assignment->a == 100);
 		}
 
-		GRIZZLY_SUBCASE("move constructor") {
+		FORGE_SUBCASE("move constructor") {
 			auto unique = Unique<Foo>::create(Foo{ .a = 100 });
-			GRIZZLY_REQUIRE(unique->a == 100);
-			const auto move = Grizzly::move(unique);
-			GRIZZLY_CHECK(move->a == 100);
-			GRIZZLY_CHECK(static_cast<Foo*>(unique) == nullptr);
+			FORGE_REQUIRE(unique->a == 100);
+			const auto move = Forge::move(unique);
+			FORGE_CHECK(move->a == 100);
+			FORGE_CHECK(static_cast<Foo*>(unique) == nullptr);
 		}
 
-		GRIZZLY_SUBCASE("move assignment") {
+		FORGE_SUBCASE("move assignment") {
 			auto unique = Unique<Foo>::create(Foo{ .a = 100 });
-			GRIZZLY_REQUIRE(unique->a == 100);
+			FORGE_REQUIRE(unique->a == 100);
 			Unique<Foo> move_assignment;
-			GRIZZLY_CHECK(move_assignment->a == 0);
-			move_assignment = Grizzly::move(unique);
-			GRIZZLY_CHECK(move_assignment->a == 100);
-			GRIZZLY_CHECK(static_cast<Foo*>(unique) == nullptr);
+			FORGE_CHECK(move_assignment->a == 0);
+			move_assignment = Forge::move(unique);
+			FORGE_CHECK(move_assignment->a == 100);
+			FORGE_CHECK(static_cast<Foo*>(unique) == nullptr);
 		}
 
 		struct Bar : Foo {
 			int b = 0;
 		};
 
-		GRIZZLY_SUBCASE("derived move constructor") {
+		FORGE_SUBCASE("derived move constructor") {
 			auto unique = Unique<Bar>::create(Bar{ .b = 200 });
-			GRIZZLY_REQUIRE(unique->a == 0);
-			GRIZZLY_REQUIRE(unique->b == 200);
-			const Unique<Foo> move = Grizzly::move(unique);
-			GRIZZLY_CHECK(move->a == 0);
-			GRIZZLY_CHECK(static_cast<Bar*>(unique) == nullptr);
-			GRIZZLY_CHECK(static_cast<const Bar*>(static_cast<const Foo*>(move))->b == 200);
+			FORGE_REQUIRE(unique->a == 0);
+			FORGE_REQUIRE(unique->b == 200);
+			const Unique<Foo> move = Forge::move(unique);
+			FORGE_CHECK(move->a == 0);
+			FORGE_CHECK(static_cast<Bar*>(unique) == nullptr);
+			FORGE_CHECK(static_cast<const Bar*>(static_cast<const Foo*>(move))->b == 200);
 		}
 
-		GRIZZLY_SUBCASE("derived move assignment") {
+		FORGE_SUBCASE("derived move assignment") {
 			auto unique = Unique<Bar>::create(Bar{ .b = 200 });
-			GRIZZLY_REQUIRE(unique->a == 0);
-			GRIZZLY_REQUIRE(unique->b == 200);
+			FORGE_REQUIRE(unique->a == 0);
+			FORGE_REQUIRE(unique->b == 200);
 			Unique<Foo> move_assignment;
-			GRIZZLY_CHECK(move_assignment->a == 0);
-			move_assignment = Grizzly::move(unique);
-			GRIZZLY_CHECK(move_assignment->a == 0);
-			GRIZZLY_CHECK(static_cast<Bar*>(unique) == nullptr);
-			GRIZZLY_CHECK(static_cast<const Bar*>(static_cast<const Foo*>(move_assignment))->b == 200);
+			FORGE_CHECK(move_assignment->a == 0);
+			move_assignment = Forge::move(unique);
+			FORGE_CHECK(move_assignment->a == 0);
+			FORGE_CHECK(static_cast<Bar*>(unique) == nullptr);
+			FORGE_CHECK(static_cast<const Bar*>(static_cast<const Foo*>(move_assignment))->b == 200);
 		}
 	}
 }

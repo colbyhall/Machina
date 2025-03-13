@@ -9,7 +9,7 @@
 #include <Core/Concepts.hpp>
 #include <Core/Memory.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	template <typename Base>
 	class Unique {
 	public:
@@ -18,7 +18,7 @@ namespace Grizzly::Core {
 			: Unique{ Base{} } {}
 
 		template <typename... Args>
-		static GRIZZLY_ALWAYS_INLINE Unique<Base> create(Args&&... args)
+		static FORGE_ALWAYS_INLINE Unique<Base> create(Args&&... args)
 			requires ConstructibleFrom<Base, Args...>
 		{
 			return Unique<Base>{ Base(std::forward<Args>(args)...) };
@@ -63,21 +63,21 @@ namespace Grizzly::Core {
 			}
 		}
 
-		GRIZZLY_ALWAYS_INLINE operator Base*() { return m_ptr; }
-		GRIZZLY_ALWAYS_INLINE operator Base*() const { return m_ptr; }
-		GRIZZLY_ALWAYS_INLINE operator Base&() { return *m_ptr; }
-		GRIZZLY_ALWAYS_INLINE operator Base&() const { return *m_ptr; }
-		GRIZZLY_ALWAYS_INLINE Base* operator->() { return m_ptr; }
-		GRIZZLY_ALWAYS_INLINE Base* operator->() const { return m_ptr; }
-		GRIZZLY_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
-		GRIZZLY_ALWAYS_INLINE Base& operator*() const { return *m_ptr; }
+		FORGE_ALWAYS_INLINE operator Base*() { return m_ptr; }
+		FORGE_ALWAYS_INLINE operator Base*() const { return m_ptr; }
+		FORGE_ALWAYS_INLINE operator Base&() { return *m_ptr; }
+		FORGE_ALWAYS_INLINE operator Base&() const { return *m_ptr; }
+		FORGE_ALWAYS_INLINE Base* operator->() { return m_ptr; }
+		FORGE_ALWAYS_INLINE Base* operator->() const { return m_ptr; }
+		FORGE_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
+		FORGE_ALWAYS_INLINE Base& operator*() const { return *m_ptr; }
 
 	private:
-		GRIZZLY_ALWAYS_INLINE explicit Unique(Base&& base)
+		FORGE_ALWAYS_INLINE explicit Unique(Base&& base)
 			requires MoveConstructible<Base>
 		{
 			const auto ptr = Memory::alloc(Memory::Layout::single<Base>());
-			m_ptr = Memory::emplace<Base>(ptr, Grizzly::forward<Base>(base));
+			m_ptr = Memory::emplace<Base>(ptr, Forge::forward<Base>(base));
 		}
 
 		template <typename Derived>
@@ -89,10 +89,10 @@ namespace Grizzly::Core {
 	template <typename T>
 	class Unique<T[]> {
 	public:
-		static GRIZZLY_ALWAYS_INLINE Unique create(usize len)
+		static FORGE_ALWAYS_INLINE Unique create(usize len)
 			requires DefaultInitializable<T>
 		{
-			GRIZZLY_ASSERT(len > 0);
+			FORGE_ASSERT(len > 0);
 			const auto memory = Memory::alloc(Memory::Layout::array<T>(len));
 			T* const ptr = reinterpret_cast<T*>(*memory);
 			for (usize i = 0; i < len; ++i) {
@@ -104,7 +104,7 @@ namespace Grizzly::Core {
 		Unique(const Unique& copy) noexcept
 			requires CopyConstructible<T>
 		{
-			GRIZZLY_ASSERT(copy.len() > 0);
+			FORGE_ASSERT(copy.len() > 0);
 			const auto memory = Memory::alloc(Memory::Layout::array<T>(copy.len()));
 			T* const ptr = reinterpret_cast<T*>(*memory);
 			for (usize i = 0; i < copy.len(); ++i) {
@@ -117,7 +117,7 @@ namespace Grizzly::Core {
 			requires CopyConstructible<T>
 		{
 			this->~Unique();
-			GRIZZLY_ASSERT(copy.len() > 0);
+			FORGE_ASSERT(copy.len() > 0);
 			const auto memory = Memory::alloc(Memory::Layout::array<T>(copy.len()));
 			T* const ptr = reinterpret_cast<T*>(*memory);
 			for (usize i = 0; i < copy.len(); ++i) {
@@ -144,24 +144,24 @@ namespace Grizzly::Core {
 			return *this;
 		}
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize len() const { return m_len; }
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE bool is_valid_index(usize index) const { return index < len(); }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize len() const { return m_len; }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_valid_index(usize index) const { return index < len(); }
 
-		GRIZZLY_ALWAYS_INLINE T* begin() { return m_ptr; }
-		GRIZZLY_ALWAYS_INLINE T* end() { return m_ptr + m_len; }
-		GRIZZLY_ALWAYS_INLINE const T* begin() const { return m_ptr; }
-		GRIZZLY_ALWAYS_INLINE const T* end() const { return m_ptr + m_len; }
-		GRIZZLY_ALWAYS_INLINE const T* cbegin() const { return m_ptr; }
-		GRIZZLY_ALWAYS_INLINE const T* cend() const { return m_ptr + m_len; }
+		FORGE_ALWAYS_INLINE T* begin() { return m_ptr; }
+		FORGE_ALWAYS_INLINE T* end() { return m_ptr + m_len; }
+		FORGE_ALWAYS_INLINE const T* begin() const { return m_ptr; }
+		FORGE_ALWAYS_INLINE const T* end() const { return m_ptr + m_len; }
+		FORGE_ALWAYS_INLINE const T* cbegin() const { return m_ptr; }
+		FORGE_ALWAYS_INLINE const T* cend() const { return m_ptr + m_len; }
 
-		GRIZZLY_ALWAYS_INLINE operator T*() { return m_ptr; }
-		GRIZZLY_ALWAYS_INLINE operator T*() const { return m_ptr; }
-		GRIZZLY_ALWAYS_INLINE T& operator[](usize index) {
-			GRIZZLY_ASSERT(is_valid_index(index), "Index out of bounds");
+		FORGE_ALWAYS_INLINE operator T*() { return m_ptr; }
+		FORGE_ALWAYS_INLINE operator T*() const { return m_ptr; }
+		FORGE_ALWAYS_INLINE T& operator[](usize index) {
+			FORGE_ASSERT(is_valid_index(index), "Index out of bounds");
 			return m_ptr[index];
 		}
-		GRIZZLY_ALWAYS_INLINE T const& operator[](usize index) const {
-			GRIZZLY_ASSERT(is_valid_index(index), "Index out of bounds");
+		FORGE_ALWAYS_INLINE T const& operator[](usize index) const {
+			FORGE_ASSERT(is_valid_index(index), "Index out of bounds");
 			return m_ptr[index];
 		}
 
@@ -180,13 +180,13 @@ namespace Grizzly::Core {
 		}
 
 	private:
-		GRIZZLY_ALWAYS_INLINE explicit Unique(T* ptr, usize len) : m_ptr(ptr), m_len(len) {}
+		FORGE_ALWAYS_INLINE explicit Unique(T* ptr, usize len) : m_ptr(ptr), m_len(len) {}
 
 		T* m_ptr;
 		usize m_len;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core
 
-namespace Grizzly {
+namespace Forge {
 	using Core::Unique;
-} // namespace Grizzly
+} // namespace Forge

@@ -11,12 +11,12 @@
 #include <Core/Debug/Assertions.hpp>
 #include <Core/IO/Writer.hpp>
 
-namespace Grizzly {
+namespace Forge {
 	template <typename T>
 	struct TypeFormatter;
-} // namespace Grizzly
+} // namespace Forge
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	class Formatter {
 	public:
 		explicit Formatter(Writer& writer, bool accepts_ansi = true)
@@ -29,7 +29,7 @@ namespace Grizzly::Core {
 			return *this;
 		}
 
-		GRIZZLY_NO_DISCARD GRIZZLY_ALWAYS_INLINE usize bytes_written() const { return m_bytes_written; }
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize bytes_written() const { return m_bytes_written; }
 
 	private:
 		void format_lambda(const StringView& fmt, Option<FunctionRef<void(StringView)>> f);
@@ -66,9 +66,9 @@ namespace Grizzly::Core {
 	usize print_float(Writer& writer, f32 value);
 	usize print_double(Writer& writer, f64 value);
 
-} // namespace Grizzly::Core
+} // namespace Forge::Core
 
-namespace Grizzly {
+namespace Forge {
 	template <>
 	struct TypeFormatter<u8> {
 		void parse(const StringView& fmt) {}
@@ -147,4 +147,4 @@ namespace Grizzly {
 			return writer.write(Slice<u8 const>{ (const u8*)*value, value.len() });
 		}
 	};
-} // namespace Grizzly
+} // namespace Forge

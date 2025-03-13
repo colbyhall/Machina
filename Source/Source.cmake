@@ -1,5 +1,5 @@
 # Set the src root
-set(SOURCE_ROOT ${GRIZZLY_ROOT}/Source)
+set(SOURCE_ROOT ${FORGE_ROOT}/Source)
 
 # Set the programs root
 set(PROGRAMS_ROOT ${SOURCE_ROOT}/Programs)

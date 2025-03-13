@@ -11,7 +11,7 @@
 #include <GPU/Forward.hpp>
 #include <GUI/View.hpp>
 
-namespace Grizzly::GUI {
+namespace Forge::GUI {
 	class Application;
 
 	class Window : public View {
@@ -39,4 +39,4 @@ namespace Grizzly::GUI {
 		virtual bool minimize() = 0;
 		virtual GPU::Swapchain& swapchain() = 0;
 	};
-} // namespace Grizzly::GUI
+} // namespace Forge::GUI

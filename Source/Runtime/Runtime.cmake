@@ -14,13 +14,13 @@ endfunction()
 # We include a main.cpp in the library to build an executable that will run the test in the given library. We also maintain
 # the libraries the given library is linked to along with the doctest library.
 #
-# Finally, we turn on the compilation flag GRIZZLY_ENABLE_TEST to enable the test code to be compiled in the library.
+# Finally, we turn on the compilation flag FORGE_ENABLE_TEST to enable the test code to be compiled in the library.
 function(test_runtime_library target)
     add_executable(${target}Test ${ARGN} ${CORE_ROOT}/Debug/TestMain.cpp)
     target_include_directories(${target}Test PRIVATE ${RUNTIME_ROOT} ${THIRD_PARTY_ROOT})
     set_target_properties(${target}Test PROPERTIES LINKER_LANGUAGE CXX)
     get_target_property(OUT ${target}Test LINK_LIBRARIES)
-    target_compile_definitions(${target}Test PRIVATE GRIZZLY_ENABLE_TEST)
+    target_compile_definitions(${target}Test PRIVATE FORGE_ENABLE_TEST)
     if (NOT OUT)
         target_link_libraries(${target}Test Doctest)
     else ()

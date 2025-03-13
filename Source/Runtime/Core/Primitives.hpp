@@ -9,7 +9,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	template <typename T>
 	struct NumericLimits;
 
@@ -93,9 +93,9 @@ namespace Grizzly::Core {
 	static_assert(sizeof(f64) == 8, "f64 should only be 8 bytes");
 
 	using NullPtr = decltype(nullptr);
-} // namespace Grizzly::Core
+} // namespace Forge::Core
 
-namespace Grizzly {
+namespace Forge {
 	// Export core primitives to the op namespace
 	using Core::f32;
 	using Core::f64;
@@ -110,4 +110,4 @@ namespace Grizzly {
 	using Core::u64;
 	using Core::u8;
 	using Core::usize;
-} // namespace Grizzly
+} // namespace Forge

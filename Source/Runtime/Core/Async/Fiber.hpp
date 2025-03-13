@@ -11,7 +11,7 @@
 #include <Core/Containers/Shared.hpp>
 #include <Core/Containers/Unique.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	class Fiber final : public ArcFromThis<Fiber> {
 	public:
 		using Function = Function<void()>;
@@ -31,7 +31,7 @@ namespace Grizzly::Core {
 
 	private:
 		struct Registers {
-#if GRIZZLY_CPU == GRIZZLY_CPU_ARM
+#if FORGE_CPU == FORGE_CPU_ARM
 			u64 x[9];
 			u64 sp;
 			u64 pc;
@@ -44,14 +44,14 @@ namespace Grizzly::Core {
 			Switching,
 			Dormant,
 		};
-		explicit Fiber(Registers&& registers) : m_registers(Grizzly::move(registers)), m_state{ State::InUse } {}
+		explicit Fiber(Registers&& registers) : m_registers(Forge::move(registers)), m_state{ State::InUse } {}
 		explicit Fiber(Registers&& registers, Unique<u8[]>&& stack)
-			: m_registers(Grizzly::move(registers))
-			, m_stack(Grizzly::move(stack))
+			: m_registers(Forge::move(registers))
+			, m_stack(Forge::move(stack))
 			, m_state{ State::Dormant } {}
 
 		Registers m_registers;
 		Option<Unique<u8[]>> m_stack;
 		Atomic<State> m_state{ State::Dormant };
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

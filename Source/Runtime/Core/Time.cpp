@@ -6,11 +6,11 @@
 
 #include <Core/Time.hpp>
 
-#if GRIZZLY_PLATFORM != GRIZZLY_PLATFORM_WINDOWS
+#if FORGE_PLATFORM != FORGE_PLATFORM_WINDOWS
 	#include <time.h>
 #endif
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	Instant Instant::now() {
 		timespec time;
 		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
@@ -20,4 +20,4 @@ namespace Grizzly::Core {
 	Duration Instant::since(Instant earlier) const {
 		return Duration(m_secs - earlier.m_secs, m_nanos - earlier.m_nanos);
 	}
-} // namespace Grizzly::Core
+} // namespace Forge::Core

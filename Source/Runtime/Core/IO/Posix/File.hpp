@@ -10,7 +10,7 @@
 #include <Core/IO/Reader.hpp>
 #include <Core/IO/Writer.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	enum class OpenFlags : u8;
 
 	class PosixFile final : public Reader, public Writer {
@@ -19,7 +19,7 @@ namespace Grizzly::Core {
 		static PosixFile stdout;
 		static PosixFile stderr;
 
-		GRIZZLY_NO_DISCARD static Option<PosixFile> open(const StringView& path, OpenFlags flags);
+		FORGE_NO_DISCARD static Option<PosixFile> open(const StringView& path, OpenFlags flags);
 
 		PosixFile(const PosixFile&) = delete;
 		PosixFile& operator=(const PosixFile&) = delete;
@@ -27,11 +27,11 @@ namespace Grizzly::Core {
 		PosixFile& operator=(PosixFile&& move);
 		~PosixFile();
 
-		GRIZZLY_NO_DISCARD usize read(Slice<u8> bytes) final;
+		FORGE_NO_DISCARD usize read(Slice<u8> bytes) final;
 		usize write(Slice<u8 const> bytes) final;
 
 	private:
 		explicit PosixFile(int fd) : m_fd(fd) {}
 		int m_fd; // File descriptor
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

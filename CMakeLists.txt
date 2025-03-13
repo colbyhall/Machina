@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(grizzly CXX)
+project(forge CXX)
 
 # When turning this option on, the libraries and executables will be compiled with debug symbols
 option(GENERATE_DEBUG_SYMBOLS "Generate debug symbols" ON)
@@ -211,7 +211,7 @@ endif ()
 message("Using " ${CMAKE_CXX_COMPILER_ID} " (" ${CMAKE_CXX_COMPILER_VERSION} ")")
 
 # Set repository root
-set(GRIZZLY_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(FORGE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Enable testing using CTest
 enable_testing()
@@ -219,10 +219,10 @@ enable_testing()
 set(TARGETS_TO_SIGN)
 
 # Include the source directory cmake file
-include(${GRIZZLY_ROOT}/Source/Source.cmake)
+include(${FORGE_ROOT}/Source/Source.cmake)
 
 if (APPLE)
-	set(ENTITLEMENTS_FILE "${CMAKE_BINARY_DIR}/Grizzly.entitlements")
+	set(ENTITLEMENTS_FILE "${CMAKE_BINARY_DIR}/Forge.entitlements")
 	execute_process(COMMAND /usr/libexec/PlistBuddy -c "Add :com.apple.security.get-task-allow bool true" "${ENTITLEMENTS_FILE}")
 	foreach(target "${TARGETS_TO_SIGN}")
 		add_custom_command(TARGET "${target}" POST_BUILD

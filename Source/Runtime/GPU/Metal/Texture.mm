@@ -6,4 +6,4 @@
 
 #include <GPU/Metal/Texture.hpp>
 
-namespace Grizzly::GPU {} // namespace Grizzly::GPU
+namespace Forge::GPU {} // namespace Forge::GPU

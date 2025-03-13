@@ -8,10 +8,10 @@
 
 #include <Core/Containers/Slice.hpp>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	class Reader {
 	public:
 		virtual ~Reader() {}
 		virtual usize read(Slice<u8> bytes) = 0;
 	};
-} // namespace Grizzly::Core
+} // namespace Forge::Core

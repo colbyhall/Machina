@@ -11,7 +11,7 @@
 #include <Core/ObjectiveC/Protocol.hpp>
 #include <GPU/CommandList.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	class MetalReceipt final : public Receipt {
 	public:
 		MetalReceipt(id<MTLCommandBuffer> command_buffer) : m_command_buffer(command_buffer) {}
@@ -59,4 +59,4 @@ namespace Grizzly::GPU {
 		Core::Protocol m_encoder; // MTLRenderCommandEncoder
 	};
 
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

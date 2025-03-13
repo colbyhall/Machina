@@ -9,15 +9,15 @@
 #include <Core/Containers/Option.hpp>
 #include <Core/Primitives.hpp>
 
-namespace Grizzly::GPU {
+namespace Forge::GPU {
 	class Resource {
 	public:
 		using BindlessIndex = u32;
-		GRIZZLY_ALWAYS_INLINE Option<BindlessIndex> bindless() const { return m_bindless; }
+		FORGE_ALWAYS_INLINE Option<BindlessIndex> bindless() const { return m_bindless; }
 
 		virtual ~Resource() {}
 
 	protected:
 		Option<BindlessIndex> m_bindless = nullopt;
 	};
-} // namespace Grizzly::GPU
+} // namespace Forge::GPU

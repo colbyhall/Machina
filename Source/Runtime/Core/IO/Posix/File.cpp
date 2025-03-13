@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-namespace Grizzly::Core {
+namespace Forge::Core {
 	PosixFile PosixFile::stdin{ 0 };
 	PosixFile PosixFile::stdout{ 1 };
 	PosixFile PosixFile::stderr{ 2 };
@@ -29,8 +29,8 @@ namespace Grizzly::Core {
 	}
 
 	PosixFile& PosixFile::operator=(PosixFile&& move) {
-		auto to_destroy = Grizzly::move(*this);
-		GRIZZLY_UNUSED(to_destroy);
+		auto to_destroy = Forge::move(*this);
+		FORGE_UNUSED(to_destroy);
 
 		m_fd = move.m_fd;
 		move.m_fd = -1;
@@ -39,12 +39,12 @@ namespace Grizzly::Core {
 	}
 
 	usize PosixFile::read(Slice<u8> bytes) {
-		GRIZZLY_ASSERT(m_fd != -1);
+		FORGE_ASSERT(m_fd != -1);
 		return static_cast<usize>(::read(m_fd, bytes.begin(), bytes.len()));
 	}
 
 	usize PosixFile::write(Slice<u8 const> bytes) {
-		GRIZZLY_ASSERT(m_fd != -1);
+		FORGE_ASSERT(m_fd != -1);
 		return static_cast<usize>(::write(m_fd, bytes.begin(), bytes.len()));
 	}
 
@@ -55,4 +55,4 @@ namespace Grizzly::Core {
 			m_fd = -1;
 		}
 	}
-} // namespace Grizzly::Core
+} // namespace Forge::Core

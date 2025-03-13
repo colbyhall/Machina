@@ -6,6 +6,6 @@
 
 #include <Core/Async/Thread.hpp>
 
-namespace Grizzly::Core {
-	Arc<Thread> Thread::spawn(Function&& f) { return Thread::spawn(Grizzly::forward<Function>(f), {}); }
-} // namespace Grizzly::Core
+namespace Forge::Core {
+	Arc<Thread> Thread::spawn(Function&& f) { return Thread::spawn(Forge::forward<Function>(f), {}); }
+} // namespace Forge::Core

@@ -7,7 +7,7 @@
 #include <Core/Math/Math.hpp>
 #include <cmath>
 
-namespace Grizzly::Core::Math {
+namespace Forge::Core::Math {
 	f32 cos(f32 x) { return std::cos(x); }
 	f64 cos(f64 x) { return std::cos(x); }
 
@@ -37,47 +37,47 @@ namespace Grizzly::Core::Math {
 
 	f32 powf(f32 x, f32 y) { return std::powf(x, y); }
 	f64 pow(f64 x, f64 y) { return std::pow(x, y); }
-} // namespace Grizzly::Core::Math
+} // namespace Forge::Core::Math
 
 #include <Core/Debug/Test.hpp>
 
-GRIZZLY_TEST_SUITE("Math") {
-	using namespace Grizzly;
+FORGE_TEST_SUITE("Math") {
+	using namespace Forge;
 
-	GRIZZLY_TEST_CASE("min") {
-		GRIZZLY_CHECK(Math::min(0.f, 1.f) == 0.f);
-		GRIZZLY_CHECK(Math::min(1.f, 0.f) == 0.f);
+	FORGE_TEST_CASE("min") {
+		FORGE_CHECK(Math::min(0.f, 1.f) == 0.f);
+		FORGE_CHECK(Math::min(1.f, 0.f) == 0.f);
 	}
 
-	GRIZZLY_TEST_CASE("max") {
-		GRIZZLY_CHECK(Math::max(0.f, 1.f) == 1.f);
-		GRIZZLY_CHECK(Math::max(1.f, 0.f) == 1.f);
+	FORGE_TEST_CASE("max") {
+		FORGE_CHECK(Math::max(0.f, 1.f) == 1.f);
+		FORGE_CHECK(Math::max(1.f, 0.f) == 1.f);
 	}
 
-	GRIZZLY_TEST_CASE("clamp") {
-		GRIZZLY_CHECK(Math::clamp(-5.f, 0.f, 1.f) == 0.f);
-		GRIZZLY_CHECK(Math::clamp(5.f, 0.f, 1.f) == 1.f);
-		GRIZZLY_CHECK(Math::clamp(0.5f, 0.f, 1.f) == 0.5f);
+	FORGE_TEST_CASE("clamp") {
+		FORGE_CHECK(Math::clamp(-5.f, 0.f, 1.f) == 0.f);
+		FORGE_CHECK(Math::clamp(5.f, 0.f, 1.f) == 1.f);
+		FORGE_CHECK(Math::clamp(0.5f, 0.f, 1.f) == 0.5f);
 	}
 
-	GRIZZLY_TEST_CASE("abs") {
-		GRIZZLY_CHECK(Math::abs(-1.f) == 1.f);
-		GRIZZLY_CHECK(Math::abs(1.f) == 1.f);
+	FORGE_TEST_CASE("abs") {
+		FORGE_CHECK(Math::abs(-1.f) == 1.f);
+		FORGE_CHECK(Math::abs(1.f) == 1.f);
 	}
 
-	GRIZZLY_TEST_CASE("lerp") {
-		GRIZZLY_CHECK(Math::lerp(0.f, 1.f, 0.5f) == .5f);
-		GRIZZLY_CHECK(Math::lerp(0.f, 10.f, 0.5f) == 5.f);
+	FORGE_TEST_CASE("lerp") {
+		FORGE_CHECK(Math::lerp(0.f, 1.f, 0.5f) == .5f);
+		FORGE_CHECK(Math::lerp(0.f, 10.f, 0.5f) == 5.f);
 	}
 
-	GRIZZLY_TEST_CASE("square") {
-		GRIZZLY_CHECK(Math::square(1.f) == 1.f);
-		GRIZZLY_CHECK(Math::square(2.f) == 4.f);
-		GRIZZLY_CHECK(Math::square(3.f) == 9.f);
+	FORGE_TEST_CASE("square") {
+		FORGE_CHECK(Math::square(1.f) == 1.f);
+		FORGE_CHECK(Math::square(2.f) == 4.f);
+		FORGE_CHECK(Math::square(3.f) == 9.f);
 	}
 
-	GRIZZLY_TEST_CASE("equals") {
-		GRIZZLY_CHECK(Math::equals(1.f, 1.f));
-		GRIZZLY_CHECK(Math::equals(2.f, 2.f));
+	FORGE_TEST_CASE("equals") {
+		FORGE_CHECK(Math::equals(1.f, 1.f));
+		FORGE_CHECK(Math::equals(2.f, 2.f));
 	}
 }

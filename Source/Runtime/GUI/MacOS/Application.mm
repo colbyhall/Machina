@@ -4,8 +4,10 @@
  * This software is released under the MIT License.
  */
 
+#include <Core/Async/Scheduler.hpp>
 #include <Core/Debug/Assertions.hpp>
 #include <Core/Time.hpp>
+#include <GPU/Device.hpp>
 #include <GUI/Application.hpp>
 #include <GUI/MacOS/Window.hpp>
 
@@ -17,11 +19,10 @@
 @implementation GrizzlyApplicationDelegate
 
 @end // GrizzlyApplicationDelegate
-namespace Grizzly::GUI {
-	Application::Application(Arc<Core::Scheduler>&& scheduler, Arc<GPU::Device>&& device)
-		: m_scheduler(Grizzly::forward<Arc<Core::Scheduler>>(scheduler))
-		, m_device(Grizzly::forward<Arc<GPU::Device>>(device)) {
-
+namespace Forge::GUI {
+	Application::Application(const Core::Scheduler& scheduler, const GPU::Device& device)
+		: m_scheduler(scheduler)
+		, m_device(device) {
 		@autoreleasepool {
 			// Create the shared application
 			[NSApplication sharedApplication];
@@ -54,7 +55,7 @@ namespace Grizzly::GUI {
 	int run(Application const& application, FunctionRef<void(float deta_time)> tick) {
 		static Core::Atomic<bool> running{ false };
 
-		GRIZZLY_ASSERT(running.exchange(true) == false);
+		FORGE_ASSERT(running.exchange(true) == false);
 		auto last = Core::Instant::now();
 		while (running.load()) {
 			const auto now = Core::Instant::now();
@@ -81,4 +82,4 @@ namespace Grizzly::GUI {
 
 		return 0;
 	}
-} // namespace Grizzly::GUI
+} // namespace Forge::GUI

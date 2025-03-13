@@ -10,7 +10,7 @@
 #include <Core/Containers/String.hpp>
 #include <Core/Primitives.hpp>
 
-namespace Grizzly::Core::StackTrace {
+namespace Forge::Core::StackTrace {
 	using Frame = String;
 	Array<Frame> capture();
-} // namespace Grizzly::Core::StackTrace
+} // namespace Forge::Core::StackTrace
