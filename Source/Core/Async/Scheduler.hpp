@@ -116,12 +116,12 @@ namespace Forge::Core {
 		enum class Priority : u8 { Low, Normal, High };
 		using Job = Function<void()>;
 
-		Arc<Future<void>> schedule(Function<void()>&& f) const {
-			return schedule(Priority::Normal, Forge::forward<Function<void()>>(f));
+		Arc<Future<void>> enqueue(Function<void()>&& f) const {
+			return enqueue(Priority::Normal, Forge::forward<Function<void()>>(f));
 		}
 
 		template <typename T>
-		FORGE_NO_DISCARD Arc<Future<T>> schedule(Priority priority, Function<T()>&& f) const {
+		FORGE_NO_DISCARD Arc<Future<T>> enqueue(Priority priority, Function<T()>&& f) const {
 			auto future = Arc<Future<T>>::create(*this);
 			auto& queue = m_work_queue.get(priority);
 			if constexpr (Core::is_same<T, void>) {

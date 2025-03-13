@@ -26,13 +26,13 @@ int main(int argc, char** argv) {
 	});
 	auto app = Arc<GUI::Application>::create(*scheduler, *device);
 
-	app->scheduler().schedule([app]() {
+	scheduler->enqueue([app, &scheduler = *scheduler]() {
 		dbgln(u8"Hello World1"sv);
-		auto future = app->scheduler().schedule<u32>(Core::Scheduler::Priority::Normal, []() {
+		auto future = scheduler.enqueue<u32>(Core::Scheduler::Priority::Normal, []() {
 			dbgln(u8"Hello World2"sv);
 			return 0;
 		});
-		app->scheduler().wait_for(*future);
+		scheduler.wait_for(*future);
 	});
 
 	const auto window = app->create<GUI::Window>({
