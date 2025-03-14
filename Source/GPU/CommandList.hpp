@@ -44,7 +44,7 @@ namespace Forge::GPU {
 		virtual RenderPassRecorder& set_pipeline(GraphicsPipeline const& pipeline) = 0;
 		virtual RenderPassRecorder& set_vertices(Buffer const& buffer) = 0;
 		virtual RenderPassRecorder& set_indices(Buffer const& buffer) = 0;
-		virtual RenderPassRecorder& push_constant(const void* ptr) = 0;
+		virtual RenderPassRecorder& set_constant(u32 index, Buffer const& buffer, u32 offset = 0) = 0;
 		virtual RenderPassRecorder& draw(usize vertex_count, usize first_vertex) = 0;
 		virtual RenderPassRecorder& draw_indexed(usize index_count, usize first_index) = 0;
 

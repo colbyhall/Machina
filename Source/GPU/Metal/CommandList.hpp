@@ -51,7 +51,7 @@ namespace Forge::GPU {
 		RenderPassRecorder& set_pipeline(GraphicsPipeline const& pipeline) final;
 		RenderPassRecorder& set_vertices(Buffer const& buffer) final;
 		RenderPassRecorder& set_indices(Buffer const& buffer) final;
-		RenderPassRecorder& push_constant(const void* ptr) final;
+		RenderPassRecorder& set_constant(u32 index, Buffer const& buffer, u32 offset = 0) final;
 		RenderPassRecorder& draw(usize vertex_count, usize first_vertex) final;
 		RenderPassRecorder& draw_indexed(usize index_count, usize first_index) final;
 

@@ -84,6 +84,7 @@ namespace Forge::GPU {
 		}
 		return *this;
 	}
+
 	RenderPassRecorder& MetalRenderPassRecorder::set_vertices(Buffer const& buffer) {
 		@autoreleasepool {
 			auto& casted = reinterpret_cast<MetalBuffer const&>(buffer);
@@ -91,8 +92,23 @@ namespace Forge::GPU {
 		}
 		return *this;
 	}
-	RenderPassRecorder& MetalRenderPassRecorder::set_indices(Buffer const& buffer) { return *this; }
-	RenderPassRecorder& MetalRenderPassRecorder::push_constant(const void* ptr) { return *this; }
+
+	RenderPassRecorder& MetalRenderPassRecorder::set_indices(Buffer const& buffer) {
+		@autoreleasepool {
+			auto& casted = reinterpret_cast<MetalBuffer const&>(buffer);
+			[m_encoder setIndexBuffer:casted.buffer()];
+		}
+		return *this;
+	}
+
+	RenderPassRecorder& MetalRenderPassRecorder::set_constant(u32 index, Buffer const& buffer, u32 offset) {
+		@autoreleasepool {
+			auto& casted = reinterpret_cast<MetalBuffer const&>(buffer);
+			[m_encoder setVertexBuffer:casted.buffer() offset:offset atIndex:index + 1];
+		}
+		return *this;
+	}
+
 	RenderPassRecorder& MetalRenderPassRecorder::draw(usize vertex_count, usize first_vertex) {
 		@autoreleasepool {
 			[m_encoder drawPrimitives:MTLPrimitiveTypeTriangle

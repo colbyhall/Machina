@@ -7,6 +7,7 @@
 #include <Core/Async/Mutex.hpp>
 #include <Core/Async/Scheduler.hpp>
 #include <Core/Debug/Log.hpp>
+#include <Core/Math/Matrix4.hpp>
 #include <Core/Math/Vector3.hpp>
 #include <Core/Memory.hpp>
 #include <GPU/Device.hpp>
@@ -50,9 +51,14 @@ int main(int argc, char** argv) {
 			float3 color;
 		};
 
+		struct Uniforms {
+			float4x4 view;
+		};
+
 		vertex FragmentIn
 		vertex_main(uint vertexID [[vertex_id]],
-					 constant simd::float3* vertexPositions)
+					 constant simd::float3* vertexPositions,
+					 constant Uniforms& uniforms [[buffer(1)]])
 		{
 			float4 vertexOutPositions = float4(vertexPositions[vertexID][0],
 											   vertexPositions[vertexID][1],
@@ -64,7 +70,7 @@ int main(int argc, char** argv) {
 				float3(0.0, 0.0, 1.0)
 			};
 			FragmentIn result;
-			result.position = vertexOutPositions;
+			result.position = uniforms.view * vertexOutPositions;
 			result.color = colors[vertexID % 3];
 			return result;
 		}
@@ -102,11 +108,30 @@ int main(int argc, char** argv) {
 			});
 			vertices->map([&](auto slice) {
 				const Slice<Vector3<f32> const> vertex_slice = {
-					{ -0.5f, -0.5f, 0.f },
-					{ 0.f, 0.5f, 0.f },
-					{ 0.5f, -0.5f, 0.f },
+					{ 0.f, 0.f, 0.f },
+					{ 0.f, 500.f, 0.f },
+					{ 500.f, 500.f, 0.f },
 				};
 				Memory::copy(slice.begin(), vertex_slice.begin(), slice.len());
+			});
+
+			struct Uniforms {
+				Matrix4<f32> view;
+			};
+			const auto uniforms = device->create_buffer({
+				.usage = GPU::Buffer::Usage::Constant,
+				.heap = GPU::Heap::Upload,
+				.len = 1,
+				.stride = sizeof(Uniforms),
+			});
+			uniforms->map([&](auto slice) {
+				const auto viewport = backbuffer->texture().size().xy().as<f32>();
+				const auto projection = Matrix4<f32>::orthographic(viewport.x, viewport.y, 0.01f, 5.f);
+				const auto view = Matrix4<f32>::translate({ -viewport.x / 2.f, -viewport.y / 2.f, 0.f });
+				const auto uniform = Uniforms{
+					.view = projection * view,
+				};
+				Memory::copy(slice.begin(), &uniform, slice.len());
 			});
 
 			const auto triangle_pass = GPU::RenderPass{
@@ -122,6 +147,7 @@ int main(int argc, char** argv) {
 			cr.render_pass(triangle_pass, [&](auto& rpr) {
 				rpr.set_pipeline(*graphics_pipeline);
 				rpr.set_vertices(*vertices);
+				rpr.set_constant(0, *uniforms);
 				rpr.draw(vertices->len(), 0);
 			});
 		});

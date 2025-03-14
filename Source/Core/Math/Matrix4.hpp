@@ -83,6 +83,13 @@ namespace Forge::Core::Math {
 		static Matrix4 transform(const Vector3<T>& position, const Quaternion<T>& rotation, const Vector3<T>& scale);
 
 		/**
+		 * @brief Creates a translation matrix given a translation.
+		 * @param translation The translation vector.
+		 * @return A translation matrix.
+		 */
+		static Matrix4 translate(const Vector3<T>& translation);
+
+		/**
 		 * @brief Attempts to calculate the inverse of the matrix.
 		 * @return An optional Matrix4 containing the inverse if it exists, otherwise an empty option.
 		 */
@@ -183,6 +190,13 @@ namespace Forge::Core::Math {
 		result.y = { rotation.rotate(Vector3<T>::right) * scale.y, T{ 0 } };
 		result.z = { rotation.rotate(Vector3<T>::up) * scale.z, T{ 0 } };
 		result.w = { position, T{ 1 } };
+		return result;
+	}
+
+	template <FloatingPoint T>
+	Matrix4<T> Matrix4<T>::translate(const Vector3<T>& translation) {
+		auto result = Matrix4::identity();
+		result.w = { translation, T{ 1 } };
 		return result;
 	}
 
