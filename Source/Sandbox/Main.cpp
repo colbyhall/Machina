@@ -100,21 +100,23 @@ int main(int argc, char** argv) {
 
 		const auto backbuffer = window->swapchain().next_back_buffer();
 		const auto command_list = device->record([&](auto& cr) {
-			const auto cursor_position = window->cursor_position();
-			const auto cursor_size = 50.f;
-
 			const auto vertices = device->create_buffer({
 				.usage = GPU::Buffer::Usage::Vertex,
 				.heap = GPU::Heap::Upload,
 				.len = 6,
 				.stride = sizeof(Vector3<f32>),
 			});
-			const auto half_size = cursor_size / 2.f;
-			const auto bl = cursor_position - half_size;
-			const auto tr = cursor_position + half_size;
-			const auto tl = bl + Vector2<f32>{ 0.f, cursor_size };
-			const auto br = bl + Vector2<f32>{ cursor_size, 0.f };
 			vertices->map([&](auto slice) {
+				const auto cursor_position = window->cursor_position();
+
+				const auto cursor_size = 50.f;
+				const auto half_size = cursor_size / 2.f;
+
+				const auto bl = cursor_position - half_size;
+				const auto tr = cursor_position + half_size;
+				const auto tl = bl + Vector2<f32>{ 0.f, cursor_size };
+				const auto br = bl + Vector2<f32>{ cursor_size, 0.f };
+
 				const Slice<Vector3<f32> const> vertex_slice = {
 					{ bl, 0.f }, { tl, 0.f }, { br, 0.f }, { br, 0.f }, { tl, 0.f }, { tr, 0.f },
 				};
