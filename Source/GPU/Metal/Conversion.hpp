@@ -136,18 +136,33 @@ namespace Forge::GPU {
 		return MTLWindingClockwise;
 	}
 
-	inline MTLLoadAction load_action_to_mtl_load_action(LoadAction action) {
-		switch (action) {
-		case LoadAction::Clear:
+	inline MTLLoadAction load_action_to_mtl_load_action(const ColorLoadAction::Variant& action) {
+		if (action.is<ColorLoadAction::Clear>()) {
 			return MTLLoadActionClear;
-		case LoadAction::Load:
+
+		} else if (action.is<ColorLoadAction::Load>()) {
 			return MTLLoadActionLoad;
-		case LoadAction::DontCare:
+
+		} else if (action.is<ColorLoadAction::DontCare>()) {
 			return MTLLoadActionDontCare;
-		default:
-			FORGE_UNIMPLEMENTED;
-			break;
 		}
+
+		FORGE_UNIMPLEMENTED;
+		return MTLLoadActionDontCare;
+	}
+
+	inline MTLLoadAction load_action_to_mtl_load_action(const DepthLoadAction::Variant& action) {
+		if (action.is<DepthLoadAction::Clear>()) {
+			return MTLLoadActionClear;
+
+		} else if (action.is<DepthLoadAction::Load>()) {
+			return MTLLoadActionLoad;
+
+		} else if (action.is<DepthLoadAction::DontCare>()) {
+			return MTLLoadActionDontCare;
+		}
+
+		FORGE_UNIMPLEMENTED;
 		return MTLLoadActionDontCare;
 	}
 

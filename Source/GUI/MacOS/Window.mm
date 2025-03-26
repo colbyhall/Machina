@@ -65,4 +65,12 @@ namespace Forge::GUI {
 		}
 		return true;
 	}
+
+	Vector2<f32> MacOSWindow::cursor_position() const {
+		@autoreleasepool {
+			NSPoint globalPoint = [NSEvent mouseLocation];
+			NSPoint windowPoint = [m_window convertPointFromScreen:globalPoint];
+			return { static_cast<f32>(windowPoint.x), static_cast<f32>(windowPoint.y) };
+		}
+	}
 } // namespace Forge::GUI

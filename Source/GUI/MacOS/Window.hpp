@@ -27,6 +27,7 @@ namespace Forge::GUI {
 		bool maximize() final;
 		bool minimize() final;
 		GPU::Swapchain& swapchain() final { return *m_swapchain; }
+		Vector2<f32> cursor_position() const final;
 		// ~Window interface
 
 	private:

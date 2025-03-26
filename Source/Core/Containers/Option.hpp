@@ -299,6 +299,8 @@ namespace Forge::Core {
 		requires is_reference<T>
 	class Option<T> {
 	public:
+		using Underlying = RemoveReference<T>;
+
 		explicit Option() = default;
 		FORGE_ALWAYS_INLINE constexpr Option(NullOpt) : m_ptr(nullptr) {}
 		FORGE_ALWAYS_INLINE constexpr Option(T t) : m_ptr(&t) {}
@@ -306,13 +308,16 @@ namespace Forge::Core {
 		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_set() const { return m_ptr != nullptr; }
 		FORGE_ALWAYS_INLINE operator bool() const { return is_set(); }
 
-		FORGE_ALWAYS_INLINE T& unwrap() {
+		FORGE_ALWAYS_INLINE Underlying* operator->() { return m_ptr; }
+		FORGE_ALWAYS_INLINE Underlying* operator->() const { return m_ptr; }
+
+		FORGE_ALWAYS_INLINE T unwrap() {
 			FORGE_ASSERT(is_set());
 			return *m_ptr;
 		}
 
 	private:
-		RemoveReference<T>* m_ptr = nullptr;
+		Underlying* m_ptr = nullptr;
 	};
 } // namespace Forge::Core
 

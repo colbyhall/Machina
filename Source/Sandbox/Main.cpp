@@ -100,17 +100,23 @@ int main(int argc, char** argv) {
 
 		const auto backbuffer = window->swapchain().next_back_buffer();
 		const auto command_list = device->record([&](auto& cr) {
+			const auto cursor_position = window->cursor_position();
+			const auto cursor_size = 50.f;
+
 			const auto vertices = device->create_buffer({
 				.usage = GPU::Buffer::Usage::Vertex,
 				.heap = GPU::Heap::Upload,
-				.len = 3,
+				.len = 6,
 				.stride = sizeof(Vector3<f32>),
 			});
+			const auto half_size = cursor_size / 2.f;
+			const auto bl = cursor_position - half_size;
+			const auto tr = cursor_position + half_size;
+			const auto tl = bl + Vector2<f32>{ 0.f, cursor_size };
+			const auto br = bl + Vector2<f32>{ cursor_size, 0.f };
 			vertices->map([&](auto slice) {
 				const Slice<Vector3<f32> const> vertex_slice = {
-					{ 0.f, 0.f, 0.f },
-					{ 0.f, 500.f, 0.f },
-					{ 500.f, 500.f, 0.f },
+					{ bl, 0.f }, { tl, 0.f }, { br, 0.f }, { br, 0.f }, { tl, 0.f }, { tr, 0.f },
 				};
 				Memory::copy(slice.begin(), vertex_slice.begin(), slice.len());
 			});
@@ -138,9 +144,8 @@ int main(int argc, char** argv) {
 				.color_attachments = {
 					{
 						.texture = backbuffer->texture(),
-						.load_action = GPU::LoadAction::Clear,
+						.load_action = GPU::ColorLoadAction::Clear{ .r = 0.2f, .g = 0.2f, .b = 0.2f, .a = 1.f,},
 						.store_action = GPU::StoreAction::Store,
-						.clear_color = { 0.2f, 0.2f, 0.2f, 1.f},
 					},
 				},
 			};

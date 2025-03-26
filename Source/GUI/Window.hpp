@@ -38,5 +38,6 @@ namespace Forge::GUI {
 		virtual bool maximize() = 0;
 		virtual bool minimize() = 0;
 		virtual GPU::Swapchain& swapchain() = 0;
+		virtual Vector2<f32> cursor_position() const = 0;
 	};
 } // namespace Forge::GUI

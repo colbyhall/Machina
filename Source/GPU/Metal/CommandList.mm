@@ -25,11 +25,17 @@ namespace Forge::GPU {
 	}
 
 	CommandRecorder& MetalCommandRecorder::copy_buffer_to_texture(Texture const& dst, Buffer const& src) {
+		FORGE_UNIMPLEMENTED;
 		return *this;
 	}
 
-	CommandRecorder& MetalCommandRecorder::copy_buffer_to_buffer(Buffer const& dst, Buffer const& src) { return *this; }
+	CommandRecorder& MetalCommandRecorder::copy_buffer_to_buffer(Buffer const& dst, Buffer const& src) {
+		FORGE_UNIMPLEMENTED;
+		return *this;
+	}
+
 	CommandRecorder& MetalCommandRecorder::texture_barrier(Texture const& texture, Layout before, Layout after) {
+		FORGE_UNIMPLEMENTED;
 		return *this;
 	}
 
@@ -46,21 +52,23 @@ namespace Forge::GPU {
 				metal_attachment.texture = texture;
 				metal_attachment.loadAction = load_action_to_mtl_load_action(my_attachment.load_action);
 				metal_attachment.storeAction = store_action_to_mtl_store_action(my_attachment.store_action);
-				metal_attachment.clearColor = MTLClearColorMake(
-					my_attachment.clear_color.x,
-					my_attachment.clear_color.y,
-					my_attachment.clear_color.z,
-					my_attachment.clear_color.w);
+
+				if (auto clear_color = my_attachment.load_action.get<ColorLoadAction::Clear>()) {
+					metal_attachment.clearColor =
+						MTLClearColorMake(clear_color->r, clear_color->g, clear_color->b, clear_color->a);
+				}
 			}
-			if (info.depth_attachment.is_set()) {
-				auto const& my_attachment = info.depth_attachment.as_const_ref().unwrap();
+			if (auto depth_attachment = info.depth_attachment.as_const_ref()) {
 				MTLRenderPassDepthAttachmentDescriptor* const metal_attachment = descriptor.depthAttachment;
 
-				id<MTLTexture> const texture = *(static_cast<MetalTexture const&>(my_attachment.texture)).texture();
+				id<MTLTexture> const texture = *(static_cast<MetalTexture const&>(depth_attachment->texture)).texture();
 				metal_attachment.texture = texture;
-				metal_attachment.loadAction = load_action_to_mtl_load_action(my_attachment.load_action);
-				metal_attachment.storeAction = store_action_to_mtl_store_action(my_attachment.store_action);
-				metal_attachment.clearDepth = my_attachment.clear_depth;
+				metal_attachment.loadAction = load_action_to_mtl_load_action(depth_attachment->load_action);
+				metal_attachment.storeAction = store_action_to_mtl_store_action(depth_attachment->store_action);
+
+				if (auto clear_color = depth_attachment->load_action.get<DepthLoadAction::Clear>()) {
+					metal_attachment.clearDepth = clear_color->depth;
+				}
 			}
 
 			// Initialize the render pass encoder

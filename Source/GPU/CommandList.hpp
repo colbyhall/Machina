@@ -10,6 +10,7 @@
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/Shared.hpp>
 #include <Core/Containers/Unique.hpp>
+#include <Core/Containers/Variant.hpp>
 #include <Core/Math/Vector4.hpp>
 #include <GPU/Forward.hpp>
 
@@ -51,11 +52,27 @@ namespace Forge::GPU {
 		virtual ~RenderPassRecorder() {}
 	};
 
-	enum class LoadAction : u8 {
-		DontCare,
-		Load,
-		Clear,
-	};
+	namespace ColorLoadAction {
+		struct DontCare {};
+		struct Load {};
+		struct Clear {
+			f32 r;
+			f32 g;
+			f32 b;
+			f32 a;
+		};
+		using Variant = Core::Variant<DontCare, Load, Clear>;
+	} // namespace ColorLoadAction
+
+	namespace DepthLoadAction {
+		struct DontCare {};
+		struct Load {};
+		struct Clear {
+			f32 depth;
+			u32 stencil = 0;
+		};
+		using Variant = Core::Variant<DontCare, Load, Clear>;
+	} // namespace DepthLoadAction
 
 	enum class StoreAction : u8 {
 		DontCare,
@@ -65,16 +82,14 @@ namespace Forge::GPU {
 	struct RenderPass {
 		struct ColorAttachment {
 			Texture const& texture;
-			LoadAction load_action;
+			ColorLoadAction::Variant load_action;
 			StoreAction store_action;
-			Vector4<f32> clear_color = { 0.f, 0.f, 0.f, 1.f };
 		};
 
 		struct DepthAttachment {
 			Texture const& texture;
-			LoadAction load_action;
+			DepthLoadAction::Variant load_action;
 			StoreAction store_action;
-			f32 clear_depth = 1.f;
 		};
 
 		Slice<ColorAttachment const> color_attachments;
