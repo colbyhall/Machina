@@ -2,7 +2,7 @@
 set(SOURCE_ROOT ${FORGE_ROOT}/Source)
 
 function(add_forge_executable target root)
-    add_executable(${target} ${ARGN})
+	add_executable(${target} ${ARGN} ${CORE_ROOT}/Main.cpp)
 	target_include_directories(${target} PRIVATE ${SOURCE_ROOT})
     source_group(TREE ${root} FILES ${ARGN})
 
