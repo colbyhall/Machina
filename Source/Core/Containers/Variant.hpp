@@ -45,6 +45,9 @@ namespace Forge::Core {
 		return max<usize>(sizeof(Ts)...);
 	}
 
+	template <typename T, typename... Ts>
+	concept Contains = (Core::is_same<T, Ts> || ...);
+
 	template <typename... Ts>
 	class Variant {
 	public:
@@ -52,13 +55,16 @@ namespace Forge::Core {
 		using Tag = u8;
 
 		template <typename T>
-			requires(Core::is_same<T, Ts> || ...)
+			requires Contains<T, Ts...>
 		Variant(T&& value) {
 			new (m_data) T(Forge::forward<T>(value));
 			m_tag = static_cast<u8>(type_index<T, Ts...>);
 		}
-		Variant(const Variant&) = delete;
-		Variant& operator=(const Variant&) = delete;
+		Variant(const Variant& c) { (copy<Ts>(c), ...); }
+		Variant& operator=(const Variant& c) {
+			(copy<Ts>(c), ...);
+			return *this;
+		}
 		Variant(Variant&& m) { (move<Ts>(m), ...); }
 		Variant& operator=(Variant&& m) {
 			(move<Ts>(m), ...);
@@ -67,7 +73,7 @@ namespace Forge::Core {
 		~Variant() { (destroy<Ts>(), ...); }
 
 		template <typename T>
-			requires(Core::is_same<T, Ts> || ...)
+			requires Contains<T, Ts...>
 		bool is() const {
 			return m_tag == type_index<T, Ts...>;
 		}
@@ -82,7 +88,7 @@ namespace Forge::Core {
 		}
 
 		template <typename T>
-			requires(Core::is_same<T, Ts> || ...)
+			requires Contains<T, Ts...>
 		Option<T const&> get() const {
 			if (!is<T>()) {
 				return Forge::nullopt;
@@ -91,20 +97,20 @@ namespace Forge::Core {
 		}
 
 		template <typename T>
-			requires(Core::is_same<T, Ts> || ...)
+			requires Contains<T, Ts...>
 		T& get_unchecked() {
 			return *reinterpret_cast<T*>(m_data);
 		}
 
 		template <typename T>
-			requires(Core::is_same<T, Ts> || ...)
+			requires Contains<T, Ts...>
 		T const& get_unchecked() const {
 			return *reinterpret_cast<const T*>(m_data);
 		}
 
 	private:
 		template <typename T>
-			requires(Core::is_same<T, Ts> || ...)
+			requires Contains<T, Ts...>
 		void destroy() {
 			if (is<T>()) {
 				reinterpret_cast<T*>(m_data)->~T();
@@ -112,7 +118,19 @@ namespace Forge::Core {
 		}
 
 		template <typename T>
-			requires(Core::is_same<T, Ts> || ...)
+			requires Contains<T, Ts...>
+		void copy(const Variant& c) {
+			if (c.is<T>()) {
+				m_tag = c.m_tag;
+
+				auto* from = reinterpret_cast<T*>(c.m_data);
+				auto* to = reinterpret_cast<T*>(m_data);
+				Memory::emplace(to, T(*from));
+			}
+		}
+
+		template <typename T>
+			requires Contains<T, Ts...>
 		void move(Variant&& m) {
 			if (m.is<T>()) {
 				m_tag = m.m_tag;
@@ -127,7 +145,7 @@ namespace Forge::Core {
 
 		static constexpr usize MaxSizeOf = Core::max_sizeof<Ts...>();
 
-		u8 m_tag = 0;
-		u8 m_data[MaxSizeOf];
+		Tag m_tag = 0;
+		alignas(u64) u8 m_data[MaxSizeOf];
 	};
 } // namespace Forge::Core
