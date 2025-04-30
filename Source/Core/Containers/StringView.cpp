@@ -77,7 +77,7 @@ namespace Forge::Core {
 
 		for (; m_byte_index < m_string.len(); m_byte_index += 1) {
 			const UTF8Char c = (*m_string)[m_byte_index];
-			utf8_decode(&m_decoder_state, &m_codepoint, static_cast<u32>(c));
+			utf8_decode(&m_decoder_state, (u32*)&m_codepoint, static_cast<u32>(c));
 
 			if (m_decoder_state == utf8_reject) return;
 			if (m_decoder_state != utf8_accept) continue;
@@ -92,7 +92,7 @@ namespace Forge::Core {
 	Char CharsIterator::get() const {
 		usize get_index = m_byte_index;
 		u32 get_state = m_decoder_state;
-		u32 get_codepoint = m_codepoint;
+		u32 get_codepoint = *m_codepoint;
 		for (; get_index < m_string.len(); get_index += 1) {
 			const UTF8Char c = (*m_string)[get_index];
 			utf8_decode(&get_state, &get_codepoint, static_cast<u32>(c));
