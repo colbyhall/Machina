@@ -7,6 +7,11 @@
 #include <Core/Containers/StringView.hpp>
 
 namespace Forge::Core {
+	bool Char::is_whitespace() const {
+		return m_codepoint == 0x20 || m_codepoint == 0x09 || m_codepoint == 0x0A || m_codepoint == 0x0B ||
+			   m_codepoint == 0x0C || m_codepoint == 0x0D;
+	}
+
 	CharsIterator StringView::chars() const { return CharsIterator(*this); }
 
 	bool StringView::operator==(const StringView& right) const {

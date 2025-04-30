@@ -12,10 +12,26 @@
 namespace Forge::Core {
 	class CharsIterator;
 
-	using Char = u32;
-	constexpr Char EOS = 0;
-	constexpr Char EOL = '\n';
-	constexpr Char UTF8_BOM = 0xfeff;
+	class Char {
+	public:
+		Char(u32 codepoint = 0) : m_codepoint(codepoint) {}
+
+		inline bool operator==(const Char& other) const { return m_codepoint == other.m_codepoint; }
+		inline bool operator!=(const Char& other) const { return m_codepoint != other.m_codepoint; }
+		inline bool operator<(const Char& other) const { return m_codepoint < other.m_codepoint; }
+		inline bool operator>(const Char& other) const { return m_codepoint > other.m_codepoint; }
+		inline bool operator<=(const Char& other) const { return m_codepoint <= other.m_codepoint; }
+		inline bool operator>=(const Char& other) const { return m_codepoint >= other.m_codepoint; }
+		inline u32 operator*() const { return m_codepoint; }
+
+		inline bool is_ascii() const { return m_codepoint <= 0x7F; }
+		inline bool is_ascii_alpha() const { return m_codepoint >= 0x41 && m_codepoint <= 0x7A; }
+		inline bool is_ascii_digit() const { return m_codepoint >= 0x30 && m_codepoint <= 0x39; }
+		bool is_whitespace() const;
+
+	private:
+		u32 m_codepoint;
+	};
 	using UTF8Char = char8_t;
 
 	template <typename T>
@@ -30,6 +46,13 @@ namespace Forge::Core {
 		return current - string;
 	}
 
+	/**
+	 * @brief A StringView represents an immutable view into a sequence of UTF-8 characters.
+	 *
+	 * It provides a lightweight way to handle strings without owning the underlying data.
+	 * It is designed for performance and efficiency, especially in contexts where
+	 * string ownership is not required.
+	 */
 	class StringView {
 	public:
 		FORGE_ALWAYS_INLINE constexpr StringView() = default;
@@ -58,8 +81,6 @@ namespace Forge::Core {
 	private:
 		Slice<UTF8Char const> m_bytes;
 	};
-
-	inline namespace Literals {} // namespace Literals
 
 	class CharsIterator {
 	public:

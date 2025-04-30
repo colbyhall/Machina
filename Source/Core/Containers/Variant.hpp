@@ -149,3 +149,7 @@ namespace Forge::Core {
 		alignas(u64) u8 m_data[MaxSizeOf];
 	};
 } // namespace Forge::Core
+
+namespace Forge {
+	using Core::Variant;
+} // namespace Forge
