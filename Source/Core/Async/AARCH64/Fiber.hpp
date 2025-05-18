@@ -13,36 +13,24 @@
 namespace Forge::Core {
 	class AARCH64Fiber final : public Fiber {
 	public:
-		explicit AARCH64Fiber(Registers&& registers)
-			: Fiber()
-			, m_registers(Forge::move(registers))
-			, m_state{ State::InUse } {}
-		explicit AARCH64Fiber(Registers&& registers, Unique<u8[]>&& stack)
-			: Fiber()
-			, m_registers(Forge::move(registers))
-			, m_stack(Forge::move(stack))
-			, m_state{ State::Dormant } {}
-
-		// Fiber Interface
-		void switch_to() const final;
-		// ~Fiber Interface
-
 		struct Registers {
 			u64 x[9];
 			u64 sp;
 			u64 pc;
 		};
+		explicit AARCH64Fiber(Registers&& registers) : Fiber(), m_registers(Forge::move(registers)) {}
+		explicit AARCH64Fiber(Registers&& registers, Unique<u8[]>&& stack)
+			: Fiber()
+			, m_registers(Forge::move(registers))
+			, m_stack(Forge::move(stack)) {}
+
+		// Fiber Interface
+		void switch_to() const final;
+		// ~Fiber Interface
 
 	private:
-		enum class State : u8 {
-			InUse,
-			Switching,
-			Dormant,
-		};
-
 		Registers m_registers;
 		Option<Unique<u8[]>> m_stack;
-		Atomic<State> m_state{ State::Dormant };
 	};
 } // namespace Forge::Core
 #endif

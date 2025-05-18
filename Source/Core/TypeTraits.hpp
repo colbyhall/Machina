@@ -7,6 +7,7 @@
 #pragma once
 
 #include <Core/Core.hpp>
+#include <functional>
 #include <type_traits>
 #include <utility>
 

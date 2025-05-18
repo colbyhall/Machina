@@ -5,6 +5,7 @@
  */
 
 #include <Core/Async/AARCH64/Fiber.hpp>
+
 #include <Core/Debug/Log.hpp>
 
 #if FORGE_CPU == FORGE_CPU_ARM
@@ -30,35 +31,19 @@ namespace Forge::Core {
 		registers.x[0] = reinterpret_cast<u64>(*param);
 
 		AARCH64Fiber fiber{ Forge::move(registers), Forge::move(stack) };
-		return Arc<Fiber>::create(Forge::move(fiber));
+		return Arc<AARCH64Fiber>::create(Forge::move(fiber));
 	}
 
 	Fiber const& Fiber::current() {
 		if (!g_current_fiber.is_set()) {
-			Fiber fiber{ Registers{} };
-			g_current_fiber = Arc<Fiber>::create(Forge::move(fiber));
+			AARCH64Fiber fiber{ AARCH64Fiber::Registers{} };
+			g_current_fiber = Arc<AARCH64Fiber>::create(Forge::move(fiber));
 		}
 		return *g_current_fiber.as_ref().unwrap();
 	}
 
 	void AARCH64Fiber::switch_to() const {
-		auto& current_fiber = current();
-
-		bool current_set_to_switching = false;
-		bool next_set_to_switching = false;
-		while (!(current_set_to_switching && next_set_to_switching)) {
-			// Convert ourselves to Switching from Dormant
-			if (m_state.compare_exchange_weak(State::Dormant, State::Switching, Order::AcqRel).is_set()) {
-				next_set_to_switching = true;
-			}
-			// Convert the current in use fiber to Switching from InUse
-			if (current_fiber.m_state.compare_exchange_weak(State::InUse, State::Switching, Order::AcqRel).is_set()) {
-				current_set_to_switching = true;
-			}
-		}
-
-		g_current_fiber = to_shared();
-		g_current_fiber.as_const_ref().unwrap()->m_state.store(State::InUse, Order::Release);
+		auto& current_fiber = static_cast<const AARCH64Fiber&>(current());
 
 		auto* current_registers = &current_fiber.m_registers;
 		auto* next_registers = &m_registers;
@@ -78,7 +63,6 @@ namespace Forge::Core {
 			: /* No outputs */
 			: "r"(current_registers), "r"(next_registers)
 			: "x19", "memory");
-		current_fiber.m_state.store(State::Dormant, Order::Release);
 		asm volatile(
 			R"(
 			ldp x0, x1, [%1, #0]
