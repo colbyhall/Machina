@@ -25,11 +25,11 @@ namespace Forge::Core {
 
 	Char utf16_to_utf32(WChar c) {
 		if (c < 0xD800 || c > 0xDFFF) {
-			return static_cast<Char>(c);
+			return Char(static_cast<u32>(c));
 		}
-		Char h = (c & 0xFFFF0000) >> 16;
-		Char l = (c & 0x0000FFFF);
-		return static_cast<Char>(((*h - 0xD800) << 10) + (*l - 0xDC00) + 0x10000);
+		Char h = Char(static_cast<u32>((c & 0xFFFF0000) >> 16));
+		Char l = Char(static_cast<u32>((c & 0x0000FFFF)));
+		return Char(static_cast<u32>(((*h - 0xD800) << 10) + (*l - 0xDC00) + 0x10000));
 	}
 
 	WString WString::from(const WStringView& view) {

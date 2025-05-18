@@ -8,7 +8,7 @@
 
 #include <Core/Core.hpp>
 
-#if FORGE_PLATFORM == FORGE_PLATFORM_WINDOWS
+#if FORGE_OS == FORGE_OS_WINDOWS
 
 	#include <Core/IO/Win32/Directory.hpp>
 

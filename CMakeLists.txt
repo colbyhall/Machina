@@ -94,6 +94,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4714
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4710 /wd4714")
 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd5027 /wd4626 /wd4623 /wd4668 /wd5267 /wd4625 /wd5039")
+
     # Disable warning for adding struct padding due to alignment specifier. We want to use the alignment specifier and
     # this will add padding to structures.
     # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4324

@@ -33,6 +33,8 @@ namespace Forge::GUI {
 	}
 
 	int run(Application const& application, FunctionRef<void(float deta_time)> tick) {
+		FORGE_UNUSED(application);
+
 		static Core::Atomic<bool> running{ false };
 
 		FORGE_ASSERT(running.exchange(true) == false);
@@ -49,7 +51,7 @@ namespace Forge::GUI {
 				DispatchMessageA(&msg);
 			}
 
-			tick(delta_time);
+			tick(static_cast<float>(delta_time));
 		}
 
 		return 0;

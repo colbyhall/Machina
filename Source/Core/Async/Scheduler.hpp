@@ -22,6 +22,7 @@ namespace Forge::Core {
 	public:
 		enum class Status : u8 { NotStarted, InProgress, Complete };
 		FORGE_NO_DISCARD virtual Status status() const = 0;
+		virtual ~Task() {}
 	};
 
 	class Scheduler {

@@ -29,13 +29,18 @@ namespace Forge::Core {
 		if (!g_current_fiber.is_set()) {
 			LPVOID handle = ::ConvertThreadToFiber(NULL);
 
-			Win32Fiber fiber(handle);
+			Win32Fiber fiber(handle, true);
 			g_current_fiber = Arc<Win32Fiber>::create(Forge::move(fiber));
 		}
 		return *g_current_fiber.as_ref().unwrap();
 	}
 
-	Win32Fiber::~Win32Fiber() { ::DeleteFiber(m_handle); }
+	Win32Fiber::~Win32Fiber() {
+		if (m_handle != NULL && !m_thread_owned) {
+			::DeleteFiber(m_handle);
+			m_handle = NULL;
+		}
+	}
 
 	void Win32Fiber::switch_to() const { ::SwitchToFiber(m_handle); }
 } // namespace Forge::Core

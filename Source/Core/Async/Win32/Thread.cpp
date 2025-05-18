@@ -28,7 +28,7 @@ namespace Forge::Core {
 	}
 
 	Arc<Thread> Thread::spawn(Function&& f, const SpawnInfo& info) {
-		auto flags = 0;
+		DWORD flags = 0;
 		if (info.start_suspended) {
 			flags |= CREATE_SUSPENDED;
 		}

@@ -71,78 +71,56 @@ namespace Forge::Core {
 namespace Forge {
 	template <>
 	struct TypeFormatter<u8> {
-		void parse(const StringView& fmt) {}
-
 		usize format(Core::Writer& writer, u8 value) { return Core::print_unsigned_integer(writer, value); }
 	};
 
 	template <>
 	struct TypeFormatter<u16> {
-		void parse(const StringView& fmt) {}
-
 		usize format(Core::Writer& writer, u16 value) { return Core::print_unsigned_integer(writer, value); }
 	};
 
 	template <>
 	struct TypeFormatter<u32> {
-		void parse(const StringView& fmt) {}
-
 		usize format(Core::Writer& writer, u32 value) { return Core::print_unsigned_integer(writer, value); }
 	};
 
 	template <>
 	struct TypeFormatter<u64> {
-		void parse(const StringView& fmt) {}
-
 		usize format(Core::Writer& writer, u64 value) { return Core::print_unsigned_integer(writer, value); }
 	};
 
 	template <>
 	struct TypeFormatter<i8> {
-		void parse(const StringView& fmt) {}
-
 		usize format(Core::Writer& writer, i8 value) { return Core::print_signed_integer(writer, value); }
 	};
 
 	template <>
 	struct TypeFormatter<i16> {
-		void parse(const StringView& fmt) {}
-
 		usize format(Core::Writer& writer, i16 value) { return Core::print_signed_integer(writer, value); }
 	};
 
 	template <>
 	struct TypeFormatter<i32> {
-		void parse(const StringView& fmt) {}
-
 		usize format(Core::Writer& writer, i32 value) { return Core::print_signed_integer(writer, value); }
 	};
 
 	template <>
 	struct TypeFormatter<i64> {
-		void parse(const StringView& fmt) {}
-
 		usize format(Core::Writer& writer, i64 value) { return Core::print_signed_integer(writer, value); }
 	};
 
 	template <>
 	struct TypeFormatter<f32> {
-		void parse(const StringView& fmt) {}
-
 		usize format(Core::Writer& writer, f32 value) { return Core::print_float(writer, value); }
 	};
 
 	template <>
 	struct TypeFormatter<f64> {
-		void parse(const StringView& fmt) {}
-
 		usize format(Core::Writer& writer, f64 value) { return Core::print_double(writer, value); }
 	};
 
 	template <>
 	struct TypeFormatter<StringView> {
-		void parse(const StringView& fmt) {}
-
 		usize format(Core::Writer& writer, const StringView& value) {
 			return writer.write(Slice<u8 const>{ (const u8*)*value, value.len() });
 		}

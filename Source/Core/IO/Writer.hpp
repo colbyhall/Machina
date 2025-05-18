@@ -12,7 +12,7 @@
 namespace Forge::Core {
 	class Writer {
 	public:
-		virtual ~Writer() = default;
+		virtual ~Writer() {}
 		virtual usize write(Slice<u8 const> bytes) = 0;
 		FORGE_ALWAYS_INLINE usize write(StringView string) {
 			return write(Slice<u8 const>((const u8*)*string, string.len()));

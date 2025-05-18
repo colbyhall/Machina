@@ -52,6 +52,8 @@ namespace Forge::Core {
 	}
 
 	bool Scheduler::wait_until(Duration const& duration, Task const& task) const {
+		FORGE_UNUSED(duration);
+
 		while (true) {
 			for (auto& waiting : m_task_tracker.waiting_task) {
 				if (waiting.state.compare_exchange_weak(WaitingTask::State::Vacant, WaitingTask::State::Updating)

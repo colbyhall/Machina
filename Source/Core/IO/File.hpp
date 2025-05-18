@@ -19,7 +19,7 @@ namespace Forge::Core {
 	FORGE_ENUM_CLASS_BITFIELD(OpenFlags);
 } // namespace Forge::Core
 
-#if FORGE_PLATFORM == FORGE_PLATFORM_WINDOWS
+#if FORGE_OS == FORGE_OS_WINDOWS
 
 	#include <Core/IO/Win32/File.hpp>
 

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Core/Containers/Unique.hpp>
+#include <Core/Containers/UniquePtr.hpp>
 #include <GPU/Swapchain.hpp>
 #include <GUI/Window.hpp>
 
@@ -15,7 +15,7 @@
 namespace Forge::GUI {
 	class Win32Window final : public Window {
 	public:
-		explicit Win32Window(HWND handle, Unique<GPU::Swapchain>&& swapchain)
+		explicit Win32Window(HWND handle, UniquePtr<GPU::Swapchain>&& swapchain)
 			: m_handle{ handle }
 			, m_swapchain{ Forge::move(swapchain) } {}
 		Win32Window(const Win32Window&) = delete;
@@ -47,6 +47,6 @@ namespace Forge::GUI {
 
 	private:
 		HWND m_handle;
-		Unique<GPU::Swapchain> m_swapchain;
+		UniquePtr<GPU::Swapchain> m_swapchain;
 	};
 } // namespace Forge::GUI

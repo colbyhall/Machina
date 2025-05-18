@@ -14,6 +14,9 @@ namespace Forge::Core {
 	class String final : public Writer {
 	public:
 		String() = default;
+		String(const String&) = default;
+		String& operator=(const String&) = default;
+
 		FORGE_NO_DISCARD static String from(const StringView& s);
 
 		template <typename... Args>
@@ -62,8 +65,6 @@ namespace Forge {
 
 	template <>
 	struct TypeFormatter<String> {
-		void parse(const String& fmt) {}
-
 		usize format(Core::Writer& writer, const String& value) {
 			return writer.write(Slice<u8 const>{ (const u8*)*value, value.len() });
 		}

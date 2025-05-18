@@ -39,7 +39,7 @@ namespace Forge::Core {
 		FORGE_ALWAYS_INLINE Duration elapsed() const { return Instant::now().since(*this); }
 
 	private:
-#if FORGE_PLATFORM == FORGE_PLATFORM_WINDOWS
+#if FORGE_OS == FORGE_OS_WINDOWS
 		explicit Instant(u64 ticks) : m_ticks(ticks) {}
 		u64 m_ticks;
 #else

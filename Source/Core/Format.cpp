@@ -104,7 +104,7 @@ namespace Forge::Core {
 	};
 
 	void Formatter::format_lambda(const StringView& fmt, Option<FunctionRef<void(StringView)>> f) {
-		auto base = 0;
+		usize base = 0;
 		for (auto iter = fmt.chars(); iter; ++iter) {
 			auto c = *iter;
 			if (c == '{') {
@@ -167,11 +167,15 @@ namespace Forge::Core {
 	void Formatter::format_one(const StringView& fmt) { format_lambda(fmt, nullopt); }
 
 	usize print_unsigned_integer(Writer& writer, u64 value, u8 base) {
+		FORGE_UNUSED(base);
+
 		char buffer[32];
 		const auto written = std::snprintf(buffer, 32, "%llu", value);
 		return writer.write(Slice<u8 const>{ (const u8*)buffer, static_cast<usize>(written) });
 	}
 	usize print_signed_integer(Writer& writer, i64 value, u8 base) {
+		FORGE_UNUSED(base);
+
 		char buffer[32];
 		const auto written = std::snprintf(buffer, 32, "%lld", value);
 		return writer.write(Slice<u8 const>{ (const u8*)buffer, static_cast<usize>(written) });

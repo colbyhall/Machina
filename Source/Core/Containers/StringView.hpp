@@ -43,7 +43,7 @@ namespace Forge::Core {
 			}
 			current += 1;
 		}
-		return current - string;
+		return static_cast<usize>(current - string);
 	}
 
 	/**

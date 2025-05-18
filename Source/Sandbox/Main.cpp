@@ -24,8 +24,14 @@ namespace Forge {
 			.waiting_count = 1024,
 		});
 
+#if FORGE_OS == FORGE_OS_MACOS
+		const auto backend = GPU::Backend::Metal;
+#elif FORGE_OS == FORGE_OS_WINDOWS
+		const auto backend = GPU::Backend::Vulkan;
+#endif
+
 		const auto device = GPU::Device::create({
-			.backend = GPU::Backend::Metal,
+			.backend = backend,
 		});
 		const auto app = GUI::Application(scheduler, *device);
 

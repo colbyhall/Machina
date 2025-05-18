@@ -32,7 +32,7 @@ namespace Forge::Core {
 			access,
 			FILE_SHARE_READ | FILE_SHARE_WRITE,
 			nullptr,
-			create ? CREATE_ALWAYS : OPEN_EXISTING,
+			static_cast<DWORD>(create ? CREATE_ALWAYS : OPEN_EXISTING),
 			FILE_ATTRIBUTE_NORMAL,
 			nullptr);
 

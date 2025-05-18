@@ -8,15 +8,16 @@
 
 #include <Core/Containers/StringView.hpp>
 
-#if FORGE_PLATFORM == FORGE_PLATFORM_WINDOWS
+#if FORGE_OS == FORGE_OS_WINDOWS
 	#include <Core/Windows.hpp>
 	#include <DbgHelp.h>
 
 namespace Forge::Core::StackTrace {
 	Array<Frame> capture() {
-		constexpr int max_frames = 128;
 		Array<Frame> result;
 
+	#if 0
+		constexpr int max_frames = 128;
 		void* stack_frames[max_frames];
 		const int frame_count = ::CaptureStackBackTrace(0, max_frames, stack_frames, nullptr);
 
@@ -39,6 +40,7 @@ namespace Forge::Core::StackTrace {
 		}
 
 		free(symbol);
+	#endif
 		return result;
 	}
 } // namespace Forge::Core::StackTrace

@@ -121,5 +121,5 @@ test_forge_library(Core ${CORE_SRC_FILES})
 
 if (WIN32)
 	# Link dbghelp for call stack symbol loading
-	target_link_libraries(Core PRIVATE "dbghelp")
+	target_link_libraries(Core PRIVATE Dbghelp)
 endif()

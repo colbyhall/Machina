@@ -8,14 +8,14 @@
 
 #include <Core/Containers/Option.hpp>
 
-#if FORGE_PLATFORM == FORGE_PLATFORM_WINDOWS
+#if FORGE_OS == FORGE_OS_WINDOWS
 	#include <Core/Windows.hpp>
 #else
 	#include <time.h>
 #endif
 
 namespace Forge::Core {
-#if FORGE_PLATFORM == FORGE_PLATFORM_WINDOWS
+#if FORGE_OS == FORGE_OS_WINDOWS
 	static u64 acquire_frequency() {
 		LARGE_INTEGER freq;
 		const auto result = ::QueryPerformanceFrequency(&freq);

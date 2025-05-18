@@ -7,10 +7,10 @@
 #pragma once
 
 // Define supported platforms
-#define FORGE_PLATFORM_UNKNOWN 0
-#define FORGE_PLATFORM_WINDOWS 1
-#define FORGE_PLATFORM_MACOS   2
-#define FORGE_PLATFORM_LINUX   3
+#define FORGE_OS_UNKNOWN 0
+#define FORGE_OS_WINDOWS 1
+#define FORGE_OS_MACOS	 2
+#define FORGE_OS_LINUX	 3
 
 // Determine platform
 #if defined(_WIN32) || defined(_WIN64)
@@ -18,16 +18,16 @@
 	#if WINAPI_FAMILY == WINAPI_FAMILY_APP
 		#error UWP is not supported
 	#endif
-	#define FORGE_PLATFORM FORGE_PLATFORM_WINDOWS
+	#define FORGE_OS FORGE_OS_WINDOWS
 #elif __APPLE__
-	#define FORGE_PLATFORM FORGE_PLATFORM_MACOS
+	#define FORGE_OS FORGE_OS_MACOS
 #endif
 
-#ifndef FORGE_PLATFORM
-	#define FORGE_PLATFORM FORGE_PLATFORM_UNKNOWN
+#ifndef FORGE_OS
+	#define FORGE_OS FORGE_OS_UNKNOWN
 #endif
 
-#if FORGE_PLATFORM == FORGE_PLATFORM_UNKNOWN
+#if FORGE_OS == FORGE_OS_UNKNOWN
 	#error Unsupported platform
 #endif
 
@@ -152,3 +152,16 @@ namespace Forge::Core {
 #define FORGE_NO_MOVE(Class)                                                                                           \
 	Class(Class&&) = delete;                                                                                           \
 	Class& operator=(Class&&) = delete
+
+#if FORGE_COMPILER == FORGE_COMPILER_MSVC
+	#define FORGE_MSVC_DISABLE_WARNINGS_PUSH __pragma(warning(push))
+	#define FORGE_MSVC_DISABLE_WARNINGS_POP	 __pragma(warning(pop))
+	#define FORGE_MSVC_DISABLE_WARNING(x)	 __pragma(warning(disable : x))
+#elif FORGE_COMPILER == FORGE_COMPILER_CLANG
+	#define FORGE_CLANG_DISABLE_WARNINGS_PUSH _Pragma("clang diagnostic push")
+	#define FORGE_CLANG_DISBALE_WARNINGS_POP  _Pragma("clang diagnostic pop")
+	#define FORGE_CLANG_DO_PRAGMA(x)		  _Pragma(#x)
+	#define FORGE_CLANG_DISABLE_WARNING(x)	  FORGE_CLANG_DO_PRAGMA(clang diagnostic ignored x)
+#else
+	#error Undefined warning suppress
+#endif
