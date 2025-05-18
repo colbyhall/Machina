@@ -4,12 +4,13 @@
  * This software is released under the MIT License.
  */
 
-#include "Core/Containers/StringView.hpp"
 #include <Core/Debug/StackTrace.hpp>
 
+#include <Core/Containers/StringView.hpp>
+
 #if FORGE_PLATFORM == FORGE_PLATFORM_WINDOWS
+	#include <Core/Windows.hpp>
 	#include <DbgHelp.h>
-	#include <Windows.h>
 
 namespace Forge::Core::StackTrace {
 	Array<Frame> capture() {
@@ -31,7 +32,10 @@ namespace Forge::Core::StackTrace {
 		for (int i = 0; i < frame_count; ++i) {
 			::SymFromAddr(process, (DWORD64)(stack_frames[i]), 0, symbol);
 
-			result.push(String::from(StringView{ (const UTF8Char*)&symbol->Name[0] }));
+			result.push(String::from(StringView{
+				(const UTF8Char*)&symbol->Name[0],
+				static_cast<usize>(symbol->NameLen),
+			}));
 		}
 
 		free(symbol);

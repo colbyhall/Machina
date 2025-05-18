@@ -4,10 +4,10 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/Containers/WString.hpp>
 #include <Core/IO/File.hpp>
 
-#include <windows.h>
+#include <Core/Containers/WString.hpp>
+#include <Core/Windows.hpp>
 
 namespace Forge::Core {
 	Win32File Win32File::stdin(GetStdHandle(STD_INPUT_HANDLE), OpenFlags::Read);

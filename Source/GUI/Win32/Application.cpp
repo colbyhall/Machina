@@ -5,7 +5,9 @@
  */
 
 #include <GUI/Application.hpp>
-#include <GUI/Win32/Window.hpp>
+
+#include <Core/Async/Scheduler.hpp>
+#include <Core/Windows.hpp>
 
 namespace Forge::GUI {
 	static LRESULT CALLBACK window_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
@@ -14,7 +16,9 @@ namespace Forge::GUI {
 
 	const LPCWSTR window_class_name = L"WindowClassName";
 
-	Application Application::create(const GPU::Device& device) {
+	Application::Application(const Core::Scheduler& scheduler, const GPU::Device& device)
+		: m_scheduler(scheduler)
+		, m_device(device) {
 		::WNDCLASSEXW window_class = {};
 		window_class.cbSize = sizeof(::WNDCLASSEXW);
 		window_class.style = CS_HREDRAW | CS_VREDRAW;
@@ -26,23 +30,28 @@ namespace Forge::GUI {
 		if (::RegisterClassExW(&window_class) == 0) {
 			FORGE_PANIC("Failure when registering window class.");
 		}
-
-		return Application(device);
 	}
 
-	int Application::run(FunctionRef<void()> tick) {
-		while (m_running) {
-			poll_input();
-			tick();
+	int run(Application const& application, FunctionRef<void(float deta_time)> tick) {
+		static Core::Atomic<bool> running{ false };
+
+		FORGE_ASSERT(running.exchange(true) == false);
+		auto last = Core::Instant::now();
+		while (running.load()) {
+			const auto now = Core::Instant::now();
+			const auto delta_time = now.since(last).as_secs_f64();
+			last = now;
+
+			// poll input
+			MSG msg = {};
+			while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE)) {
+				TranslateMessage(&msg);
+				DispatchMessageA(&msg);
+			}
+
+			tick(delta_time);
 		}
+
 		return 0;
-	}
-
-	void Application::poll_input() {
-		MSG msg = {};
-		while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE)) {
-			TranslateMessage(&msg);
-			DispatchMessageA(&msg);
-		}
 	}
 } // namespace Forge::GUI

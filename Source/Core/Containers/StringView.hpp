@@ -117,6 +117,6 @@ namespace Forge {
 	using Core::StringView;
 } // namespace Forge
 
-constexpr Forge::StringView operator""sv(const Forge::Core::UTF8Char* literal, Forge::usize length) noexcept {
+constexpr Forge::StringView operator"" _sv(const Forge::Core::UTF8Char* literal, Forge::usize length) noexcept {
 	return Forge::StringView(literal, length);
 }

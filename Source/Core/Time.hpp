@@ -39,9 +39,13 @@ namespace Forge::Core {
 		FORGE_ALWAYS_INLINE Duration elapsed() const { return Instant::now().since(*this); }
 
 	private:
+#if FORGE_PLATFORM == FORGE_PLATFORM_WINDOWS
+		explicit Instant(u64 ticks) : m_ticks(ticks) {}
+		u64 m_ticks;
+#else
 		explicit Instant(u64 secs, u32 nanos) : m_secs(secs), m_nanos(nanos) {}
-
 		u64 m_secs;
 		u32 m_nanos;
+#endif
 	};
 } // namespace Forge::Core

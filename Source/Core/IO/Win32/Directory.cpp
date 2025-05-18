@@ -1,12 +1,13 @@
 /**
- * copyright (c) 2024-2025 colby hall <me@cobeh.com>
+ * Copyright (c) 2024-2025 Colby Hall <me@cobeh.com>
  *
  * This software is released under the MIT License.
  */
 
-#include <Core/Containers/WString.hpp>
 #include <Core/IO/Directory.hpp>
-#include <windows.h>
+
+#include <Core/Containers/WString.hpp>
+#include <Core/Windows.hpp>
 
 namespace Forge::Core {
 	Win32Directory Win32Directory::cwd() {

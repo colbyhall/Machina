@@ -34,71 +34,71 @@ namespace Forge::Core {
 	};
 	static const Array<ANSIIdentifier, InlineAllocator<32>> g_ansi_identifiers = {
 		{
-			.identifier = u8"default"sv,
+			.identifier = u8"default"_sv,
 			.code = ANSIIdentifier::Default,
 		},
 		{
-			.identifier = u8"bold"sv,
+			.identifier = u8"bold"_sv,
 			.code = ANSIIdentifier::Bold,
 		},
 		{
-			.identifier = u8"dim"sv,
+			.identifier = u8"dim"_sv,
 			.code = ANSIIdentifier::Dim,
 		},
 		{
-			.identifier = u8"italic"sv,
+			.identifier = u8"italic"_sv,
 			.code = ANSIIdentifier::Italic,
 		},
 		{
-			.identifier = u8"underline"sv,
+			.identifier = u8"underline"_sv,
 			.code = ANSIIdentifier::Underline,
 		},
 		{
-			.identifier = u8"blink"sv,
+			.identifier = u8"blink"_sv,
 			.code = ANSIIdentifier::Blink,
 		},
 		{
-			.identifier = u8"inverse"sv,
+			.identifier = u8"inverse"_sv,
 			.code = ANSIIdentifier::Inverse,
 		},
 		{
-			.identifier = u8"hidden"sv,
+			.identifier = u8"hidden"_sv,
 			.code = ANSIIdentifier::Hidden,
 		},
 		{
-			.identifier = u8"strikethrough"sv,
+			.identifier = u8"strikethrough"_sv,
 			.code = ANSIIdentifier::Strikethrough,
 		},
 		{
-			.identifier = u8"black"sv,
+			.identifier = u8"black"_sv,
 			.code = ANSIIdentifier::Black,
 		},
 		{
-			.identifier = u8"red"sv,
+			.identifier = u8"red"_sv,
 			.code = ANSIIdentifier::Red,
 		},
 		{
-			.identifier = u8"green"sv,
+			.identifier = u8"green"_sv,
 			.code = ANSIIdentifier::Green,
 		},
 		{
-			.identifier = u8"yellow"sv,
+			.identifier = u8"yellow"_sv,
 			.code = ANSIIdentifier::Yellow,
 		},
 		{
-			.identifier = u8"blue"sv,
+			.identifier = u8"blue"_sv,
 			.code = ANSIIdentifier::Blue,
 		},
 		{
-			.identifier = u8"magenta"sv,
+			.identifier = u8"magenta"_sv,
 			.code = ANSIIdentifier::Magenta,
 		},
 		{
-			.identifier = u8"cyan"sv,
+			.identifier = u8"cyan"_sv,
 			.code = ANSIIdentifier::Cyan,
 		},
 		{
-			.identifier = u8"white"sv,
+			.identifier = u8"white"_sv,
 			.code = ANSIIdentifier::White,
 		},
 	};
@@ -131,11 +131,11 @@ namespace Forge::Core {
 							bool found = false;
 							for (auto const& identifier : g_ansi_identifiers) {
 								if (substring == identifier.identifier) {
-									const StringView prefix = u8"\033["sv;
+									const StringView prefix = u8"\033["_sv;
 									m_bytes_written += m_writer.write(prefix);
 									TypeFormatter<u8> formatter;
 									m_bytes_written += formatter.format(m_writer, static_cast<u8>(identifier.code));
-									const StringView postfix = u8"m"sv;
+									const StringView postfix = u8"m"_sv;
 									m_bytes_written += m_writer.write(postfix);
 									found = true;
 									break;

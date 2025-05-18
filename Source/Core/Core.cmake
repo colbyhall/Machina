@@ -18,6 +18,7 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Time.hpp
         ${CORE_ROOT}/Time.cpp
         ${CORE_ROOT}/TypeTraits.hpp
+		${CORE_ROOT}/Windows.hpp
 
         ${CORE_ROOT}/Async/Fiber.hpp
         ${CORE_ROOT}/Async/Fiber.cpp
@@ -86,8 +87,13 @@ if (APPLE)
 	set(CORE_SRC_FILES
 		${CORE_SRC_FILES}
 
+		#TODO: Put this in a Posix section
 		${CORE_ROOT}/Async/Posix/Thread.hpp
 		${CORE_ROOT}/Async/Posix/Thread.cpp
+
+		#TODO: Put this in an AARCH64 section
+		${CORE_ROOT}/Async/AARCH64/Fiber.hpp
+		${CORE_ROOT}/Async/AARCH64/Fiber.cpp
 
 		${CORE_ROOT}/IO/Posix/File.hpp
 		${CORE_ROOT}/IO/Posix/File.cpp
@@ -100,6 +106,8 @@ elseif(WIN32)
 
 		${CORE_ROOT}/Async/Win32/Thread.hpp
 		${CORE_ROOT}/Async/Win32/Thread.cpp
+		${CORE_ROOT}/Async/Win32/Fiber.hpp
+		${CORE_ROOT}/Async/Win32/Fiber.cpp
 
 		${CORE_ROOT}/IO/Win32/File.hpp
 		${CORE_ROOT}/IO/Win32/File.cpp

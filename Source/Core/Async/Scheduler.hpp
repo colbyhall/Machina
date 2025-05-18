@@ -12,6 +12,7 @@
 #include <Core/Containers/Array.hpp>
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/Shared.hpp>
+#include <Core/Containers/Unique.hpp>
 #include <Core/Time.hpp>
 
 namespace Forge::Core {

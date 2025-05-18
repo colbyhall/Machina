@@ -16,7 +16,7 @@
 
 namespace Forge {
 	int main() {
-		dbgln(u8"Hello World"sv);
+		dbgln(u8"Hello World"_sv);
 		const auto scheduler = Core::Scheduler::create({
 			.thread_count = 10,
 			.fiber_count = 512,
@@ -28,7 +28,7 @@ namespace Forge {
 		const auto app = GUI::Application(*scheduler, *device);
 
 		const auto window = app.create<GUI::Window>({
-			.title = u8"Hello World"sv,
+			.title = u8"Hello World"_sv,
 			.size = { 1280, 720 },
 		});
 		window->show();
@@ -69,13 +69,13 @@ namespace Forge {
 			fragment float4 fragment_main(FragmentIn fragment_in [[stage_in]]) {
 				return float4(fragment_in.color, 1.0);
 			}
-		)"sv;
+		)"_sv;
 		const auto library = device->create_library_from_source({
 			.language = GPU::ShaderLanguage::MSL,
 			.text = shader_source,
 		});
-		const auto vertex_shader = library->create_vertex_shader(u8"vertex_main"sv);
-		const auto fragment_shader = library->create_fragment_shader(u8"fragment_main"sv);
+		const auto vertex_shader = library->create_vertex_shader(u8"vertex_main"_sv);
+		const auto fragment_shader = library->create_fragment_shader(u8"fragment_main"_sv);
 
 		const auto graphics_pipeline = device->create_graphics_pipeline({
 			.vertex_shader = *vertex_shader,

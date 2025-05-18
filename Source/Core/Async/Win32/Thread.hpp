@@ -1,5 +1,5 @@
 /**
- * copyright (c) 2024-2025 colby hall <me@cobeh.com>
+ * Copyright (c) 2024-2025 colby hall <me@cobeh.com>
  *
  * This software is released under the MIT License.
  */
@@ -7,8 +7,7 @@
 #pragma once
 
 #include <Core/Async/Thread.hpp>
-
-#include <windows.h>
+#include <Core/Windows.hpp>
 
 namespace Forge::Core {
 	class Win32Thread final : public Thread {
@@ -29,6 +28,7 @@ namespace Forge::Core {
 		// Thread interface
 		void join() final;
 		void detach() final;
+		Id id() const final;
 		~Win32Thread() final;
 		// ~Thread interface
 

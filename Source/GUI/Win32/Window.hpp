@@ -10,7 +10,7 @@
 #include <GPU/Swapchain.hpp>
 #include <GUI/Window.hpp>
 
-#include <windows.h>
+#include <Core/Windows.hpp>
 
 namespace Forge::GUI {
 	class Win32Window final : public Window {
@@ -41,6 +41,7 @@ namespace Forge::GUI {
 		bool maximize() final;
 		bool minimize() final;
 		GPU::Swapchain& swapchain() final { return *m_swapchain; }
+		Vector2<f32> cursor_position() const final;
 		~Win32Window() final;
 		// ~Window interface
 
