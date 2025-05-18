@@ -33,12 +33,14 @@ namespace Forge {
 		const auto device = GPU::Device::create({
 			.backend = backend,
 		});
-		const auto app = GUI::Application(scheduler, *device);
+		auto app = GUI::Application(scheduler, *device);
 
-		const auto window = app.create<GUI::Window>({
-			.title = u8"Hello World"_sv,
-			.size = { 1280, 720 },
-		});
+		const auto window = GUI::Window::create(
+			app,
+			{
+				.title = u8"Hello World"_sv,
+				.size = { 1280, 720 },
+			});
 		window->show();
 
 		const StringView shader_source = u8R"(
@@ -94,8 +96,8 @@ namespace Forge {
 		});
 
 		f64 time = 0;
-		return GUI::run(app, [&](f64 delta_time) {
-			time += delta_time;
+		return app.run([&](auto& frame) {
+			time += frame.delta_time;
 
 			const auto backbuffer = window->swapchain().next_back_buffer();
 			const auto command_list = device->record([&](auto& cr) {

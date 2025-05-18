@@ -32,13 +32,12 @@ namespace Forge::GUI {
 		}
 	}
 
-	int run(Application const& application, FunctionRef<void(float deta_time)> tick) {
-		FORGE_UNUSED(application);
-
+	int Application::run(FunctionRef<void(Frame&)> tick) {
 		static Core::Atomic<bool> running{ false };
-
 		FORGE_ASSERT(running.exchange(true) == false);
+
 		auto last = Core::Instant::now();
+		u64 frame_count = 0;
 		while (running.load()) {
 			const auto now = Core::Instant::now();
 			const auto delta_time = now.since(last).as_secs_f64();
@@ -51,7 +50,13 @@ namespace Forge::GUI {
 				DispatchMessageA(&msg);
 			}
 
-			tick(static_cast<float>(delta_time));
+			Frame frame{
+				.index = frame_count,
+				.delta_time = delta_time,
+			};
+			tick(frame);
+
+			frame_count += 1;
 		}
 
 		return 0;

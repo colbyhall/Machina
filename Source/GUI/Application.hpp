@@ -19,6 +19,11 @@ namespace Forge {
 } // namespace Forge
 
 namespace Forge::GUI {
+	struct Frame {
+		u64 index;
+		f64 delta_time;
+	};
+
 	class Application {
 	public:
 		explicit Application(const Core::Scheduler& scheduler, const GPU::Device& device);
@@ -26,15 +31,11 @@ namespace Forge::GUI {
 		FORGE_ALWAYS_INLINE Core::Scheduler const& scheduler() const { return m_scheduler; }
 		FORGE_ALWAYS_INLINE GPU::Device const& device() const { return m_device; }
 
-		template <typename T>
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Rc<T> create(T::CreateInfo const& create_info) const {
-			return T::create(*this, create_info);
-		}
+		int run(FunctionRef<void(Frame&)> f);
 
 	private:
 		Core::Scheduler const& m_scheduler;
 		GPU::Device const& m_device;
 	};
 
-	int run(Application const& application, FunctionRef<void(float delta_time)> tick);
 } // namespace Forge::GUI
