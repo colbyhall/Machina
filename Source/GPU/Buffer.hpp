@@ -28,31 +28,16 @@ namespace Forge::GPU {
 			Constant = (1 << 4),
 		};
 
-		struct CreateInfo {
-			Usage usage;
-			Heap heap;
-			usize len;
-			usize stride;
-		};
-
 		FORGE_ALWAYS_INLINE Usage usage() const { return m_usage; }
 		FORGE_ALWAYS_INLINE Heap heap() const { return m_heap; }
 		FORGE_ALWAYS_INLINE usize len() const { return m_len; }
-		FORGE_ALWAYS_INLINE usize stride() const { return m_stride; }
-
-		virtual void map(FunctionRef<void(Slice<u8>)> f) const = 0;
 
 	protected:
-		explicit Buffer(CreateInfo const& create_info)
-			: m_usage(create_info.usage)
-			, m_heap(create_info.heap)
-			, m_len(create_info.len)
-			, m_stride(create_info.stride) {}
+		explicit Buffer(Usage usage, Heap heap, usize len) : m_usage(usage), m_heap(heap), m_len(len) {}
 
 		Usage m_usage;
 		Heap m_heap;
 		usize m_len;
-		usize m_stride;
 	};
 	FORGE_ENUM_CLASS_BITFIELD(Buffer::Usage)
 } // namespace Forge::GPU

@@ -19,7 +19,7 @@ namespace Forge::Core {
 
 	Arc<Fiber> Fiber::spawn(Function&& f, SpawnInfo const& spawn_info) {
 		const auto stack_size = spawn_info.stack_size;
-		auto stack = Unique<u8[]>::create(stack_size);
+		auto stack = UniquePtr<u8[]>::create(stack_size);
 
 		auto param = Memory::alloc(Memory::Layout::single<Function>());
 		Memory::emplace<Function>(param, Forge::move(f));

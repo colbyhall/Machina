@@ -144,3 +144,11 @@ namespace Forge::Core {
 #define _FORGE_DEFER_2(x, y) _FORGE_DEFER_1(x, y)
 #define _FORGE_DEFER_3(x)	 _FORGE_DEFER_2(x, __COUNTER__)
 #define FORGE_DEFER(code)	 auto _FORGE_DEFER_3(_defer_) = Forge::Core::defer_func([&]() { code; })
+
+#define FORGE_NO_COPY(Class)                                                                                           \
+	Class(const Class&) = delete;                                                                                      \
+	Class& operator=(const Class&) = delete
+
+#define FORGE_NO_MOVE(Class)                                                                                           \
+	Class(Class&&) = delete;                                                                                           \
+	Class& operator=(Class&&) = delete

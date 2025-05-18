@@ -14,11 +14,9 @@
 namespace Forge::GPU {
 	class MetalBuffer final : public Buffer {
 	public:
-		explicit MetalBuffer(Buffer::CreateInfo const& create_info, id<MTLBuffer> buffer)
-			: Buffer(create_info)
+		explicit MetalBuffer(Usage usage, Heap heap, usize size, id<MTLBuffer> buffer)
+			: Buffer(usage, heap, size)
 			, m_buffer(buffer) {}
-
-		void map(FunctionRef<void(Slice<u8>)> f) const final;
 
 		FORGE_ALWAYS_INLINE Core::Protocol buffer() const { return m_buffer; }
 

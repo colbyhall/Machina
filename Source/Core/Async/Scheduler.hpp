@@ -12,97 +12,26 @@
 #include <Core/Containers/Array.hpp>
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/Shared.hpp>
-#include <Core/Containers/Unique.hpp>
+#include <Core/Containers/UniquePtr.hpp>
 #include <Core/Time.hpp>
 
 namespace Forge::Core {
 	class Scheduler;
 
-	class Task : public ArcFromThis<Task> {
+	class Task {
 	public:
-		explicit Task(Scheduler const& owner);
-
 		enum class Status : u8 { NotStarted, InProgress, Complete };
 		FORGE_NO_DISCARD virtual Status status() const = 0;
-
-		virtual ~Task() {}
-
-	private:
-		Arc<Scheduler> m_owner;
 	};
 
-	class TaskList final : public Task {
+	class Scheduler {
 	public:
-		class Builder {
-		public:
-			explicit Builder(Scheduler const& owner) : m_owner(owner) {}
+		explicit Scheduler() = default;
 
-			Builder& add(Task const& task);
+		FORGE_NO_COPY(Scheduler);
+		FORGE_NO_MOVE(Scheduler);
 
-			Arc<TaskList> finish();
-
-		private:
-			Scheduler const& m_owner;
-			Array<Arc<Task>> m_tasks;
-		};
-
-		Status status() const;
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Slice<Arc<Task> const> tasks() const { return m_tasks.as_const_slice(); }
-
-	private:
-		explicit TaskList(Scheduler const& owner, Array<Arc<Task>>&& tasks)
-			: Task(owner)
-			, m_tasks(Forge::move(tasks)) {}
-		friend class Builder;
-
-		Array<Arc<Task>> m_tasks;
-	};
-
-	template <typename T>
-	class Future final : public Task {
-	public:
-		explicit Future(Scheduler const& owner) : Task(owner) {}
-
-		Status status() const final { return m_status.load(); }
-
-	private:
-		FORGE_NO_DISCARD bool start() const {
-			return m_status.compare_exchange_weak(Status::NotStarted, Status::InProgress).is_set();
-		}
-		void finish(T&& t) const {
-			auto* mut_self = const_cast<Future<T>*>(this);
-			mut_self->m_value = Forge::forward<T>(t);
-			const bool updated = m_status.compare_exchange_weak(Status::InProgress, Status::Complete).is_set();
-			FORGE_ASSERT(updated);
-		}
-
-		friend class Scheduler;
-		Atomic<Status> m_status{ Status::NotStarted };
-		Option<T> m_value;
-	};
-
-	template <>
-	class Future<void> final : public Task {
-	public:
-		explicit Future(Scheduler const& owner) : Task(owner) {}
-		Status status() const final { return m_status.load(); }
-
-	private:
-		FORGE_NO_DISCARD bool start() const {
-			return m_status.compare_exchange_weak(Status::NotStarted, Status::InProgress).is_set();
-		}
-		void finish() const {
-			const bool updated = m_status.compare_exchange_weak(Status::InProgress, Status::Complete).is_set();
-			FORGE_ASSERT(updated);
-		}
-
-		friend class Scheduler;
-		Atomic<Status> m_status{ Status::NotStarted };
-	};
-
-	class Scheduler final : public ArcFromThis<Scheduler> {
-	public:
-		struct CreateInfo {
+		struct InitInfo {
 			u32 thread_count;
 
 			u32 fiber_count;
@@ -112,38 +41,16 @@ namespace Forge::Core {
 			u32 normal_priority_count = 512;
 			u32 low_priority_count = 1024;
 		};
-		static Arc<Scheduler> create(CreateInfo const& create_info);
+		void init(InitInfo const& create_info);
 
 		enum class Priority : u8 { Low, Normal, High };
 		using Job = Function<void()>;
 
-		Arc<Future<void>> enqueue(Function<void()>&& f) const {
-			return enqueue(Priority::Normal, Forge::forward<Function<void()>>(f));
-		}
+		void enqueue(Job&& job) const { return enqueue(Priority::Normal, Forge::forward<Function<void()>>(job)); }
 
-		template <typename T>
-		FORGE_NO_DISCARD Arc<Future<T>> enqueue(Priority priority, Function<T()>&& f) const {
-			auto future = Arc<Future<T>>::create(*this);
+		void enqueue(Priority priority, Job&& job) const {
 			auto& queue = m_work_queue.get(priority);
-			if constexpr (Core::is_same<T, void>) {
-				Function<void()> job = [f = Forge::move(f), future = future]() {
-					const bool successful = future->start();
-					FORGE_ASSERT(successful);
-					f();
-					future->finish();
-				};
-				queue.push(Forge::move(job));
-			} else {
-				const auto started = future->start();
-				FORGE_ASSERT(started);
-
-				Function<void()> job = [f = Forge::move(f), future = future]() {
-					auto result = f();
-					future->finish(Forge::move(result));
-				};
-				queue.push(Forge::move(job));
-			}
-			return future;
+			queue.push(Forge::move(job));
 		}
 
 		FORGE_NO_DISCARD bool wait_until(Duration const& duration, Task const& task) const;
@@ -162,7 +69,7 @@ namespace Forge::Core {
 		};
 		struct WaitingTask {
 			struct Inner {
-				Arc<Task> task;
+				const Task& task;
 				u32 fiber;
 				Option<Thread::Id> thread;
 			};
@@ -176,7 +83,7 @@ namespace Forge::Core {
 		};
 
 		struct TaskTracker {
-			Unique<WaitingTask[]> waiting_task;
+			UniquePtr<WaitingTask[]> waiting_task;
 			MPMC<u32> vacant_waiting_task;
 		};
 
@@ -214,15 +121,5 @@ namespace Forge::Core {
 		FiberController m_fiber_controller;
 		TaskTracker m_task_tracker;
 		WorkQueue m_work_queue;
-
-		Scheduler(
-			ThreadController&& thread_controller,
-			FiberController&& fiber_controller,
-			TaskTracker&& task_tracker,
-			WorkQueue&& work_queue)
-			: m_thread_controller(Forge::move(thread_controller))
-			, m_fiber_controller(Forge::move(fiber_controller))
-			, m_task_tracker(Forge::move(task_tracker))
-			, m_work_queue(Forge::move(work_queue)) {}
 	};
 } // namespace Forge::Core

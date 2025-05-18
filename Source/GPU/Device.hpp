@@ -7,7 +7,7 @@
 #pragma once
 
 #include <Core/Containers/StringView.hpp>
-#include <Core/Containers/Unique.hpp>
+#include <Core/Containers/UniquePtr.hpp>
 
 #include <GPU/Buffer.hpp>
 #include <GPU/CommandList.hpp>
@@ -34,7 +34,7 @@ namespace Forge::GPU {
 	 *
 	 * Use this class to utilize the graphics cards for rendering or computation.
 	 */
-	class Device : public ArcFromThis<Device> {
+	class Device {
 	public:
 		struct CreateInfo {
 			Backend backend;
@@ -46,7 +46,7 @@ namespace Forge::GPU {
 		 * @param create_info The create info for the device.
 		 * @return Arc<Device> The created device.
 		 */
-		FORGE_NO_DISCARD static Arc<Device> create(CreateInfo const& create_info);
+		FORGE_NO_DISCARD static UniquePtr<Device> create(CreateInfo const& create_info);
 
 		/**
 		 * @brief Create a swapchain for the given owner.
@@ -54,15 +54,12 @@ namespace Forge::GPU {
 		 * @param owner The owner of the swapchain.
 		 * @return Unique<Swapchain> The created swapchain.
 		 */
-		FORGE_NO_DISCARD virtual Unique<Swapchain> create_swapchain(Swapchain::Owner owner) const = 0;
+		FORGE_NO_DISCARD virtual UniquePtr<Swapchain> create_swapchain(Swapchain::Owner owner) const = 0;
 
-		/**
-		 * @brief Creates a buffer.
-		 *
-		 * @param info The data structure containg the immutable details of the buffer.
-		 * @return Handle<Buffer> The created buffer.
-		 */
-		FORGE_NO_DISCARD virtual Handle<Buffer> create_buffer(Buffer::CreateInfo const& info) const = 0;
+		FORGE_NO_DISCARD virtual Handle<Buffer>
+		create_upload_buffer(Buffer::Usage usage, Slice<u8 const> bytes) const = 0;
+
+		FORGE_NO_DISCARD virtual Handle<Buffer> create_storage_buffer(Buffer::Usage usage, usize size) const = 0;
 
 		/**
 		 * @brief Creates a texture.

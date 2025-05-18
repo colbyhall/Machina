@@ -11,43 +11,42 @@
 
 namespace Forge::Core {
 	template <typename Base>
-	class Unique {
+	class UniquePtr {
 	public:
-		explicit Unique()
-			requires DefaultInitializable<Base>
-			: Unique{ Base{} } {}
+		explicit UniquePtr() : m_ptr(nullptr) {}
+		explicit UniquePtr(NullPtr) : m_ptr(nullptr) {}
 
 		template <typename... Args>
-		static FORGE_ALWAYS_INLINE Unique<Base> create(Args&&... args)
+		static FORGE_ALWAYS_INLINE UniquePtr<Base> create(Args&&... args)
 			requires ConstructibleFrom<Base, Args...>
 		{
-			return Unique<Base>{ Base(std::forward<Args>(args)...) };
+			return UniquePtr<Base>{ Base(std::forward<Args>(args)...) };
 		}
 
-		Unique(const Unique<Base>& copy) noexcept
+		UniquePtr(const UniquePtr<Base>& copy) noexcept
 			requires CopyConstructible<Base>
-			: Unique{ Base{ *copy } } {}
+			: UniquePtr{ Base{ *copy } } {}
 
-		Unique& operator=(const Unique<Base>& copy) noexcept
+		UniquePtr& operator=(const UniquePtr<Base>& copy) noexcept
 			requires CopyConstructible<Base>
 		{
-			this->~Unique();
-			*this = Unique<Base>{ Base{ *copy } };
+			this->~UniquePtr();
+			*this = UniquePtr<Base>{ Base{ *copy } };
 			return *this;
 		}
 
 		template <typename Derived = Base>
-		Unique(Unique<Derived>&& move) noexcept
+		UniquePtr(UniquePtr<Derived>&& move) noexcept
 			requires DerivedFrom<Derived, Base> || SameAs<Derived, Base>
 			: m_ptr(move.m_ptr) {
 			move.m_ptr = nullptr;
 		}
 
 		template <typename Derived = Base>
-		Unique& operator=(Unique<Derived>&& move) noexcept
+		UniquePtr& operator=(UniquePtr<Derived>&& move) noexcept
 			requires DerivedFrom<Derived, Base> || SameAs<Derived, Base>
 		{
-			this->~Unique();
+			this->~UniquePtr();
 
 			m_ptr = move.m_ptr;
 			move.m_ptr = nullptr;
@@ -55,7 +54,7 @@ namespace Forge::Core {
 			return *this;
 		}
 
-		~Unique() {
+		~UniquePtr() {
 			if (m_ptr) {
 				m_ptr->~Base();
 				Memory::free(m_ptr);
@@ -71,9 +70,10 @@ namespace Forge::Core {
 		FORGE_ALWAYS_INLINE Base* operator->() const { return m_ptr; }
 		FORGE_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
 		FORGE_ALWAYS_INLINE Base& operator*() const { return *m_ptr; }
+		FORGE_ALWAYS_INLINE bool is_valid() const { return m_ptr != nullptr; }
 
 	private:
-		FORGE_ALWAYS_INLINE explicit Unique(Base&& base)
+		FORGE_ALWAYS_INLINE explicit UniquePtr(Base&& base)
 			requires MoveConstructible<Base>
 		{
 			const auto ptr = Memory::alloc(Memory::Layout::single<Base>());
@@ -81,15 +81,21 @@ namespace Forge::Core {
 		}
 
 		template <typename Derived>
-		friend class Unique;
+		friend class UniquePtr;
+
+		template <typename T, typename... Args>
+		UniquePtr<T> make_unique(Args&&... args);
 
 		Base* m_ptr;
 	};
 
 	template <typename T>
-	class Unique<T[]> {
+	class UniquePtr<T[]> {
 	public:
-		static FORGE_ALWAYS_INLINE Unique create(usize len)
+		explicit UniquePtr() : m_ptr(nullptr) {}
+		explicit UniquePtr(NullPtr) : m_ptr(nullptr) {}
+
+		static FORGE_ALWAYS_INLINE UniquePtr create(usize len)
 			requires DefaultInitializable<T>
 		{
 			FORGE_ASSERT(len > 0);
@@ -98,10 +104,10 @@ namespace Forge::Core {
 			for (usize i = 0; i < len; ++i) {
 				new (ptr + i) T{};
 			}
-			return Unique{ ptr, len };
+			return UniquePtr{ ptr, len };
 		}
 
-		Unique(const Unique& copy) noexcept
+		UniquePtr(const UniquePtr& copy) noexcept
 			requires CopyConstructible<T>
 		{
 			FORGE_ASSERT(copy.len() > 0);
@@ -110,13 +116,13 @@ namespace Forge::Core {
 			for (usize i = 0; i < copy.len(); ++i) {
 				new (ptr + i) T{ copy[i] };
 			}
-			return Unique{ ptr, copy.len() };
+			return UniquePtr{ ptr, copy.len() };
 		}
 
-		Unique& operator=(const Unique& copy) noexcept
+		UniquePtr& operator=(const UniquePtr& copy) noexcept
 			requires CopyConstructible<T>
 		{
-			this->~Unique();
+			this->~UniquePtr();
 			FORGE_ASSERT(copy.len() > 0);
 			const auto memory = Memory::alloc(Memory::Layout::array<T>(copy.len()));
 			T* const ptr = reinterpret_cast<T*>(*memory);
@@ -128,13 +134,13 @@ namespace Forge::Core {
 			return *this;
 		}
 
-		Unique(Unique&& move) noexcept : m_ptr(move.m_ptr), m_len(move.m_len) {
+		UniquePtr(UniquePtr&& move) noexcept : m_ptr(move.m_ptr), m_len(move.m_len) {
 			move.m_ptr = nullptr;
 			move.m_len = 0;
 		}
 
-		Unique& operator=(Unique&& move) noexcept {
-			this->~Unique();
+		UniquePtr& operator=(UniquePtr&& move) noexcept {
+			this->~UniquePtr();
 
 			m_ptr = move.m_ptr;
 			m_len = move.m_len;
@@ -164,8 +170,9 @@ namespace Forge::Core {
 			FORGE_ASSERT(is_valid_index(index), "Index out of bounds");
 			return m_ptr[index];
 		}
+		FORGE_ALWAYS_INLINE bool is_valid() const { return m_ptr != nullptr; }
 
-		~Unique() {
+		~UniquePtr() {
 			if (m_ptr) {
 				if constexpr (!is_trivially_destructible<T>) {
 					for (usize i = 0; i < m_len; ++i) {
@@ -180,7 +187,7 @@ namespace Forge::Core {
 		}
 
 	private:
-		FORGE_ALWAYS_INLINE explicit Unique(T* ptr, usize len) : m_ptr(ptr), m_len(len) {}
+		FORGE_ALWAYS_INLINE explicit UniquePtr(T* ptr, usize len) : m_ptr(ptr), m_len(len) {}
 
 		T* m_ptr;
 		usize m_len;
@@ -188,5 +195,5 @@ namespace Forge::Core {
 } // namespace Forge::Core
 
 namespace Forge {
-	using Core::Unique;
+	using Core::UniquePtr;
 } // namespace Forge

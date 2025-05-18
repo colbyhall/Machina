@@ -17,6 +17,7 @@ namespace Forge::Core {
 	public:
 		Slice() = default;
 		FORGE_ALWAYS_INLINE constexpr explicit Slice(T* ptr, usize len);
+		FORGE_ALWAYS_INLINE constexpr explicit Slice(T& v) : m_ptr(&v), m_len(1) {}
 		FORGE_ALWAYS_INLINE Slice(InitializerList<T const> list)
 			requires(is_const<T>)
 			: m_ptr(list.begin())
@@ -33,6 +34,12 @@ namespace Forge::Core {
 		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_empty() const { return m_len == 0; }
 		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_valid_index(usize index) const { return index < m_len; }
 		FORGE_ALWAYS_INLINE explicit operator bool() const { return !is_empty(); }
+
+		Slice<u8 const> as_bytes() const
+			requires(!is_same<RemoveConst<T>, u8>)
+		{
+			return Slice<u8 const>((const u8*)begin(), len() * sizeof(T));
+		}
 
 		// Range accessors
 		FORGE_ALWAYS_INLINE T* begin() const { return m_ptr; }
@@ -95,6 +102,11 @@ namespace Forge::Core {
 		move.m_len = 0;
 
 		return *this;
+	}
+
+	template <typename T>
+	Slice<u8 const> as_slice_of_bytes(const T& t) {
+		return Slice<T const>(t).as_bytes();
 	}
 } // namespace Forge::Core
 

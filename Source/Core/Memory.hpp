@@ -7,6 +7,7 @@
 #pragma once
 
 #include <Core/Containers/NonNull.hpp>
+#include <Core/Containers/Slice.hpp>
 #include <Core/TypeTraits.hpp>
 
 #include <new>
@@ -63,6 +64,11 @@ namespace Forge::Core::Memory {
 		}
 
 		return result;
+	}
+
+	template <typename T>
+	Slice<u8 const> as_slice_of_bytes(const T& t) {
+		return Slice<T const>(t).as_bytes();
 	}
 } // namespace Forge::Core::Memory
 

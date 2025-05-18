@@ -18,7 +18,7 @@
 #import <Metal/Metal.h>
 
 namespace Forge::GPU {
-	Arc<Device> create_metal_device(Device::CreateInfo const& create_info) {
+	UniquePtr<Device> create_metal_device(Device::CreateInfo const& create_info) {
 		@autoreleasepool {
 			id<MTLDevice> device = MTLCreateSystemDefaultDevice();
 
@@ -26,11 +26,11 @@ namespace Forge::GPU {
 			[descriptor setMaxCommandBufferCount:32];
 			id<MTLCommandQueue> command_queue = [device newCommandQueueWithDescriptor:descriptor];
 
-			return Arc<MetalDevice>::create(device, command_queue);
+			return UniquePtr<MetalDevice>::create(device, command_queue);
 		}
 	}
 
-	Unique<Swapchain> MetalDevice::create_swapchain(Swapchain::Owner owner) const {
+	UniquePtr<Swapchain> MetalDevice::create_swapchain(Swapchain::Owner owner) const {
 		@autoreleasepool {
 			CAMetalLayer* layer = [CAMetalLayer layer];
 			layer.device = *m_device;
@@ -42,20 +42,25 @@ namespace Forge::GPU {
 			[window.contentView setLayer:layer];
 			[window.contentView setWantsLayer:YES];
 
-			return Unique<MetalSwapchain>::create(layer);
+			return UniquePtr<MetalSwapchain>::create(layer);
 		}
 	}
 
-	Handle<Buffer> MetalDevice::create_buffer(Buffer::CreateInfo const& create_info) const {
+	Handle<Buffer> MetalDevice::create_upload_buffer(Buffer::Usage usage, Slice<u8 const> bytes) const {
 		@autoreleasepool {
-			MTLResourceOptions options = MTLResourceStorageModeShared;
-			if (create_info.heap == Heap::Storage) {
-				options = MTLResourceStorageModePrivate;
-			}
+			id<MTLBuffer> buffer = [m_device newBufferWithBytes:bytes.begin()
+														 length:(NSUInteger)bytes.len()
+														options:MTLResourceStorageModeShared];
 
-			id<MTLBuffer> buffer = [m_device newBufferWithLength:create_info.len * create_info.stride options:options];
+			return Handle<MetalBuffer>::create(usage, Heap::Upload, bytes.len(), buffer);
+		}
+	}
 
-			return Handle<MetalBuffer>::create(create_info, buffer);
+	Handle<Buffer> MetalDevice::create_storage_buffer(Buffer::Usage usage, usize size) const {
+		@autoreleasepool {
+			id<MTLBuffer> buffer = [m_device newBufferWithLength:size options:MTLResourceStorageModePrivate];
+
+			return Handle<MetalBuffer>::create(usage, Heap::Storage, size, buffer);
 		}
 	}
 

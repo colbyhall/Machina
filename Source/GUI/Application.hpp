@@ -8,7 +8,6 @@
 
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/Shared.hpp>
-#include <Core/Containers/Unique.hpp>
 
 namespace Forge {
 	namespace Core {

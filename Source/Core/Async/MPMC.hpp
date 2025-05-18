@@ -22,6 +22,8 @@ namespace Forge::Core {
 		};
 
 	public:
+		explicit MPMC() : m_buffer(nullptr), m_buffer_mask(0) {}
+
 		static MPMC create(u32 capacity) {
 			// Verify that size is a power of 2
 			FORGE_ASSERT(capacity >= 2 && (capacity & capacity - 1) == 0);
@@ -47,7 +49,7 @@ namespace Forge::Core {
 			move.m_buffer_mask = 0;
 		}
 		FORGE_ALWAYS_INLINE MPMC& operator=(MPMC<T>&& move) noexcept {
-			~MPMC();
+			this->~MPMC();
 
 			m_buffer = move.m_buffer;
 			m_buffer_mask = move.m_buffer_mask;

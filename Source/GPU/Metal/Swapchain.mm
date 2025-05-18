@@ -9,7 +9,7 @@
 #include <GPU/Metal/Texture.hpp>
 
 namespace Forge::GPU {
-	Unique<Backbuffer> MetalSwapchain::next_back_buffer() {
+	UniquePtr<Backbuffer> MetalSwapchain::next_back_buffer() {
 		@autoreleasepool {
 			id<CAMetalDrawable> drawable = [m_layer nextDrawable];
 			auto texture = Arc<MetalTexture>::create(
@@ -21,7 +21,7 @@ namespace Forge::GPU {
 							  static_cast<u32>(drawable.texture.depth) },
 				},
 				drawable.texture);
-			return Unique<MetalBackbuffer>::create(Forge::move(texture), drawable);
+			return UniquePtr<MetalBackbuffer>::create(Forge::move(texture), drawable);
 		}
 	}
 

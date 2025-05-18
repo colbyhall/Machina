@@ -9,7 +9,7 @@
 #include <Core/Containers/Array.hpp>
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/Shared.hpp>
-#include <Core/Containers/Unique.hpp>
+#include <Core/Containers/UniquePtr.hpp>
 #include <Core/Containers/Variant.hpp>
 #include <Core/Math/Vector4.hpp>
 #include <GPU/Forward.hpp>

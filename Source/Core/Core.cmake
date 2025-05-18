@@ -48,8 +48,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Containers/String.cpp
         ${CORE_ROOT}/Containers/StringView.hpp
         ${CORE_ROOT}/Containers/StringView.cpp
-        ${CORE_ROOT}/Containers/Unique.hpp
-        ${CORE_ROOT}/Containers/Unique.cpp
+        ${CORE_ROOT}/Containers/UniquePtr.hpp
+        ${CORE_ROOT}/Containers/UniquePtr.cpp
         ${CORE_ROOT}/Containers/WString.hpp
         ${CORE_ROOT}/Containers/WString.cpp
         ${CORE_ROOT}/Containers/WStringView.hpp

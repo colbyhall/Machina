@@ -7,7 +7,7 @@
 #pragma once
 
 #include <Core/Containers/Shared.hpp>
-#include <Core/Containers/Unique.hpp>
+#include <Core/Containers/UniquePtr.hpp>
 #include <GPU/Forward.hpp>
 #include <GPU/Texture.hpp>
 
@@ -18,7 +18,7 @@ namespace Forge::GPU {
 	public:
 		using Owner = void*;
 
-		FORGE_NO_DISCARD virtual Unique<Backbuffer> next_back_buffer() = 0;
+		FORGE_NO_DISCARD virtual UniquePtr<Backbuffer> next_back_buffer() = 0;
 
 		virtual ~Swapchain() {}
 	};

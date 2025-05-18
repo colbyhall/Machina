@@ -19,8 +19,9 @@ namespace Forge::GPU {
 			, m_command_queue(command_queue) {}
 
 		// Device Interace
-		Unique<Swapchain> create_swapchain(Swapchain::Owner owner) const final;
-		Handle<Buffer> create_buffer(Buffer::CreateInfo const& info) const final;
+		UniquePtr<Swapchain> create_swapchain(Swapchain::Owner owner) const final;
+		Handle<Buffer> create_upload_buffer(Buffer::Usage usage, Slice<u8 const> bytes) const final;
+		Handle<Buffer> create_storage_buffer(Buffer::Usage usage, usize size) const final;
 		Handle<Texture> create_texture(Texture::CreateInfo const& info) const final;
 		Handle<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) const final;
 		Handle<Library> create_library_from_source(ShaderSource const& info) const final;
@@ -33,5 +34,5 @@ namespace Forge::GPU {
 		Core::Protocol m_command_queue; // MTLCommandQueue
 	};
 
-	Arc<Device> create_metal_device(Device::CreateInfo const& create_info);
+	UniquePtr<Device> create_metal_device(Device::CreateInfo const& create_info);
 } // namespace Forge::GPU

@@ -8,7 +8,7 @@
 
 #import <AppKit/AppKit.h>
 
-#include <Core/Containers/Unique.hpp>
+#include <Core/Containers/UniquePtr.hpp>
 #include <Core/ObjectiveC/Interface.hpp>
 #include <GPU/Swapchain.hpp>
 #include <GUI/Window.hpp>
@@ -16,9 +16,9 @@
 namespace Forge::GUI {
 	class MacOSWindow final : public Window {
 	public:
-		explicit MacOSWindow(NSWindow* window, Unique<GPU::Swapchain>&& swapchain)
+		explicit MacOSWindow(NSWindow* window, UniquePtr<GPU::Swapchain>&& swapchain)
 			: m_window{ window }
-			, m_swapchain(Forge::forward<Unique<GPU::Swapchain>>(swapchain)) {}
+			, m_swapchain(Forge::forward<UniquePtr<GPU::Swapchain>>(swapchain)) {}
 
 		// Window interface
 		bool close() final;
@@ -32,6 +32,6 @@ namespace Forge::GUI {
 
 	private:
 		Core::Interface<NSWindow> m_window;
-		Unique<GPU::Swapchain> m_swapchain;
+		UniquePtr<GPU::Swapchain> m_swapchain;
 	};
 } // namespace Forge::GUI

@@ -7,7 +7,7 @@
 #pragma once
 
 #include <Core/Async/Fiber.hpp>
-#include <Core/Containers/Unique.hpp>
+#include <Core/Containers/UniquePtr.hpp>
 
 #if FORGE_CPU == FORGE_CPU_ARM
 namespace Forge::Core {
@@ -19,7 +19,7 @@ namespace Forge::Core {
 			u64 pc;
 		};
 		explicit AARCH64Fiber(Registers&& registers) : Fiber(), m_registers(Forge::move(registers)) {}
-		explicit AARCH64Fiber(Registers&& registers, Unique<u8[]>&& stack)
+		explicit AARCH64Fiber(Registers&& registers, UniquePtr<u8[]>&& stack)
 			: Fiber()
 			, m_registers(Forge::move(registers))
 			, m_stack(Forge::move(stack)) {}
@@ -30,7 +30,7 @@ namespace Forge::Core {
 
 	private:
 		Registers m_registers;
-		Option<Unique<u8[]>> m_stack;
+		UniquePtr<u8[]> m_stack;
 	};
 } // namespace Forge::Core
 #endif

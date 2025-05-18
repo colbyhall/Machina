@@ -4,6 +4,7 @@
  * This software is released under the MIT License.
  */
 
+#include "GPU/Buffer.hpp"
 #include <Core/Async/Mutex.hpp>
 #include <Core/Async/Scheduler.hpp>
 #include <Core/Debug/Log.hpp>
@@ -16,16 +17,17 @@
 
 namespace Forge {
 	int main() {
-		dbgln(u8"Hello World"_sv);
-		const auto scheduler = Core::Scheduler::create({
+		Core::Scheduler scheduler{};
+		scheduler.init({
 			.thread_count = 10,
 			.fiber_count = 512,
 			.waiting_count = 1024,
 		});
+
 		const auto device = GPU::Device::create({
 			.backend = GPU::Backend::Metal,
 		});
-		const auto app = GUI::Application(*scheduler, *device);
+		const auto app = GUI::Application(scheduler, *device);
 
 		const auto window = app.create<GUI::Window>({
 			.title = u8"Hello World"_sv,
@@ -91,57 +93,44 @@ namespace Forge {
 
 			const auto backbuffer = window->swapchain().next_back_buffer();
 			const auto command_list = device->record([&](auto& cr) {
-				const auto vertices = device->create_buffer({
-					.usage = GPU::Buffer::Usage::Vertex,
-					.heap = GPU::Heap::Upload,
-					.len = 6,
-					.stride = sizeof(Vector3<f32>),
-				});
-				vertices->map([&](auto slice) {
-					const auto cursor_position = window->cursor_position();
+				const auto cursor_position = window->cursor_position();
 
-					const auto cursor_size = 50.f;
-					const auto half_size = cursor_size / 2.f;
+				const auto cursor_size = 50.f;
+				const auto half_size = cursor_size / 2.f;
 
-					const auto bl = cursor_position - half_size;
-					const auto tr = cursor_position + half_size;
-					const auto tl = bl + Vector2<f32>{ 0.f, cursor_size };
-					const auto br = bl + Vector2<f32>{ cursor_size, 0.f };
+				const auto bl = cursor_position - half_size;
+				const auto tr = cursor_position + half_size;
+				const auto tl = bl + Vector2<f32>{ 0.f, cursor_size };
+				const auto br = bl + Vector2<f32>{ cursor_size, 0.f };
 
-					const Slice<Vector3<f32> const> vertex_slice = {
-						{ bl, 0.f }, { tl, 0.f }, { br, 0.f }, { br, 0.f }, { tl, 0.f }, { tr, 0.f },
-					};
-					Memory::copy(slice.begin(), vertex_slice.begin(), slice.len());
-				});
+				const Slice<Vector3<f32> const> vertex_slice = {
+					{ bl, 0.f }, { tl, 0.f }, { br, 0.f }, { br, 0.f }, { tl, 0.f }, { tr, 0.f },
+				};
+				using BufferUsage = GPU::Buffer::Usage;
+				const auto vertices = device->create_upload_buffer(BufferUsage::Vertex, vertex_slice.as_bytes());
 
 				struct Uniforms {
 					Matrix4<f32> view;
 				};
-				const auto uniforms = device->create_buffer({
-					.usage = GPU::Buffer::Usage::Constant,
-					.heap = GPU::Heap::Upload,
-					.len = 1,
-					.stride = sizeof(Uniforms),
-				});
-				uniforms->map([&](auto slice) {
-					const auto viewport = backbuffer->texture().size().xy().as<f32>();
-					const auto projection = Matrix4<f32>::orthographic(viewport.x, viewport.y, 0.01f, 5.f);
-					const auto view = Matrix4<f32>::translate({ -viewport.x / 2.f, -viewport.y / 2.f, 0.f });
-					const auto uniform = Uniforms{
-						.view = projection * view,
-					};
-					Memory::copy(slice.begin(), &uniform, slice.len());
-				});
+				const auto viewport = backbuffer->texture().size().xy().as<f32>();
+				const auto projection = Matrix4<f32>::orthographic(viewport.x, viewport.y, 0.01f, 5.f);
+				const auto view = Matrix4<f32>::translate({ -viewport.x / 2.f, -viewport.y / 2.f, 0.f });
+				const auto uniform = Uniforms{
+					.view = projection * view,
+				};
+				const auto uniforms =
+					device->create_upload_buffer(BufferUsage::Constant, Slice<Uniforms const>(uniform).as_bytes());
 
 				const auto triangle_pass = GPU::RenderPass{
-				.color_attachments = {
-					{
-						.texture = backbuffer->texture(),
-						.load_action = GPU::ColorLoadAction::Clear{ .r = 0.2f, .g = 0.2f, .b = 0.2f, .a = 1.f,},
-						.store_action = GPU::StoreAction::Store,
+					.color_attachments = {
+						{
+							.texture = backbuffer->texture(),
+							.load_action = GPU::ColorLoadAction::Clear{ .r = 0.2f, .g = 0.2f, .b = 0.2f, .a = 1.f,},
+							.store_action = GPU::StoreAction::Store,
+						},
 					},
-				},
-			};
+				};
+
 				cr.render_pass(triangle_pass, [&](auto& rpr) {
 					rpr.set_pipeline(*graphics_pipeline);
 					rpr.set_vertices(*vertices);

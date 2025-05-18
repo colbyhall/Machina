@@ -17,7 +17,7 @@ namespace Forge::GPU {
 	public:
 		explicit MetalSwapchain(CAMetalLayer* layer) : m_layer(layer) {}
 
-		Unique<Backbuffer> next_back_buffer() final;
+		UniquePtr<Backbuffer> next_back_buffer() final;
 
 	private:
 		Core::Interface<CAMetalLayer> m_layer;
