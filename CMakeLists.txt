@@ -1,18 +1,52 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(forge LANGUAGES C CXX)
+project(Forge LANGUAGES C CXX)
 
-# When turning this option on, the libraries and executables will be compiled with debug symbols
-option(GENERATE_DEBUG_SYMBOLS "Generate debug symbols" ON)
+# ------------- Options Declerations -------------
+option(GENERATE_DEBUG_SYMBOLS "Generate debug symbols for libraries and executables" ON)
+option(ENABLE_ALL_WARNINGS "Enables \"all\" compiler warnings and treats them like errors" ON)
+option(GENERATE_COMPILE_COMMANDS "Generates compile_commands.json for clangd" ON)
 
-# Enable all warnings
-option(ENABLE_ALL_WARNINGS "Enable all warnings and warnings as errors" ON)
+# Apply GENERATE_COMPILE_COMMANDS to cmake
+if(GENERATE_COMPILE_COMMANDS)
+	set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# Declare our own OS variables for readability
+set(OS_MACOS NO)
+set(OS_WINDOWS NO)
+set(OS_LINUX NO)
+set(OS_SUPPORTS_POSIX NO)
 
+# Determine what OS variable should be set to true
+if(APPLE)
+	set(OS_MACOS YES)
+	set(OS_SUPPORTS_POSIX YES)
+elseif(UNIX AND NOT APPLE)
+	set(OS_LINUX NO)
+	set(OS_SUPPORTS_POSIX YES)
+elseif(WIN32)
+	set(OS_WINDOWS YES)
+endif()
+
+# Declare our own arch variables for ease of use
+set(ARCH_X86_64 NO)
+set(ARCH_AARCH64 NO)
+
+# Determine what arch variable should be set to true
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|amd64)$")
+	set(ARCH_X86_64 YES)
+elseif(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "^(aarch64|AARCH64|arm64|ARM64)$")
+	set(ARCH_AARCH64 YES)
+endif()
+
+# Throw an error if the CPU arch is not supported
+if((NOT ARCH_X86_64) AND (NOT ARCH_AARCH64))
+	# message(FATAL_ERROR, "This project does not support the target CPU arch")
+endif()
 
 # Setup project settings for MSVC
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Only support 64 bit architecture
     set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE "x64")
 
@@ -94,12 +128,29 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4714
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4710 /wd4714")
 
+	# Disable selected MSVC warnings that are either noisy or irrelevant for our codebase:
+	# - 5027: Move assignment operator was implicitly deleted (common with const members or deleted base ops)
+	#         https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/c5027
+	# - 4626: Assignment operator was implicitly deleted (same reasoning as 5027)
+	#         https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4626
+	# - 4623: Destructor was implicitly deleted (common with deleted base destructors or const members)
+	#         https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4623
+	# - 4668: Preprocessor macro is not defined (typical in cross-platform builds when checking Windows macros)
+	#         https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4668
+	# - 5267: Definition of implicit special member function not visible (can happen with incomplete types)
+	#         https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c5267
+	# - 4625: Copy constructor was implicitly deleted (often benign, similar to 4626)
+	#         https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4625
+	# - 5039: Potentially unsafe function or object in a security-critical context
+	#         (very common in low-level or cross-platform code; warning noise without /sdl)
+	#         https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c5039
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd5027 /wd4626 /wd4623 /wd4668 /wd5267 /wd4625 /wd5039")
 
     # Disable warning for adding struct padding due to alignment specifier. We want to use the alignment specifier and
     # this will add padding to structures.
     # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4324
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4324")
+
     # https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4820
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4820")
 
@@ -176,10 +227,12 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CONFIGURATION_TYPES "Debug;Release;ReleaseASAN;ReleaseUBSAN;ReleaseCoverage;Distribution")
 
+	# Use C++20
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++20")
 
+    # Append enable all warnings and throw error for warnings if option is enabled
     if (ENABLE_ALL_WARNINGS)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
     endif ()
 
     # Optionally generate debug symbols

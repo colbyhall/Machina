@@ -83,24 +83,22 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/ObjectiveC/Protocol.hpp
 )
 
-if (APPLE)
+# Append POSIX files if the OS supports it
+if (OS_SUPPORTS_POSIX)
 	set(CORE_SRC_FILES
 		${CORE_SRC_FILES}
 
-		#TODO: Put this in a Posix section
 		${CORE_ROOT}/Async/Posix/Thread.hpp
 		${CORE_ROOT}/Async/Posix/Thread.cpp
-
-		#TODO: Put this in an AARCH64 section
-		${CORE_ROOT}/Async/AARCH64/Fiber.hpp
-		${CORE_ROOT}/Async/AARCH64/Fiber.cpp
-
 		${CORE_ROOT}/IO/Posix/File.hpp
 		${CORE_ROOT}/IO/Posix/File.cpp
 		${CORE_ROOT}/IO/Posix/Directory.hpp
 		${CORE_ROOT}/IO/Posix/Directory.cpp
 	)
-elseif(WIN32)
+endif()
+
+# Append windows files if using windows
+if(OS_WINDOWS)
 	set(CORE_SRC_FILES
 		${CORE_SRC_FILES}
 
@@ -116,10 +114,20 @@ elseif(WIN32)
 	)
 endif()
 
+# Append aarch64 files if using windows
+if(ARCH_AARCH64)
+	set(CORE_SRC_FILES
+		${CORE_SRC_FILES}
+
+		${CORE_ROOT}/Async/AARCH64/Fiber.hpp
+		${CORE_ROOT}/Async/AARCH64/Fiber.cpp
+	)
+endif()
+
 add_forge_library(Core ${CORE_ROOT} ${CORE_SRC_FILES})
 test_forge_library(Core ${CORE_SRC_FILES})
 
-if (WIN32)
+if (OS_WINDOWS)
 	# Link dbghelp for call stack symbol loading
 	target_link_libraries(Core PRIVATE Dbghelp)
 endif()

@@ -16,31 +16,45 @@ set(GPU_SRC_FILES
 	${GPU_ROOT}/Texture.hpp
 )
 
-if (APPLE)
+# Declare variables that represent what GPU API is supported
+set(OS_SUPPORTS_METAL NO)
+set(OS_SUPPORTS_VULKAN NO)
+set(OS_SUPPORTS_D3D12 NO)
+
+# Define what GPU APIs are supported
+if(OS_MACOS)
+	set(OS_SUPPORTS_METAL YES)
+elseif(OS_WINDOWS)
+	set(OS_SUPPORTS_VULKAN YES)
+	set(OS_SUPPORTS_D3D12 YES)
+endif()
+
+# Append the drivers C++ files if the OS supports it
+if(OS_SUPPORTS_METAL)
 	set(GPU_SRC_FILES
 		${GPU_SRC_FILES}
-		${GPU_ROOT}/Metal/Buffer.mm
-		${GPU_ROOT}/Metal/Buffer.hpp
-		${GPU_ROOT}/Metal/CommandList.mm
-		${GPU_ROOT}/Metal/CommandList.hpp
-		${GPU_ROOT}/Metal/Conversion.hpp
-		${GPU_ROOT}/Metal/Device.mm
-		${GPU_ROOT}/Metal/Device.hpp
-		${GPU_ROOT}/Metal/GraphicsPipeline.mm
-		${GPU_ROOT}/Metal/GraphicsPipeline.hpp
-		${GPU_ROOT}/Metal/Shader.mm
-		${GPU_ROOT}/Metal/Shader.hpp
-		${GPU_ROOT}/Metal/Swapchain.mm
-		${GPU_ROOT}/Metal/Swapchain.hpp
-		${GPU_ROOT}/Metal/Texture.mm
-		${GPU_ROOT}/Metal/Texture.hpp
+
+		${GPU_ROOT}/Drivers/Metal/Buffer.mm
+		${GPU_ROOT}/Drivers/Metal/Buffer.hpp
+		${GPU_ROOT}/Drivers/Metal/CommandList.mm
+		${GPU_ROOT}/Drivers/Metal/CommandList.hpp
+		${GPU_ROOT}/Drivers/Metal/Conversion.hpp
+		${GPU_ROOT}/Drivers/Metal/Device.mm
+		${GPU_ROOT}/Drivers/Metal/Device.hpp
+		${GPU_ROOT}/Drivers/Metal/GraphicsPipeline.mm
+		${GPU_ROOT}/Drivers/Metal/GraphicsPipeline.hpp
+		${GPU_ROOT}/Drivers/Metal/Shader.mm
+		${GPU_ROOT}/Drivers/Metal/Shader.hpp
+		${GPU_ROOT}/Drivers/Metal/Swapchain.mm
+		${GPU_ROOT}/Drivers/Metal/Swapchain.hpp
+		${GPU_ROOT}/Drivers/Metal/Texture.mm
+		${GPU_ROOT}/Drivers/Metal/Texture.hpp
 	)
-elseif(WIN32)
 endif()
 
 add_forge_library(GPU ${GPU_ROOT} ${GPU_SRC_FILES})
 
-if (APPLE)
+# Link the drivers if the OS supports them
+if(OS_SUPPORTS_METAL)
 	target_link_libraries(GPU Core "-framework AppKit" "-framework Metal" "-framework QuartzCore")
-elseif(WIN32)
 endif()
