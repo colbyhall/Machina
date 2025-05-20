@@ -30,18 +30,18 @@ namespace Forge::Core {
 			}
 			return *this;
 		}
-		Interface(Interface&& move) : m_internal(move.m_internal) { move.m_internal = nil; }
+		Interface(Interface&& move) : m_internal(move.m_internal) { move.m_internal = nullptr; }
 		Interface& operator=(Interface&& move) {
 			@autoreleasepool {
 				m_internal = move.m_internal;
-				move.m_internal = nil;
+				move.m_internal = nullptr;
 			}
 		}
 		~Interface() {
 			@autoreleasepool {
 				if (m_internal) {
 					[m_internal release];
-					m_internal = nil;
+					m_internal = nullptr;
 				}
 			}
 		}
