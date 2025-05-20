@@ -5,6 +5,6 @@
  */
 
 #include <Core/Debug/Log.hpp>
-#include <GPU/Metal/Buffer.hpp>
+#include <GPU/Drivers/Metal/Buffer.hpp>
 
 namespace Forge::GPU {} // namespace Forge::GPU

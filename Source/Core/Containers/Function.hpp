@@ -111,7 +111,12 @@ namespace Forge::Core {
 			~FunctorWrapper() final = default;
 			FunctorWrapper(const FunctorWrapper& copy) = delete;
 			FunctorWrapper& operator=(const FunctorWrapper& copy) = delete;
-			FunctorWrapper(FunctorWrapper&& m) : f(Forge::move(f)) {}
+			FunctorWrapper(FunctorWrapper&& m) : f(Forge::move(m.f)) {}
+			FunctorWrapper& operator=(FunctorWrapper&& m) {
+				this->~FunctionWrapper();
+				f = Forge::move(m.f);
+				return *this;
+			}
 
 			void* ptr() override { return &f; }
 

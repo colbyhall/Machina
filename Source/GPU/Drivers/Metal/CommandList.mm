@@ -4,11 +4,11 @@
  * this software is released under the mit license.
  */
 
-#include <GPU/Metal/Buffer.hpp>
-#include <GPU/Metal/CommandList.hpp>
-#include <GPU/Metal/Conversion.hpp>
-#include <GPU/Metal/GraphicsPipeline.hpp>
-#include <GPU/Metal/Texture.hpp>
+#include <GPU/Drivers/Metal/Buffer.hpp>
+#include <GPU/Drivers/Metal/CommandList.hpp>
+#include <GPU/Drivers/Metal/Conversion.hpp>
+#include <GPU/Drivers/Metal/GraphicsPipeline.hpp>
+#include <GPU/Drivers/Metal/Texture.hpp>
 
 namespace Forge::GPU {
 	void MetalReceipt::wait_until_complete() const {
@@ -25,16 +25,23 @@ namespace Forge::GPU {
 	}
 
 	CommandRecorder& MetalCommandRecorder::copy_buffer_to_texture(Texture const& dst, Buffer const& src) {
+		FORGE_UNUSED(dst);
+		FORGE_UNUSED(src);
 		FORGE_UNIMPLEMENTED;
 		return *this;
 	}
 
 	CommandRecorder& MetalCommandRecorder::copy_buffer_to_buffer(Buffer const& dst, Buffer const& src) {
+		FORGE_UNUSED(dst);
+		FORGE_UNUSED(src);
 		FORGE_UNIMPLEMENTED;
 		return *this;
 	}
 
 	CommandRecorder& MetalCommandRecorder::texture_barrier(Texture const& texture, Layout before, Layout after) {
+		FORGE_UNUSED(texture);
+		FORGE_UNUSED(before);
+		FORGE_UNUSED(after);
 		FORGE_UNIMPLEMENTED;
 		return *this;
 	}
@@ -126,5 +133,10 @@ namespace Forge::GPU {
 		}
 		return *this;
 	}
-	RenderPassRecorder& MetalRenderPassRecorder::draw_indexed(usize index_count, usize first_index) { return *this; }
+	RenderPassRecorder& MetalRenderPassRecorder::draw_indexed(usize index_count, usize first_index) {
+		FORGE_UNUSED(index_count);
+		FORGE_UNUSED(first_index);
+		FORGE_UNIMPLEMENTED;
+		return *this;
+	}
 } // namespace Forge::GPU

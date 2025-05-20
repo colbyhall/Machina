@@ -4,6 +4,6 @@
  * this software is released under the mit license.
  */
 
-#include <GPU/Metal/Texture.hpp>
+#include <GPU/Drivers/Metal/Texture.hpp>
 
 namespace Forge::GPU {} // namespace Forge::GPU

@@ -4,21 +4,22 @@
  * This software is released under the MIT License.
  */
 
-#include <GPU/Metal/Device.hpp>
+#include <GPU/Drivers/Metal/Device.hpp>
 
-#include <GPU/Metal/Buffer.hpp>
-#include <GPU/Metal/CommandList.hpp>
-#include <GPU/Metal/Conversion.hpp>
-#include <GPU/Metal/GraphicsPipeline.hpp>
-#include <GPU/Metal/Shader.hpp>
-#include <GPU/Metal/Swapchain.hpp>
-#include <GPU/Metal/Texture.hpp>
+#include <GPU/Drivers/Metal/Buffer.hpp>
+#include <GPU/Drivers/Metal/CommandList.hpp>
+#include <GPU/Drivers/Metal/Conversion.hpp>
+#include <GPU/Drivers/Metal/GraphicsPipeline.hpp>
+#include <GPU/Drivers/Metal/Shader.hpp>
+#include <GPU/Drivers/Metal/Swapchain.hpp>
+#include <GPU/Drivers/Metal/Texture.hpp>
 
 #import <AppKit/AppKit.h>
 #import <Metal/Metal.h>
 
 namespace Forge::GPU {
 	UniquePtr<Device> create_metal_device(Device::CreateInfo const& create_info) {
+		FORGE_UNUSED(create_info);
 		@autoreleasepool {
 			id<MTLDevice> device = MTLCreateSystemDefaultDevice();
 

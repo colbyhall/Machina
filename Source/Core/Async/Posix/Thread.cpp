@@ -4,6 +4,7 @@
  * This software is released under the MIT License.
  */
 
+#include "Core/Core.hpp"
 #include <Core/Async/Posix/Thread.hpp>
 #include <Core/Debug/Log.hpp>
 
@@ -40,6 +41,9 @@ namespace Forge::Core {
 	}
 
 	Arc<Thread> Thread::spawn(Function&& f, SpawnInfo const& info) {
+		// TODO: Figure out how to use the data from info
+		FORGE_UNUSED(info);
+
 		auto result = Arc<PosixThread>::create(nullptr);
 		auto& mut_result = result.unsafe_get_mut();
 

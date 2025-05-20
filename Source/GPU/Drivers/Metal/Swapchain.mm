@@ -5,8 +5,8 @@
  */
 
 #include <GPU/CommandList.hpp>
-#include <GPU/Metal/Swapchain.hpp>
-#include <GPU/Metal/Texture.hpp>
+#include <GPU/Drivers/Metal/Swapchain.hpp>
+#include <GPU/Drivers/Metal/Texture.hpp>
 
 namespace Forge::GPU {
 	UniquePtr<Backbuffer> MetalSwapchain::next_back_buffer() {

@@ -5,7 +5,7 @@
  */
 
 #include <Foundation/Foundation.h>
-#include <GPU/Metal/Shader.hpp>
+#include <GPU/Drivers/Metal/Shader.hpp>
 
 namespace Forge::GPU {
 	static id<MTLFunction> get_function_from_library(id<MTLLibrary> library, StringView function_name) {
