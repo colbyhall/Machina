@@ -77,6 +77,8 @@ namespace Forge::Core {
 	public:
 		using Counter = SharedCounter<Type>;
 
+		explicit SharedPtr() : m_counter(nullptr), m_base(nullptr) {}
+
 		template <typename... Args>
 		static FORGE_ALWAYS_INLINE SharedPtr<Base, Type> create(Args&&... args)
 			requires ConstructibleFrom<Base, Args...>
@@ -245,6 +247,10 @@ namespace Forge::Core {
 			return value();
 		}
 
+		FORGE_ALWAYS_INLINE bool is_valid() const { return m_counter != nullptr; }
+
+		FORGE_ALWAYS_INLINE bool is_null() const { return m_counter != nullptr; }
+
 		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE u32 strong() const {
 			return m_counter != nullptr ? counter().strong() : 0;
 		}
@@ -344,6 +350,9 @@ namespace Forge::Core {
 			return m_counter != nullptr ? counter().strong() : 0;
 		}
 		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE u32 weak() const { return m_counter != nullptr ? counter().weak() : 0; }
+
+		FORGE_ALWAYS_INLINE bool is_valid() const { return m_counter != nullptr; }
+		FORGE_ALWAYS_INLINE bool is_null() const { return m_counter != nullptr; }
 
 	private:
 		FORGE_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
