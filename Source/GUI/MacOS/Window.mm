@@ -10,9 +10,9 @@
 #include <GUI/Window.hpp>
 
 namespace Forge::GUI {
-	Rc<Window> Window::create(Application const& app, const CreateInfo& create_info) {
+	UniquePtr<Window> Window::create(CreateInfo const& create_info) {
 		@autoreleasepool {
-			const NSRect size = NSMakeRect(0.f, 0.f, create_info.size.as<f32>().x, create_info.size.as<f32>().y);
+			const NSRect size = NSMakeRect(0.f, 0.f, create_info.size.x, create_info.size.y);
 			NSWindow* window =
 				[[NSWindow alloc] initWithContentRect:size
 											styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable |
@@ -26,8 +26,8 @@ namespace Forge::GUI {
 			[window center];
 			[window setTabbingMode:NSWindowTabbingModeDisallowed];
 
-			auto swapchain = app.device().create_swapchain(window);
-			return Rc<MacOSWindow>::create(window, Forge::move(swapchain));
+			auto swapchain = create_info.device.create_swapchain(window);
+			return UniquePtr<MacOSWindow>::create(window, Forge::move(swapchain));
 		}
 	}
 
@@ -66,11 +66,18 @@ namespace Forge::GUI {
 		return true;
 	}
 
-	Vector2<f32> MacOSWindow::cursor_position() const {
+	Bounds MacOSWindow::viewport() const {
+		@autoreleasepool {
+			const CGSize viewport_size = [[m_window contentView] frame].size;
+			return Bounds{ .min = Point(0), .max = Point(viewport_size.width, viewport_size.height) };
+		}
+	}
+
+	Point MacOSWindow::cursor_position() const {
 		@autoreleasepool {
 			NSPoint globalPoint = [NSEvent mouseLocation];
 			NSPoint windowPoint = [m_window convertPointFromScreen:globalPoint];
-			return { static_cast<f32>(windowPoint.x), static_cast<f32>(windowPoint.y) };
+			return { static_cast<Real>(windowPoint.x), static_cast<Real>(windowPoint.y) };
 		}
 	}
 } // namespace Forge::GUI

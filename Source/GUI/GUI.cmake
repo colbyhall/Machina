@@ -4,8 +4,20 @@ set(GUI_ROOT ${SOURCE_ROOT}/GUI)
 # Source files
 set(GUI_SRC_FILES
 	${GUI_ROOT}/Application.hpp
+	${GUI_ROOT}/Application.cpp
 	${GUI_ROOT}/GUI.cmake
 	${GUI_ROOT}/Window.hpp
+
+	${GUI_ROOT}/Builder.hpp
+	${GUI_ROOT}/Builder.cpp
+	${GUI_ROOT}/Canvas.hpp
+	${GUI_ROOT}/Canvas.cpp
+	${GUI_ROOT}/Layout.hpp
+	${GUI_ROOT}/Layout.cpp
+	${GUI_ROOT}/State.hpp
+	${GUI_ROOT}/State.cpp
+	${GUI_ROOT}/Math.hpp
+	${GUI_ROOT}/Math.cpp
 )
 
 if (OS_MACOS)

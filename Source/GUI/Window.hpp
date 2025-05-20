@@ -7,37 +7,30 @@
 #pragma once
 
 #include <Core/Containers/StringView.hpp>
-#include <Core/Math/Vector2.hpp>
+#include <Core/Containers/UniquePtr.hpp>
 #include <GPU/Forward.hpp>
-#include <GUI/View.hpp>
+#include <GUI/Math.hpp>
 
 namespace Forge::GUI {
 	class Application;
 
-	class Window : public View {
+	class Window {
 	public:
 		struct CreateInfo {
 			StringView title;
-			Vector2<u32> size;
-
-			bool resizable = true;
-			bool minimizable = true;
-			bool maximizable = true;
+			Size size;
+			const GPU::Device& device;
 		};
-		static Rc<Window> create(Application const& app, CreateInfo const& create_info);
+		static UniquePtr<Window> create(CreateInfo const& create_info);
+		virtual ~Window() {}
 
-		/**
-		 * @brief Closes the window so it may never be opened again.
-		 *
-		 * @return true if the window closed succesfully.
-		 * @return false if the window was already closed.
-		 */
 		virtual bool close() = 0;
 		virtual bool show() = 0;
 		virtual bool hide() = 0;
 		virtual bool maximize() = 0;
 		virtual bool minimize() = 0;
-		virtual GPU::Swapchain& swapchain() = 0;
-		virtual Vector2<f32> cursor_position() const = 0;
+		virtual GPU::Swapchain& swapchain() const = 0;
+		virtual Bounds viewport() const = 0;
+		virtual Point cursor_position() const = 0;
 	};
 } // namespace Forge::GUI

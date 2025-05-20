@@ -6,12 +6,13 @@
 
 #pragma once
 
-#import <AppKit/AppKit.h>
+#include <GUI/Window.hpp>
 
 #include <Core/Containers/UniquePtr.hpp>
 #include <Core/ObjectiveC/Interface.hpp>
 #include <GPU/Swapchain.hpp>
-#include <GUI/Window.hpp>
+
+#import <AppKit/AppKit.h>
 
 namespace Forge::GUI {
 	class MacOSWindow final : public Window {
@@ -26,8 +27,10 @@ namespace Forge::GUI {
 		bool hide() final;
 		bool maximize() final;
 		bool minimize() final;
-		GPU::Swapchain& swapchain() final { return *m_swapchain; }
-		Vector2<f32> cursor_position() const final;
+
+		GPU::Swapchain& swapchain() const final { return *m_swapchain; }
+		Bounds viewport() const final;
+		Point cursor_position() const final;
 		// ~Window interface
 
 	private:

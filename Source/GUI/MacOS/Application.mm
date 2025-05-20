@@ -22,7 +22,7 @@
 namespace Forge::GUI {
 	Application::Application(const Core::Scheduler& scheduler, const GPU::Device& device)
 		: m_scheduler(scheduler)
-		, m_device(device) {
+		, m_state(device) {
 		@autoreleasepool {
 			// Create the shared application
 			[NSApplication sharedApplication];
@@ -77,11 +77,7 @@ namespace Forge::GUI {
 					}
 				} while (ev);
 			}
-
-			auto frame = Frame{
-				.index = frame_count,
-				.delta_time = delta_time,
-			};
+			auto frame = Frame(frame_count, delta_time, m_state);
 			tick(frame);
 
 			frame_count += 1;
