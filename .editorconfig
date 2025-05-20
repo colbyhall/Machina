@@ -1,6 +1,6 @@
 root = true
 
-[*.{cpp,h,inl,cmake}]
+[*.{c,cpp,h,hpp,m,mm,inl,cmake}]
 indent_style = tab
 tab_width = 4
 trim_trailing_whitespace = true
