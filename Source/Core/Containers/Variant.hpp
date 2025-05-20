@@ -11,24 +11,35 @@
 #include <Core/Memory.hpp>
 
 namespace Forge::Core {
-	template <typename T, typename... Types>
+	template <typename T, typename... Ts>
 	struct TypeIndex;
 
-	// Base case: If the first type matches T, return index 0
-	template <typename T, typename... Types>
-	struct TypeIndex<T, T, Types...> {
+	template <typename T, typename... Ts>
+	struct TypeIndex<T, T, Ts...> {
 		static constexpr usize value = 0;
 	};
 
-	// Recursive case: If the first type does not match T, increment the index and recurse
-	template <typename T, typename U, typename... Types>
-	struct TypeIndex<T, U, Types...> {
-		static constexpr usize value = 1 + TypeIndex<T, Types...>::value;
+	template <typename T, typename U, typename... Ts>
+	struct TypeIndex<T, U, Ts...> {
+		static constexpr usize value = 1 + TypeIndex<T, Ts...>::value;
 	};
 
 	// Helper alias template to make usage easier
 	template <typename T, typename... Types>
 	inline constexpr usize type_index = TypeIndex<T, Types...>::value;
+
+	template <usize Index, typename T, typename... Ts>
+	struct NthType {
+		using type = typename NthType<Index - 1, Ts...>::type;
+	};
+
+	template <typename T, typename... Ts>
+	struct NthType<0, T, Ts...> {
+		using type = T;
+	};
+
+	template <usize Index, typename... Ts>
+	using Nth = typename NthType<Index, Ts...>::type;
 
 	template <typename T>
 	constexpr const T& max(const T& a, const T& b) {
@@ -51,26 +62,43 @@ namespace Forge::Core {
 	template <typename... Ts>
 	class Variant {
 	public:
-		static constexpr usize Count = sizeof...(Ts);
 		using Tag = u8;
+		static constexpr usize Count = sizeof...(Ts);
+		static constexpr usize MaxSizeOf = Core::max_sizeof<Ts...>();
 
 		template <typename T>
 			requires Contains<T, Ts...>
 		Variant(T&& value) {
-			new (m_data) T(Forge::forward<T>(value));
-			m_tag = static_cast<u8>(type_index<T, Ts...>);
+			static_assert(Contains<T, Ts...>);
+			Memory::emplace<T>(m_data, T(Forge::forward<T>(value)));
+			m_tag = static_cast<Tag>(type_index<T, Ts...>);
 		}
-		Variant(const Variant& c) { (copy<Ts>(c), ...); }
-		Variant& operator=(const Variant& c) {
-			(copy<Ts>(c), ...);
+
+		Variant(const Variant& other) { copy_by_index(other); }
+
+		Variant& operator=(const Variant& other) {
+			if (this != &other) {
+				destroy_by_index();
+				copy_by_index(other);
+			}
 			return *this;
 		}
-		Variant(Variant&& m) { (move<Ts>(m), ...); }
-		Variant& operator=(Variant&& m) {
-			(move<Ts>(m), ...);
+
+		Variant(Variant&& other) noexcept {
+			move_by_index(Forge::move(other));
+			other.m_tag = 0;
+		}
+
+		Variant& operator=(Variant&& other) noexcept {
+			if (this != &other) {
+				destroy_by_index();
+				move_by_index(Forge::move(other));
+				other.m_tag = 0;
+			}
 			return *this;
 		}
-		~Variant() { (destroy<Ts>(), ...); }
+
+		~Variant() { destroy_by_index(); }
 
 		template <typename T>
 			requires Contains<T, Ts...>
@@ -79,20 +107,16 @@ namespace Forge::Core {
 		}
 
 		template <typename T>
-			requires(Core::is_same<T, Ts> || ...)
+			requires Contains<T, Ts...>
 		Option<T&> get() {
-			if (!is<T>()) {
-				return Forge::nullopt;
-			}
+			if (!is<T>()) return nullopt;
 			return *reinterpret_cast<T*>(m_data);
 		}
 
 		template <typename T>
 			requires Contains<T, Ts...>
-		Option<T const&> get() const {
-			if (!is<T>()) {
-				return Forge::nullopt;
-			}
+		Option<const T&> get() const {
+			if (!is<T>()) return nullopt;
 			return *reinterpret_cast<const T*>(m_data);
 		}
 
@@ -104,52 +128,59 @@ namespace Forge::Core {
 
 		template <typename T>
 			requires Contains<T, Ts...>
-		T const& get_unchecked() const {
+		const T& get_unchecked() const {
 			return *reinterpret_cast<const T*>(m_data);
 		}
 
 	private:
-		template <typename T>
-			requires Contains<T, Ts...>
-		void destroy() {
-			if (is<T>()) {
-				reinterpret_cast<T*>(m_data)->~T();
-			}
-		}
-
-		template <typename T>
-			requires Contains<T, Ts...>
-		void copy(const Variant& c) {
-			if (c.is<T>()) {
-				m_tag = c.m_tag;
-
-				auto* from = reinterpret_cast<T*>(c.m_data);
-				auto* to = reinterpret_cast<T*>(m_data);
-				Memory::emplace(to, T(*from));
-			}
-		}
-
-		template <typename T>
-			requires Contains<T, Ts...>
-		void move(Variant&& m) {
-			if (m.is<T>()) {
-				m_tag = m.m_tag;
-
-				auto* from = reinterpret_cast<T*>(m.m_data);
-				auto* to = reinterpret_cast<T*>(m_data);
-				*to = Forge::move(*from);
-
-				m.m_tag = 0;
-			}
-		}
-
-		static constexpr usize MaxSizeOf = Core::max_sizeof<Ts...>();
-
-		Tag m_tag = 0;
 		alignas(u64) u8 m_data[MaxSizeOf];
+		Tag m_tag = 0;
+
+		// --- Indexed Dispatch ---
+
+		template <usize Index = 0>
+		void destroy_by_index() {
+			if constexpr (Index < Count) {
+				if (m_tag == Index) {
+					using T = Nth<Index, Ts...>;
+					reinterpret_cast<T*>(m_data)->~T();
+				} else {
+					destroy_by_index<Index + 1>();
+				}
+			}
+		}
+
+		template <usize Index = 0>
+		void copy_by_index(const Variant& other) {
+			if constexpr (Index < Count) {
+				if (other.m_tag == Index) {
+					using T = Nth<Index, Ts...>;
+					auto* from = reinterpret_cast<const T*>(other.m_data);
+					Memory::emplace<T>(m_data, T(*from));
+					m_tag = other.m_tag;
+				} else {
+					copy_by_index<Index + 1>(other);
+				}
+			}
+		}
+
+		template <usize Index = 0>
+		void move_by_index(Variant&& other) {
+			if constexpr (Index < Count) {
+				if (other.m_tag == Index) {
+					using T = Nth<Index, Ts...>;
+					auto* from = reinterpret_cast<T*>(other.m_data);
+					Memory::emplace<T>(m_data, T(Forge::move(*from)));
+					m_tag = other.m_tag;
+				} else {
+					move_by_index<Index + 1>(Forge::move(other));
+				}
+			}
+		}
 	};
+
 } // namespace Forge::Core
 
 namespace Forge {
 	using Core::Variant;
-} // namespace Forge
+}
