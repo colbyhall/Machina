@@ -6,11 +6,10 @@
 
 #pragma once
 
-#include "Core/Core.hpp"
-#include "Core/TypeTraits.hpp"
 #include <Core/Atomic.hpp>
 #include <Core/Concepts.hpp>
 #include <Core/Memory.hpp>
+#include <Core/TypeTraits.hpp>
 
 namespace Forge::Core {
 	enum class SharedType { NonAtomic, Atomic };
@@ -18,10 +17,10 @@ namespace Forge::Core {
 	template <SharedType Type>
 	class SharedCounter;
 
-	class SharedFromThisBase {};
+	class SharedPtrFromThisBase {};
 
 	template <typename Base, SharedType Type>
-	class Weak;
+	class WeakPtr;
 
 	template <>
 	class SharedCounter<SharedType::NonAtomic> {
@@ -74,12 +73,12 @@ namespace Forge::Core {
 	};
 
 	template <typename Base, SharedType Type>
-	class Shared {
+	class SharedPtr {
 	public:
 		using Counter = SharedCounter<Type>;
 
 		template <typename... Args>
-		static FORGE_ALWAYS_INLINE Shared<Base, Type> create(Args&&... args)
+		static FORGE_ALWAYS_INLINE SharedPtr<Base, Type> create(Args&&... args)
 			requires ConstructibleFrom<Base, Args...>
 		{
 			struct Combined {
@@ -98,25 +97,25 @@ namespace Forge::Core {
 			auto* counter = &ptr->counter;
 			auto* base = &ptr->base;
 
-			const auto result = Shared<Base, Type>(counter, base);
-			if constexpr (is_base_of<SharedFromThisBase, Base>) {
+			const auto result = SharedPtr<Base, Type>(counter, base);
+			if constexpr (is_base_of<SharedPtrFromThisBase, Base>) {
 				base->m_this = result.downgrade();
 			}
 
 			return result;
 		}
 
-		Shared(const Shared& copy) noexcept : m_counter(copy.m_counter), m_base(copy.m_base) {
+		SharedPtr(const SharedPtr& copy) noexcept : m_counter(copy.m_counter), m_base(copy.m_base) {
 			auto& c = counter();
 			c.add_strong();
 		}
 		template <typename Derived = Base>
-		Shared(const Shared<Derived, Type>& copy) noexcept : m_counter(copy.m_counter)
-														   , m_base(copy.m_base) {
+		SharedPtr(const SharedPtr<Derived, Type>& copy) noexcept : m_counter(copy.m_counter)
+																 , m_base(copy.m_base) {
 			auto& c = counter();
 			c.add_strong();
 		}
-		Shared& operator=(const Shared& copy) noexcept {
+		SharedPtr& operator=(const SharedPtr& copy) noexcept {
 			m_counter = copy.m_counter;
 			m_base = copy.m_base;
 
@@ -126,7 +125,7 @@ namespace Forge::Core {
 			return *this;
 		}
 		template <typename Derived = Base>
-		Shared& operator=(const Shared<Derived, Type>& copy) noexcept {
+		SharedPtr& operator=(const SharedPtr<Derived, Type>& copy) noexcept {
 			m_counter = copy.m_counter;
 			m_base = copy.m_base;
 
@@ -136,7 +135,7 @@ namespace Forge::Core {
 			return *this;
 		}
 		template <typename Derived = Base>
-		Shared(Shared<Derived, Type>&& move) noexcept
+		SharedPtr(SharedPtr<Derived, Type>&& move) noexcept
 			requires DerivedFrom<Derived, Base> || SameAs<Derived, Base>
 			: m_counter(move.m_counter)
 			, m_base(move.m_base) {
@@ -145,10 +144,10 @@ namespace Forge::Core {
 			move.m_base = nullptr;
 		}
 		template <typename Derived = Base>
-		Shared& operator=(Shared<Derived, Type>&& move) noexcept
+		SharedPtr& operator=(SharedPtr<Derived, Type>&& move) noexcept
 			requires DerivedFrom<Derived, Base> || SameAs<Derived, Base>
 		{
-			this->~Shared();
+			this->~SharedPtr();
 
 			m_counter = move.m_counter;
 			m_base = move.m_base;
@@ -158,7 +157,7 @@ namespace Forge::Core {
 
 			return *this;
 		}
-		~Shared() {
+		~SharedPtr() {
 			if (m_counter) {
 				auto& c = counter();
 
@@ -172,7 +171,7 @@ namespace Forge::Core {
 
 					// Base that are derived from SharedFromThis will have a weak ptr to itself. Free when weak ptr is 1
 					// to account for this
-					if constexpr (is_base_of<SharedFromThisBase, Base>) {
+					if constexpr (is_base_of<SharedPtrFromThisBase, Base>) {
 						if (weak_count == 1) {
 							Memory::free(m_counter);
 						}
@@ -190,10 +189,10 @@ namespace Forge::Core {
 			}
 		}
 
-		FORGE_ALWAYS_INLINE Weak<Base, Type> downgrade() const {
+		FORGE_ALWAYS_INLINE WeakPtr<Base, Type> downgrade() const {
 			auto& c = counter();
 			c.add_weak();
-			return Weak<Base, Type>{ m_counter, m_base };
+			return WeakPtr<Base, Type>{ m_counter, m_base };
 		}
 
 		// Non Atomic Accessors
@@ -252,13 +251,13 @@ namespace Forge::Core {
 		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE u32 weak() const { return m_counter != nullptr ? counter().weak() : 0; }
 
 	private:
-		explicit Shared(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
+		explicit SharedPtr(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
 
 		template <typename, SharedType>
-		friend class Shared;
+		friend class SharedPtr;
 
 		template <typename, SharedType>
-		friend class Weak;
+		friend class WeakPtr;
 
 		FORGE_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
 		FORGE_ALWAYS_INLINE Base& value() const { return *m_base; }
@@ -268,14 +267,14 @@ namespace Forge::Core {
 	};
 
 	template <typename Base, SharedType Type>
-	class Weak {
+	class WeakPtr {
 	public:
 		using Counter = SharedCounter<Type>;
 
-		Weak() = default;
+		WeakPtr() = default;
 
 		template <typename Derived = Base>
-		Weak(const Weak<Derived, Type>& copy) noexcept
+		WeakPtr(const WeakPtr<Derived, Type>& copy) noexcept
 			requires DerivedFrom<Derived, Base>
 			: m_counter(copy.m_counter)
 			, m_base(copy.m_base) {
@@ -283,10 +282,10 @@ namespace Forge::Core {
 			c.add_weak();
 		}
 		template <typename Derived = Base>
-		Weak& operator=(const Weak<Derived, Type>& copy) noexcept
+		WeakPtr& operator=(const WeakPtr<Derived, Type>& copy) noexcept
 			requires DerivedFrom<Derived, Base>
 		{
-			this->~Weak();
+			this->~WeakPtr();
 
 			m_counter = copy.m_counter;
 			m_base = copy.m_base;
@@ -297,7 +296,7 @@ namespace Forge::Core {
 			return *this;
 		}
 		template <typename Derived = Base>
-		Weak(Weak<Derived, Type>&& move) noexcept
+		WeakPtr(WeakPtr<Derived, Type>&& move) noexcept
 			requires DerivedFrom<Derived, Base>
 			: m_counter(move.m_counter)
 			, m_base(move.m_base) {
@@ -305,10 +304,10 @@ namespace Forge::Core {
 			move.m_base = nullptr;
 		}
 		template <typename Derived = Base>
-		Weak& operator=(Weak<Derived, Type>&& m) noexcept
+		WeakPtr& operator=(WeakPtr<Derived, Type>&& m) noexcept
 			requires DerivedFrom<Derived, Base>
 		{
-			this->~Weak();
+			this->~WeakPtr();
 
 			m_counter = m.m_counter;
 			m_base = m.m_base;
@@ -317,7 +316,7 @@ namespace Forge::Core {
 
 			return *this;
 		}
-		~Weak() {
+		~WeakPtr() {
 			if (m_counter) {
 				auto& c = counter();
 
@@ -331,12 +330,12 @@ namespace Forge::Core {
 			}
 		}
 
-		FORGE_NO_DISCARD Option<Shared<Base, Type>> upgrade() const {
+		FORGE_NO_DISCARD Option<SharedPtr<Base, Type>> upgrade() const {
 			auto& c = counter();
 			const auto strong_count = c.strong();
 			if (strong_count > 0) {
 				c.add_strong();
-				return Shared<Base, Type>{ m_counter, m_base };
+				return SharedPtr<Base, Type>{ m_counter, m_base };
 			}
 			return nullopt;
 		}
@@ -349,51 +348,42 @@ namespace Forge::Core {
 	private:
 		FORGE_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
 
-		explicit Weak(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
+		explicit WeakPtr(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
 
 		template <typename Derived, SharedType>
-		friend class Shared;
+		friend class SharedPtr;
 
 		template <typename Derived, SharedType>
-		friend class Weak;
+		friend class WeakPtr;
 
 		Counter* m_counter = nullptr;
 		Base* m_base = nullptr;
 	};
 
 	template <typename T, SharedType Type>
-	class SharedFromThis : SharedFromThisBase {
+	class SharedPtrFromThis : SharedPtrFromThisBase {
 	public:
 		using Counter = SharedCounter<Type>;
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE Shared<T, Type> to_shared() const {
+		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE SharedPtr<T, Type> to_shared() const {
 			return m_this.as_const_ref().unwrap().upgrade().unwrap();
 		}
 
 	private:
 		template <typename Derived, SharedType>
-		friend class Shared;
+		friend class SharedPtr;
 
-		Option<Weak<T, Type>> m_this = nullopt;
+		Option<WeakPtr<T, Type>> m_this = nullopt;
 	};
 } // namespace Forge::Core
 
 namespace Forge {
 	template <typename T>
-	using Rc = Core::Shared<T, Core::SharedType::NonAtomic>;
+	using SharedPtr = Core::SharedPtr<T, Core::SharedType::Atomic>;
 
 	template <typename T>
-	using RcFromThis = Core::SharedFromThis<T, Core::SharedType::NonAtomic>;
+	using SharedPtrFromThis = Core::SharedPtrFromThis<T, Core::SharedType::Atomic>;
 
 	template <typename T>
-	using RcWeak = Core::Weak<T, Core::SharedType::NonAtomic>;
-
-	template <typename T>
-	using Arc = Core::Shared<T, Core::SharedType::Atomic>;
-
-	template <typename T>
-	using ArcFromThis = Core::SharedFromThis<T, Core::SharedType::Atomic>;
-
-	template <typename T>
-	using ArcWeak = Core::Weak<T, Core::SharedType::Atomic>;
+	using WeakPtr = Core::WeakPtr<T, Core::SharedType::Atomic>;
 } // namespace Forge

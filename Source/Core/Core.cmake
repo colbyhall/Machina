@@ -40,8 +40,8 @@ set(CORE_SRC_FILES
         ${CORE_ROOT}/Containers/NonNull.cpp
         ${CORE_ROOT}/Containers/Option.hpp
         ${CORE_ROOT}/Containers/Option.cpp
-        ${CORE_ROOT}/Containers/Shared.hpp
-        ${CORE_ROOT}/Containers/Shared.cpp
+        ${CORE_ROOT}/Containers/SharedPtr.hpp
+        ${CORE_ROOT}/Containers/SharedPtr.cpp
         ${CORE_ROOT}/Containers/Slice.hpp
         ${CORE_ROOT}/Containers/Slice.cpp
         ${CORE_ROOT}/Containers/String.hpp

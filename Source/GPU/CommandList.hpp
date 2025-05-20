@@ -8,7 +8,7 @@
 
 #include <Core/Containers/Array.hpp>
 #include <Core/Containers/Function.hpp>
-#include <Core/Containers/Shared.hpp>
+#include <Core/Containers/SharedPtr.hpp>
 #include <Core/Containers/UniquePtr.hpp>
 #include <Core/Containers/Variant.hpp>
 #include <Core/Math/Vector4.hpp>
@@ -26,16 +26,16 @@ namespace Forge::GPU {
 		Present,
 	};
 
-	class Receipt : public ArcFromThis<Receipt> {
+	class Receipt : public SharedPtrFromThis<Receipt> {
 	public:
 		virtual void wait_until_complete() const = 0;
 
 		virtual ~Receipt() {}
 	};
 
-	class CommandList : public ArcFromThis<CommandList> {
+	class CommandList : public SharedPtrFromThis<CommandList> {
 	public:
-		FORGE_NO_DISCARD virtual Arc<Receipt> submit() const = 0;
+		FORGE_NO_DISCARD virtual SharedPtr<Receipt> submit() const = 0;
 
 		virtual ~CommandList() {}
 	};

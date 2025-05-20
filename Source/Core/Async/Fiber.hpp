@@ -7,17 +7,17 @@
 #pragma once
 
 #include <Core/Containers/Function.hpp>
-#include <Core/Containers/Shared.hpp>
+#include <Core/Containers/SharedPtr.hpp>
 
 namespace Forge::Core {
-	class Fiber : public ArcFromThis<Fiber> {
+	class Fiber : public Forge::SharedPtrFromThis<Fiber> {
 	public:
 		using Function = Function<void()>;
 		struct SpawnInfo {
 			usize stack_size = 1024 * 1024;
 		};
-		static Arc<Fiber> spawn(Function&& f);
-		static Arc<Fiber> spawn(Function&& f, SpawnInfo const& info);
+		static Forge::SharedPtr<Fiber> spawn(Function&& f);
+		static Forge::SharedPtr<Fiber> spawn(Function&& f, SpawnInfo const& info);
 		static Fiber const& current();
 
 		virtual void switch_to() const = 0;

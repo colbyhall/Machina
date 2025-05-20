@@ -7,12 +7,12 @@
 #pragma once
 
 #include <Core/Containers/Array.hpp>
-#include <Core/Containers/Shared.hpp>
+#include <Core/Containers/SharedPtr.hpp>
 #include <GPU/Shader.hpp>
 #include <GPU/Texture.hpp>
 
 namespace Forge::GPU {
-	class GraphicsPipeline : public ArcFromThis<GraphicsPipeline> {
+	class GraphicsPipeline : public SharedPtrFromThis<GraphicsPipeline> {
 	public:
 		enum class DrawMode : u8 {
 			Fill,
@@ -144,8 +144,8 @@ namespace Forge::GPU {
 		FORGE_ALWAYS_INLINE CullMode cull_mode() const { return m_cull_mode; }
 
 	protected:
-		Arc<VertexShader> m_vertex_shader;
-		Arc<FragmentShader> m_fragment_shader;
+		SharedPtr<VertexShader> m_vertex_shader;
+		SharedPtr<FragmentShader> m_fragment_shader;
 
 		Array<ColorAttachment, InlineAllocator<8>> m_color_attachments;
 		Option<DepthAttachment> m_depth_attachment;

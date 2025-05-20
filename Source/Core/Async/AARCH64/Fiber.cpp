@@ -10,14 +10,14 @@
 
 #if FORGE_CPU == FORGE_CPU_ARM
 namespace Forge::Core {
-	thread_local Option<Arc<Fiber>> g_current_fiber = nullopt;
+	thread_local Option<Forge::SharedPtr<Fiber>> g_current_fiber = nullopt;
 
 	static void fiber_entry(Fiber::Function* f) {
 		(*f)();
 		Memory::free(f);
 	}
 
-	Arc<Fiber> Fiber::spawn(Function&& f, SpawnInfo const& spawn_info) {
+	Forge::SharedPtr<Fiber> Fiber::spawn(Function&& f, SpawnInfo const& spawn_info) {
 		const auto stack_size = spawn_info.stack_size;
 		auto stack = UniquePtr<u8[]>::create(stack_size);
 
@@ -31,13 +31,13 @@ namespace Forge::Core {
 		registers.x[0] = reinterpret_cast<u64>(*param);
 
 		AARCH64Fiber fiber{ Forge::move(registers), Forge::move(stack) };
-		return Arc<AARCH64Fiber>::create(Forge::move(fiber));
+		return Forge::SharedPtr<AARCH64Fiber>::create(Forge::move(fiber));
 	}
 
 	Fiber const& Fiber::current() {
 		if (!g_current_fiber.is_set()) {
 			AARCH64Fiber fiber{ AARCH64Fiber::Registers{} };
-			g_current_fiber = Arc<AARCH64Fiber>::create(Forge::move(fiber));
+			g_current_fiber = Forge::SharedPtr<AARCH64Fiber>::create(Forge::move(fiber));
 		}
 		return *g_current_fiber.as_ref().unwrap();
 	}

@@ -25,7 +25,7 @@ namespace Forge::GPU {
 
 	class MetalBackbuffer final : public Backbuffer {
 	public:
-		explicit MetalBackbuffer(Arc<Texture>&& texture, id<CAMetalDrawable> drawable)
+		explicit MetalBackbuffer(SharedPtr<Texture>&& texture, id<CAMetalDrawable> drawable)
 			: m_texture(Forge::move(texture))
 			, m_drawable(drawable) {}
 
@@ -33,7 +33,7 @@ namespace Forge::GPU {
 		void present(Receipt const& wait_on) final;
 
 	private:
-		Arc<Texture> m_texture;
+		SharedPtr<Texture> m_texture;
 		Core::Protocol m_drawable; // CAMetalDrawable
 	};
 } // namespace Forge::GPU

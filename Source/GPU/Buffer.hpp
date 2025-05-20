@@ -7,7 +7,7 @@
 #pragma once
 
 #include <Core/Containers/Function.hpp>
-#include <Core/Containers/Shared.hpp>
+#include <Core/Containers/SharedPtr.hpp>
 #include <Core/Containers/Slice.hpp>
 #include <GPU/Resource.hpp>
 
@@ -18,7 +18,7 @@ namespace Forge::GPU {
 		Download,
 	};
 
-	class Buffer : public Resource, public ArcFromThis<Buffer> {
+	class Buffer : public Resource, public SharedPtrFromThis<Buffer> {
 	public:
 		enum class Usage : u8 {
 			TransferSrc = (1 << 0),

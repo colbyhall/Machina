@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Core/Containers/Shared.hpp>
+#include <Core/Containers/SharedPtr.hpp>
 #include <Core/Containers/UniquePtr.hpp>
 #include <GPU/Forward.hpp>
 #include <GPU/Texture.hpp>

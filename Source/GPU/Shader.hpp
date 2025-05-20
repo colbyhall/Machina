@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Core/Containers/Shared.hpp>
+#include <Core/Containers/SharedPtr.hpp>
 #include <Core/Containers/String.hpp>
 
 namespace Forge::GPU {
@@ -25,20 +25,20 @@ namespace Forge::GPU {
 		Option<StringView> path = nullopt;
 	};
 
-	class Library : public ArcFromThis<Library> {
+	class Library : public SharedPtrFromThis<Library> {
 	public:
-		FORGE_NO_DISCARD virtual Arc<VertexShader> create_vertex_shader(StringView function_name) const = 0;
-		FORGE_NO_DISCARD virtual Arc<FragmentShader> create_fragment_shader(StringView function_name) const = 0;
+		FORGE_NO_DISCARD virtual SharedPtr<VertexShader> create_vertex_shader(StringView function_name) const = 0;
+		FORGE_NO_DISCARD virtual SharedPtr<FragmentShader> create_fragment_shader(StringView function_name) const = 0;
 
 		virtual ~Library() {}
 	};
 
-	class VertexShader : public ArcFromThis<VertexShader> {
+	class VertexShader : public SharedPtrFromThis<VertexShader> {
 	public:
 		virtual ~VertexShader() {}
 	};
 
-	class FragmentShader : public ArcFromThis<FragmentShader> {
+	class FragmentShader : public SharedPtrFromThis<FragmentShader> {
 	public:
 		virtual ~FragmentShader() {}
 	};

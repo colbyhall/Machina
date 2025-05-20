@@ -9,12 +9,12 @@
 #include <Core/Memory.hpp>
 
 namespace Forge::Core {
-	thread_local Option<Arc<Thread>> g_current_thread = nullopt;
+	thread_local Option<SharedPtr<Thread>> g_current_thread = nullopt;
 
 	Thread const& Thread::current() {
 		if (!g_current_thread.is_set()) {
 			Win32Thread thread(::GetCurrentThread(), ::GetCurrentThreadId());
-			g_current_thread = Arc<Win32Thread>::create(Forge::move(thread));
+			g_current_thread = SharedPtr<Win32Thread>::create(Forge::move(thread));
 		}
 		return *g_current_thread.as_ref().unwrap();
 	}
@@ -27,7 +27,7 @@ namespace Forge::Core {
 		return 0;
 	}
 
-	Arc<Thread> Thread::spawn(Function&& f, const SpawnInfo& info) {
+	SharedPtr<Thread> Thread::spawn(Function&& f, const SpawnInfo& info) {
 		DWORD flags = 0;
 		if (info.start_suspended) {
 			flags |= CREATE_SUSPENDED;
@@ -41,7 +41,7 @@ namespace Forge::Core {
 		DWORD id;
 		const HANDLE thread = ::CreateThread(nullptr, stack_size, &ThreadProc, static_cast<LPVOID>(param), flags, &id);
 
-		return Arc<Win32Thread>::create(thread, id);
+		return SharedPtr<Win32Thread>::create(thread, id);
 	}
 
 	void Win32Thread::join() {

@@ -12,7 +12,7 @@ namespace Forge::GPU {
 	UniquePtr<Backbuffer> MetalSwapchain::next_back_buffer() {
 		@autoreleasepool {
 			id<CAMetalDrawable> drawable = [m_layer nextDrawable];
-			auto texture = Arc<MetalTexture>::create(
+			auto texture = SharedPtr<MetalTexture>::create(
 				Texture::CreateInfo{
 					.usage = Texture::Usage::Swapchain,
 					.format = Format::BGRA_U8_SRGB,

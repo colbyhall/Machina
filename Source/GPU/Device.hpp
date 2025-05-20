@@ -11,6 +11,7 @@
 
 #include <GPU/Buffer.hpp>
 #include <GPU/CommandList.hpp>
+#include <GPU/Forward.hpp>
 #include <GPU/GraphicsPipeline.hpp>
 #include <GPU/Shader.hpp>
 #include <GPU/Swapchain.hpp>
@@ -26,9 +27,6 @@ namespace Forge::GPU {
 		Vulkan,
 	};
 
-	template <typename T>
-	using Handle = Arc<T>;
-
 	/**
 	 * An abstraction for interacting with a graphics API.
 	 *
@@ -40,20 +38,8 @@ namespace Forge::GPU {
 			Backend backend;
 		};
 
-		/**
-		 * @brief Create a device with the given create info.
-		 *
-		 * @param create_info The create info for the device.
-		 * @return Arc<Device> The created device.
-		 */
 		FORGE_NO_DISCARD static UniquePtr<Device> create(CreateInfo const& create_info);
 
-		/**
-		 * @brief Create a swapchain for the given owner.
-		 *
-		 * @param owner The owner of the swapchain.
-		 * @return Unique<Swapchain> The created swapchain.
-		 */
 		FORGE_NO_DISCARD virtual UniquePtr<Swapchain> create_swapchain(Swapchain::Owner owner) const = 0;
 
 		FORGE_NO_DISCARD virtual Handle<Buffer>
@@ -61,12 +47,6 @@ namespace Forge::GPU {
 
 		FORGE_NO_DISCARD virtual Handle<Buffer> create_storage_buffer(Buffer::Usage usage, usize size) const = 0;
 
-		/**
-		 * @brief Creates a texture.
-		 *
-		 * @param info The data structure containg the immutable details of the texture.
-		 * @return Handle<Texture> The created texture.
-		 */
 		FORGE_NO_DISCARD virtual Handle<Texture> create_texture(Texture::CreateInfo const& info) const = 0;
 
 		FORGE_NO_DISCARD virtual Handle<Library> create_library_from_source(ShaderSource const& source) const = 0;
@@ -76,11 +56,6 @@ namespace Forge::GPU {
 
 		FORGE_NO_DISCARD virtual Handle<CommandList> record(FunctionRef<void(CommandRecorder&)> f) const = 0;
 
-		/**
-		 * @brief Get the backend of the device.
-		 *
-		 * @return Backend The backend of the device.
-		 */
 		FORGE_NO_DISCARD virtual Backend backend() const = 0;
 
 		virtual ~Device() {}

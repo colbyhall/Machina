@@ -19,21 +19,21 @@ namespace Forge::GPU {
 		}
 	}
 
-	Arc<VertexShader> MetalLibrary::create_vertex_shader(StringView function_name) const {
+	SharedPtr<VertexShader> MetalLibrary::create_vertex_shader(StringView function_name) const {
 		@autoreleasepool {
 			id<MTLFunction> function = get_function_from_library(m_library, function_name);
 			FORGE_ASSERT(function != nil);
 			FORGE_ASSERT(function.functionType == MTLFunctionTypeVertex);
-			return Arc<MetalVertexShader>::create(function);
+			return SharedPtr<MetalVertexShader>::create(function);
 		}
 	}
 
-	Arc<FragmentShader> MetalLibrary::create_fragment_shader(StringView function_name) const {
+	SharedPtr<FragmentShader> MetalLibrary::create_fragment_shader(StringView function_name) const {
 		@autoreleasepool {
 			id<MTLFunction> function = get_function_from_library(m_library, function_name);
 			FORGE_ASSERT(function != nil);
 			FORGE_ASSERT(function.functionType == MTLFunctionTypeFragment);
-			return Arc<MetalFragmentShader>::create(function);
+			return SharedPtr<MetalFragmentShader>::create(function);
 		}
 	}
 } // namespace Forge::GPU

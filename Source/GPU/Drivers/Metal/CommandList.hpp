@@ -25,7 +25,7 @@ namespace Forge::GPU {
 	public:
 		MetalCommandList(id<MTLCommandBuffer> command_buffer) : m_command_buffer(command_buffer) {}
 
-		Arc<Receipt> submit() const final;
+		SharedPtr<Receipt> submit() const final;
 
 	private:
 		Core::Protocol m_command_buffer; // MTLCommandBuffer

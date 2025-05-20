@@ -10,9 +10,10 @@
 #include <Core/Primitives.hpp>
 
 namespace Forge::GPU {
+	using BindlessIndex = u32;
+
 	class Resource {
 	public:
-		using BindlessIndex = u32;
 		FORGE_ALWAYS_INLINE Option<BindlessIndex> bindless() const { return m_bindless; }
 
 		virtual ~Resource() {}

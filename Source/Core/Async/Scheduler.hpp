@@ -11,7 +11,7 @@
 #include <Core/Async/Thread.hpp>
 #include <Core/Containers/Array.hpp>
 #include <Core/Containers/Function.hpp>
-#include <Core/Containers/Shared.hpp>
+#include <Core/Containers/SharedPtr.hpp>
 #include <Core/Containers/UniquePtr.hpp>
 #include <Core/Time.hpp>
 
@@ -65,7 +65,7 @@ namespace Forge::Core {
 
 	private:
 		struct ThreadController {
-			Array<Arc<Thread>> threads;
+			Array<Forge::SharedPtr<Thread>> threads;
 			Atomic<u32> ready_count{ 0 };
 		};
 		struct WaitingTask {
@@ -89,7 +89,7 @@ namespace Forge::Core {
 		};
 
 		struct FiberController {
-			Array<Arc<Fiber>> fibers;
+			Array<Forge::SharedPtr<Fiber>> fibers;
 			MPMC<u32> dormant_fibers;
 		};
 

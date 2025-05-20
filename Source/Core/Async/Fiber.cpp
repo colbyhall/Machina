@@ -8,5 +8,5 @@
 #include <Core/Debug/Log.hpp>
 
 namespace Forge::Core {
-	Arc<Fiber> Fiber::spawn(Function&& f) { return Fiber::spawn(Forge::move(f), SpawnInfo{}); }
+	Forge::SharedPtr<Fiber> Fiber::spawn(Function&& f) { return Fiber::spawn(Forge::move(f), SpawnInfo{}); }
 } // namespace Forge::Core

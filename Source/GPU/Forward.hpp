@@ -6,10 +6,12 @@
 
 #pragma once
 
-#include <Core/Core.hpp>
-#include <Core/Primitives.hpp>
+#include <Core/Containers/SharedPtr.hpp>
 
 namespace Forge::GPU {
+	template <typename T>
+	using Handle = SharedPtr<T>;
+
 	enum class Backend : u8;
 	class Device;
 	class Swapchain;

@@ -4,24 +4,23 @@
  * This software is released under the MIT License.
  */
 
-#include "Core/Core.hpp"
 #include <Core/Async/Posix/Thread.hpp>
 #include <Core/Debug/Log.hpp>
 
 namespace Forge::Core {
-	thread_local Option<Arc<Thread>> g_current_thread = nullopt;
+	thread_local Option<Forge::SharedPtr<Thread>> g_current_thread = nullopt;
 
 	Thread const& Thread::current() {
 		if (!g_current_thread.is_set()) {
 			PosixThread thread{ pthread_self() };
-			g_current_thread = Arc<PosixThread>::create(Forge::move(thread));
+			g_current_thread = Forge::SharedPtr<PosixThread>::create(Forge::move(thread));
 		}
 		return *g_current_thread.as_ref().unwrap();
 	}
 
 	struct ThreadArg {
 		Thread::Function f;
-		Arc<PosixThread> thread;
+		Forge::SharedPtr<PosixThread> thread;
 	};
 	static void* posix_thread_main(void* arg) {
 		auto* param = static_cast<ThreadArg*>(arg);
@@ -40,11 +39,11 @@ namespace Forge::Core {
 		return nullptr;
 	}
 
-	Arc<Thread> Thread::spawn(Function&& f, SpawnInfo const& info) {
+	Forge::SharedPtr<Thread> Thread::spawn(Function&& f, SpawnInfo const& info) {
 		// TODO: Figure out how to use the data from info
 		FORGE_UNUSED(info);
 
-		auto result = Arc<PosixThread>::create(nullptr);
+		auto result = Forge::SharedPtr<PosixThread>::create(nullptr);
 		auto& mut_result = result.unsafe_get_mut();
 
 		auto param = Memory::alloc(Memory::Layout::single<ThreadArg>());

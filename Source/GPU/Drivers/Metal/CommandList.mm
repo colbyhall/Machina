@@ -17,10 +17,10 @@ namespace Forge::GPU {
 		}
 	}
 
-	Arc<Receipt> MetalCommandList::submit() const {
+	SharedPtr<Receipt> MetalCommandList::submit() const {
 		@autoreleasepool {
 			[m_command_buffer commit];
-			return Arc<MetalReceipt>::create(m_command_buffer);
+			return SharedPtr<MetalReceipt>::create(m_command_buffer);
 		}
 	}
 

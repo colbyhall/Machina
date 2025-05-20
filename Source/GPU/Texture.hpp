@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Core/Containers/Shared.hpp>
+#include <Core/Containers/SharedPtr.hpp>
 #include <Core/Math/Vector3.hpp>
 #include <GPU/Resource.hpp>
 
@@ -46,7 +46,7 @@ namespace Forge::GPU {
 		Depth24_Stencil8,
 	};
 
-	class Texture : public Resource, public ArcFromThis<Texture> {
+	class Texture : public Resource, public SharedPtrFromThis<Texture> {
 	public:
 		enum class Usage : u8 {
 			TransferSrc = (1 << 0),
