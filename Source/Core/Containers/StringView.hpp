@@ -115,6 +115,12 @@ namespace Forge::Core {
 
 namespace Forge {
 	using Core::StringView;
+
+	template <typename Hasher>
+	void hash(Hasher& hasher, const StringView& value) {
+		const auto bytes = static_cast<Slice<Core::UTF8Char const>>(value).as_bytes();
+		hasher.write(bytes);
+	}
 } // namespace Forge
 
 constexpr Forge::StringView operator"" _sv(const Forge::Core::UTF8Char* literal, Forge::usize length) noexcept {
