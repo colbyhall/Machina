@@ -35,8 +35,16 @@ namespace Forge::Core {
 		Formatter formatter{ File::stderr };
 		formatter.format(u8"\n{red}Abort Triggered{default}\n\n{yellow}CallStack:{default}\n"_sv);
 		const auto stack_trace = StackTrace::capture();
-		for (u32 i = 1; i < stack_trace.len(); i++) {
+
+		// Defines how many from the end we should early to not show OS garbage
+		constexpr u32 early_out = 4;
+		const u32 count = stack_trace.len() - early_out;
+		for (u32 i = 1; i < stack_trace.len() - early_out; i++) {
+#if FORGE_OS == FORGE_OS_WINDOWS
+			formatter.format(u8"{}: {}\n"_sv, count - i, stack_trace[i]);
+#else
 			formatter.format(u8"{}\n"_sv, stack_trace[i]);
+#endif
 		}
 		std::abort();
 	}

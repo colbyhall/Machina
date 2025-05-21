@@ -51,6 +51,22 @@
 	#error Unsupported compiler
 #endif
 
+// Determine what language this translation unit is
+#define FORGE_LANGUAGE_C	  0
+#define FORGE_LANGUAGE_CPP	  1
+#define FORGE_LANGUAGE_OBJC	  2
+#define FORGE_LANGUAGE_OBJCPP 3
+
+#if defined(__cplusplus) && defined(__OBJC__)
+	#define FORGE_LANGUAGE FORGE_LANGUAGE_OBJCPP
+#elif defined(__cplusplus)
+	#define FORGE_LANGUAGE FORGE_LANGUAGE_CPP
+#elif defined(__OBJC__)
+	#define FORGE_LANGUAGE FORGE_LANGUAGE_OBJC
+#else
+	#define FORGE_LANGUAGE FORGE_LANGUAGE_C
+#endif
+
 // Define supported CPU architectures
 #define FORGE_CPU_UNKNOWN 0
 #define FORGE_CPU_X86	  1

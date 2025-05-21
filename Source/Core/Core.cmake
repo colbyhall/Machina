@@ -63,6 +63,7 @@ set(CORE_SRC_FILES
 
 		${CORE_ROOT}/FileSystem/File.hpp
 		${CORE_ROOT}/FileSystem/Directory.hpp
+		${CORE_ROOT}/FileSystem/Library.hpp
 
 		${CORE_ROOT}/IO/Reader.hpp
 		${CORE_ROOT}/IO/Writer.hpp
@@ -113,6 +114,8 @@ if(OS_WINDOWS)
 		${CORE_ROOT}/FileSystem/Win32/File.cpp
 		${CORE_ROOT}/FileSystem/Win32/Directory.hpp
 		${CORE_ROOT}/FileSystem/Win32/Directory.cpp
+		${CORE_ROOT}/FileSystem/Win32/Library.hpp
+		${CORE_ROOT}/FileSystem/Win32/Library.cpp
 	)
 endif()
 
@@ -131,5 +134,5 @@ test_forge_library(Core ${CORE_SRC_FILES})
 
 if (OS_WINDOWS)
 	# Link dbghelp for call stack symbol loading
-	target_link_libraries(Core PRIVATE Dbghelp)
+	target_link_libraries(Core PUBLIC Dbghelp)
 endif()

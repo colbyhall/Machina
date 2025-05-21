@@ -6,7 +6,6 @@ set(GPU_SRC_FILES
 	${GPU_ROOT}/Buffer.hpp
 	${GPU_ROOT}/CommandList.hpp
 	${GPU_ROOT}/Device.hpp
-	${GPU_ROOT}/Device.cpp
 	${GPU_ROOT}/Forward.hpp
 	${GPU_ROOT}/GPU.cmake
 	${GPU_ROOT}/GraphicsPipeline.hpp
@@ -49,6 +48,16 @@ if(OS_SUPPORTS_METAL)
 		${GPU_ROOT}/Drivers/Metal/Swapchain.hpp
 		${GPU_ROOT}/Drivers/Metal/Texture.mm
 		${GPU_ROOT}/Drivers/Metal/Texture.hpp
+	)
+endif()
+
+if(OS_SUPPORTS_D3D12)
+	set(GPU_SRC_FILES
+		${GPU_SRC_FILES}
+
+		${GPU_ROOT}/Drivers/D3D12/D3D12.hpp
+		${GPU_ROOT}/Drivers/D3D12/Device.hpp
+		${GPU_ROOT}/Drivers/D3D12/Device.cpp
 	)
 endif()
 

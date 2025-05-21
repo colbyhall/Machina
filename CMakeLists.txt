@@ -144,7 +144,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 	# - 5039: Potentially unsafe function or object in a security-critical context
 	#         (very common in low-level or cross-platform code; warning noise without /sdl)
 	#         https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c5039
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd5027 /wd4626 /wd4623 /wd4668 /wd5267 /wd4625 /wd5039")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd5027 /wd4626 /wd4623 /wd4668 /wd5267 /wd4625 /wd5039 /wd5204 /wd4265 /wd5220")
 
     # Disable warning for adding struct padding due to alignment specifier. We want to use the alignment specifier and
     # this will add padding to structures.

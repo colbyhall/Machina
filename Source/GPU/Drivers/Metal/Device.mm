@@ -18,8 +18,7 @@
 #import <Metal/Metal.h>
 
 namespace Forge::GPU {
-	UniquePtr<Device> create_metal_device(Device::CreateInfo const& create_info) {
-		FORGE_UNUSED(create_info);
+	UniquePtr<Device> create_metal_device() {
 		@autoreleasepool {
 			id<MTLDevice> device = MTLCreateSystemDefaultDevice();
 

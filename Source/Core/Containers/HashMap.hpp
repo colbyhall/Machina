@@ -22,7 +22,11 @@ namespace Forge::Core {
 		void insert(const Key& key, Value&& value)
 			requires Movable<Value>
 		{
-			m_buckets.push(Bucket{ .key = key, .value = Forge::forward<Value>(value) });
+			m_buckets.push(Bucket{
+				.key = key,
+				.value = Forge::forward<Value>(value),
+				.next = nullopt,
+			});
 			refresh_layout();
 		}
 		void insert(const Key& key, const Value& value)

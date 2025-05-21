@@ -16,7 +16,7 @@ namespace Forge::Core::StackTrace {
 	Array<Frame> capture() {
 		Array<Frame> result;
 
-	#if 0
+	#if 1
 		constexpr int max_frames = 128;
 		void* stack_frames[max_frames];
 		const int frame_count = ::CaptureStackBackTrace(0, max_frames, stack_frames, nullptr);

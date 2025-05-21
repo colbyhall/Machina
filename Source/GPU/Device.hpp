@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include <Core/Containers/StringView.hpp>
 #include <Core/Containers/UniquePtr.hpp>
 
 #include <GPU/Buffer.hpp>
@@ -18,28 +17,8 @@
 #include <GPU/Texture.hpp>
 
 namespace Forge::GPU {
-	/**
-	 * Defines the supported graphic api backends.
-	 */
-	enum class Backend : u8 {
-		Metal,
-		DirectX,
-		Vulkan,
-	};
-
-	/**
-	 * An abstraction for interacting with a graphics API.
-	 *
-	 * Use this class to utilize the graphics cards for rendering or computation.
-	 */
 	class Device {
 	public:
-		struct CreateInfo {
-			Backend backend;
-		};
-
-		FORGE_NO_DISCARD static UniquePtr<Device> create(CreateInfo const& create_info);
-
 		FORGE_NO_DISCARD virtual UniquePtr<Swapchain> create_swapchain(Swapchain::Owner owner) const = 0;
 
 		FORGE_NO_DISCARD virtual Handle<Buffer>
@@ -55,8 +34,6 @@ namespace Forge::GPU {
 		create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) const = 0;
 
 		FORGE_NO_DISCARD virtual Handle<CommandList> record(FunctionRef<void(CommandRecorder&)> f) const = 0;
-
-		FORGE_NO_DISCARD virtual Backend backend() const = 0;
 
 		virtual ~Device() {}
 	};

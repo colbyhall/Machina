@@ -8,18 +8,14 @@
 
 #include <GPU/Device.hpp>
 
-#if FORGE_LANGUAGE == FORGE_LANGUAGE_OBJCPP
-	#include <Core/ObjectiveC/Protocol.hpp>
-	#import <Metal/Metal.h>
-#endif
+#include <GPU/Drivers/D3D12/D3D12.hpp>
 
 namespace Forge::GPU {
-#if FORGE_LANGUAGE == FORGE_LANGUAGE_OBJCPP
-	class MetalDevice final : public Device {
+	class D3D12Device final : public Device {
 	public:
-		explicit MetalDevice(id<MTLDevice> device, id<MTLCommandQueue> command_queue)
-			: m_device(device)
-			, m_command_queue(command_queue) {}
+		using CreateDevice = Core::RemovePointer<PFN_D3D12_CREATE_DEVICE>;
+
+		static UniquePtr<D3D12Device> create();
 
 		// Device Interace
 		UniquePtr<Swapchain> create_swapchain(Swapchain::Owner owner) const final;
@@ -29,14 +25,8 @@ namespace Forge::GPU {
 		Handle<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) const final;
 		Handle<Library> create_library_from_source(ShaderSource const& info) const final;
 		Handle<CommandList> record(FunctionRef<void(CommandRecorder&)> f) const final;
-		Backend backend() const final { return Backend::Metal; }
 		// ~Device Interface
 
 	private:
-		Core::Protocol m_device;		// MTLDevice
-		Core::Protocol m_command_queue; // MTLCommandQueue
 	};
-#endif
-
-	UniquePtr<Device> create_metal_device();
 } // namespace Forge::GPU
