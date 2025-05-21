@@ -11,7 +11,7 @@
 #include <GUI/Application.hpp>
 
 namespace Forge::GUI {
-	Rc<Window> Window::create(Application const& app, CreateInfo const& create_info) {
+	UniquePtr<Window> Window::create(CreateInfo const& create_info) {
 		const auto dpi = static_cast<f32>(::GetDpiForSystem()) / 96.f;
 
 		const DWORD dwStyle = WS_OVERLAPPEDWINDOW;
@@ -49,8 +49,8 @@ namespace Forge::GUI {
 			nullptr);
 		// TODO: Error handling
 
-		auto swapchain = app.device().create_swapchain(handle);
-		auto result = Rc<Win32Window>::create(handle, Forge::move(swapchain));
+		auto swapchain = create_info.device.create_swapchain(handle);
+		auto result = UniquePtr<Win32Window>::create(handle, Forge::move(swapchain));
 		::SetWindowLongPtrW(handle, GWLP_USERDATA, (LONG_PTR) & *result);
 		return result;
 	}
@@ -62,9 +62,16 @@ namespace Forge::GUI {
 	}
 
 	bool Win32Window::close() { return ::CloseWindow(m_handle) > 0; }
+
 	bool Win32Window::show() { return ::ShowWindow(m_handle, SW_SHOW) > 0; }
+
 	bool Win32Window::hide() { return ::ShowWindow(m_handle, SW_HIDE) > 0; }
+
 	bool Win32Window::maximize() { return ::ShowWindow(m_handle, SW_MAXIMIZE) > 0; }
+
 	bool Win32Window::minimize() { return ::ShowWindow(m_handle, SW_MINIMIZE) > 0; }
-	Vector2<f32> Win32Window::cursor_position() const { return { 0, 0 }; }
+
+	Point Win32Window::cursor_position() const { return { 0, 0 }; }
+
+	Bounds Win32Window::viewport() const { return { 0, 0 }; }
 } // namespace Forge::GUI

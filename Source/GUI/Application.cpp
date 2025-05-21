@@ -6,6 +6,7 @@
 
 #include <GUI/Application.hpp>
 
+#include <Core/Time.hpp>
 #include <GPU/Device.hpp>
 #include <GPU/Swapchain.hpp>
 
@@ -77,5 +78,26 @@ namespace Forge::GUI {
 		// TODO: Figure out the best thing to return from this function. Either a bool for if showing or an enum for
 		// show/close events
 		return true;
+	}
+
+	int Application::run(FunctionRef<void(Frame&)> tick) {
+		static Core::Atomic<bool> running{ false };
+		FORGE_ASSERT(running.exchange(true) == false);
+
+		auto last = Core::Instant::now();
+		u64 frame_count = 0;
+		while (running.load()) {
+			const auto now = Core::Instant::now();
+			const auto delta_time = now.since(last).as_secs_f64();
+			last = now;
+
+			pump_events();
+			auto frame = Frame(frame_count, delta_time, m_state);
+			tick(frame);
+
+			frame_count += 1;
+		}
+
+		return 0;
 	}
 } // namespace Forge::GUI

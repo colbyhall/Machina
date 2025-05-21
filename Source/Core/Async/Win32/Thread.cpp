@@ -27,7 +27,7 @@ namespace Forge::Core {
 		return 0;
 	}
 
-	SharedPtr<Thread> Thread::spawn(Function&& f, const SpawnInfo& info) {
+	Forge::SharedPtr<Thread> Thread::spawn(Function&& f, const SpawnInfo& info) {
 		DWORD flags = 0;
 		if (info.start_suspended) {
 			flags |= CREATE_SUSPENDED;

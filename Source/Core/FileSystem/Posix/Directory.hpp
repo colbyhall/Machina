@@ -15,8 +15,7 @@ namespace Forge::Core {
 		static Option<PosixDirectory> open(const StringView& path);
 		static PosixDirectory cwd();
 
-		PosixDirectory(const PosixDirectory&) = delete;
-		PosixDirectory& operator=(const PosixDirectory&) = delete;
+		FORGE_NO_COPY(PosixDirectory);
 		PosixDirectory(PosixDirectory&& move) = default;
 		PosixDirectory& operator=(PosixDirectory&& move) = default;
 

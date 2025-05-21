@@ -6,7 +6,6 @@
 
 #include <Core/Async/Scheduler.hpp>
 #include <Core/Debug/Assertions.hpp>
-#include <Core/Time.hpp>
 #include <GPU/Device.hpp>
 #include <GUI/Application.hpp>
 #include <GUI/MacOS/Window.hpp>
@@ -52,37 +51,17 @@ namespace Forge::GUI {
 		};
 	}
 
-	int Application::run(FunctionRef<void(Frame&)> tick) {
-		static Core::Atomic<bool> running{ false };
-		FORGE_ASSERT(running.exchange(true) == false);
-
-		auto last = Core::Instant::now();
-		u64 frame_count = 0;
-		while (running.load()) {
-			const auto now = Core::Instant::now();
-			const auto delta_time = now.since(last).as_secs_f64();
-			last = now;
-
-			// poll input
-			@autoreleasepool {
-				NSEvent* ev;
-				do {
-					ev = [NSApp nextEventMatchingMask:NSEventMaskAny
-											untilDate:nil
-											   inMode:NSDefaultRunLoopMode
-											  dequeue:YES];
-					if (ev) {
-						// handle events here
-						[NSApp sendEvent:ev];
-					}
-				} while (ev);
-			}
-			auto frame = Frame(frame_count, delta_time, m_state);
-			tick(frame);
-
-			frame_count += 1;
+	void Application::pump_events() {
+		@autoreleasepool {
+			NSEvent* ev;
+			do {
+				ev = [NSApp nextEventMatchingMask:NSEventMaskAny untilDate:nil inMode:NSDefaultRunLoopMode dequeue:YES];
+				if (ev) {
+					// handle events here
+					[NSApp sendEvent:ev];
+				}
+			} while (ev);
 		}
-
-		return 0;
 	}
+
 } // namespace Forge::GUI

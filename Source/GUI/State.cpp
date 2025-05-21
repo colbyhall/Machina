@@ -18,11 +18,7 @@ namespace Forge::GUI {
 		return Id(hasher.finish());
 	}
 
-	State::State(const GPU::Device& device, const GPU::GraphicsPipeline& pipeline)
-		: m_device(device)
-		, m_pipeline(pipeline.to_shared())
-		, m_active()
-		, m_hover() {}
+	State::State(const GPU::Device& device) : m_device(device), m_pipeline(), m_active(), m_hover() {}
 
 	void State::increment_frame() {
 		// TODO: Cleanup unused windows

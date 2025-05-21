@@ -4,7 +4,7 @@
  * This software is released under the MIT License.
  */
 
-#include <Core/IO/Directory.hpp>
+#include <Core/FileSystem/Directory.hpp>
 
 #include <Core/Containers/WString.hpp>
 #include <Core/Windows.hpp>

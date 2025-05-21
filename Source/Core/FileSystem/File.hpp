@@ -21,7 +21,7 @@ namespace Forge::Core {
 
 #if FORGE_OS == FORGE_OS_WINDOWS
 
-	#include <Core/IO/Win32/File.hpp>
+	#include <Core/FileSystem/Win32/File.hpp>
 
 namespace Forge::Core {
 	using OpenFlags = OpenFlags;
@@ -30,7 +30,7 @@ namespace Forge::Core {
 
 #else
 
-	#include <Core/IO/Posix/File.hpp>
+	#include <Core/FileSystem/Posix/File.hpp>
 
 namespace Forge::Core {
 	using OpenFlags = OpenFlags;

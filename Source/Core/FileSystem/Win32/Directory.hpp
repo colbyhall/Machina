@@ -15,8 +15,7 @@ namespace Forge::Core {
 		static Option<Win32Directory> open(const StringView& path);
 		static Win32Directory cwd();
 
-		Win32Directory(const Win32Directory&) = delete;
-		Win32Directory& operator=(const Win32Directory&) = delete;
+		FORGE_NO_COPY(Win32Directory);
 		Win32Directory(Win32Directory&& move) = default;
 		Win32Directory& operator=(Win32Directory&& move) = default;
 

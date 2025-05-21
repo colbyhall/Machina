@@ -4,8 +4,9 @@
  * This software is released under the MIT License.
  */
 
+#include <Core/FileSystem/Posix/Directory.hpp>
+
 #include <Core/Debug/Assertions.hpp>
-#include <Core/IO/Posix/Directory.hpp>
 #include <dirent.h>
 
 namespace Forge::Core {

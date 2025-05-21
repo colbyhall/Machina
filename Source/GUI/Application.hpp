@@ -45,6 +45,7 @@ namespace Forge::GUI {
 
 		FORGE_ALWAYS_INLINE Core::Scheduler const& scheduler() const { return m_scheduler; }
 
+		void pump_events();
 		int run(FunctionRef<void(Frame&)> f);
 
 	private:

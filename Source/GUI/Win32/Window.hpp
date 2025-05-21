@@ -18,8 +18,8 @@ namespace Forge::GUI {
 		explicit Win32Window(HWND handle, UniquePtr<GPU::Swapchain>&& swapchain)
 			: m_handle{ handle }
 			, m_swapchain{ Forge::move(swapchain) } {}
-		Win32Window(const Win32Window&) = delete;
-		Win32Window& operator=(const Win32Window&) = delete;
+
+		FORGE_NO_COPY(Win32Window);
 		Win32Window(Win32Window&& move) : m_handle{ move.m_handle }, m_swapchain{ Forge::move(move.m_swapchain) } {
 			move.m_handle = nullptr;
 		}
@@ -40,8 +40,9 @@ namespace Forge::GUI {
 		bool hide() final;
 		bool maximize() final;
 		bool minimize() final;
-		GPU::Swapchain& swapchain() final { return *m_swapchain; }
-		Vector2<f32> cursor_position() const final;
+		GPU::Swapchain& swapchain() const final { return *m_swapchain; }
+		Point cursor_position() const final;
+		Bounds viewport() const final;
 		~Win32Window() final;
 		// ~Window interface
 

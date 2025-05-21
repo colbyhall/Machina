@@ -6,8 +6,8 @@
 
 #pragma once
 
+#include <Core/FileSystem/File.hpp>
 #include <Core/Format.hpp>
-#include <Core/IO/File.hpp>
 
 namespace Forge {
 	template <typename... Args>

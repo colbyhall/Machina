@@ -61,8 +61,9 @@ set(CORE_SRC_FILES
 		${CORE_ROOT}/Debug/StackTrace.cpp
         ${CORE_ROOT}/Debug/Test.hpp
 
-		${CORE_ROOT}/IO/File.hpp
-		${CORE_ROOT}/IO/Directory.hpp
+		${CORE_ROOT}/FileSystem/File.hpp
+		${CORE_ROOT}/FileSystem/Directory.hpp
+
 		${CORE_ROOT}/IO/Reader.hpp
 		${CORE_ROOT}/IO/Writer.hpp
 
@@ -90,14 +91,15 @@ if (OS_SUPPORTS_POSIX)
 
 		${CORE_ROOT}/Async/Posix/Thread.hpp
 		${CORE_ROOT}/Async/Posix/Thread.cpp
-		${CORE_ROOT}/IO/Posix/File.hpp
-		${CORE_ROOT}/IO/Posix/File.cpp
-		${CORE_ROOT}/IO/Posix/Directory.hpp
-		${CORE_ROOT}/IO/Posix/Directory.cpp
+
+		${CORE_ROOT}/FileSystem/Posix/File.hpp
+		${CORE_ROOT}/FileSystem/Posix/File.cpp
+		${CORE_ROOT}/FileSystem/Posix/Directory.hpp
+		${CORE_ROOT}/FileSystem/Posix/Directory.cpp
 	)
 endif()
 
-# Append windows files if using windows
+# Append Windows files if using Windows
 if(OS_WINDOWS)
 	set(CORE_SRC_FILES
 		${CORE_SRC_FILES}
@@ -107,10 +109,10 @@ if(OS_WINDOWS)
 		${CORE_ROOT}/Async/Win32/Fiber.hpp
 		${CORE_ROOT}/Async/Win32/Fiber.cpp
 
-		${CORE_ROOT}/IO/Win32/File.hpp
-		${CORE_ROOT}/IO/Win32/File.cpp
-		${CORE_ROOT}/IO/Win32/Directory.hpp
-		${CORE_ROOT}/IO/Win32/Directory.cpp
+		${CORE_ROOT}/FileSystem/Win32/File.hpp
+		${CORE_ROOT}/FileSystem/Win32/File.cpp
+		${CORE_ROOT}/FileSystem/Win32/Directory.hpp
+		${CORE_ROOT}/FileSystem/Win32/Directory.cpp
 	)
 endif()
 

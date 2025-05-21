@@ -21,8 +21,7 @@ namespace Forge::Core {
 
 		FORGE_NO_DISCARD static Option<PosixFile> open(const StringView& path, OpenFlags flags);
 
-		PosixFile(const PosixFile&) = delete;
-		PosixFile& operator=(const PosixFile&) = delete;
+		FORGE_NO_COPY(PosixFile);
 		PosixFile(PosixFile&& move) : m_fd(move.m_fd) { move.m_fd = -1; }
 		PosixFile& operator=(PosixFile&& move);
 		~PosixFile();

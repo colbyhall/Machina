@@ -21,8 +21,7 @@ namespace Forge::Core {
 
 		FORGE_NO_DISCARD static Option<Win32File> open(const StringView& path, OpenFlags flags);
 
-		Win32File(const Win32File&) = delete;
-		Win32File& operator=(const Win32File&) = delete;
+		FORGE_NO_COPY(Win32File);
 		Win32File(Win32File&& move) : m_handle(move.m_handle) { move.m_handle = nullptr; }
 		Win32File& operator=(Win32File&& move);
 		~Win32File();

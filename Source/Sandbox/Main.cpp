@@ -35,6 +35,7 @@ namespace Forge {
 		});
 		auto app = GUI::Application(scheduler, *device);
 
+#if 0
 		const StringView shader_source = u8R"(
 			#include <metal_stdlib>
 			using namespace metal;
@@ -86,6 +87,7 @@ namespace Forge {
 				{ .format = GPU::Format::BGRA_U8_SRGB },
 			},
 		});
+#endif
 
 		f64 time = 0;
 		return app.run([&](auto& frame) {
@@ -96,9 +98,6 @@ namespace Forge {
 					dbgln(u8"Hello World"_sv);
 				}
 			});
-
-#if 0
-#endif
 		});
 	}
 } // namespace Forge

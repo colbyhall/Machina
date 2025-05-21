@@ -34,7 +34,7 @@ namespace Forge::GUI {
 			UniquePtr<Window> window;
 		};
 
-		explicit State(const GPU::Device& device, GPU::GraphicsPipeline const& pipeline);
+		explicit State(const GPU::Device& device);
 
 		FORGE_ALWAYS_INLINE GPU::Device const& device() const { return m_device; }
 

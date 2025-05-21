@@ -5,11 +5,12 @@
  */
 
 #include <Core/Core.hpp>
-#include <cstdlib>
 
 #include <Core/Debug/StackTrace.hpp>
+#include <Core/FileSystem/File.hpp>
 #include <Core/Format.hpp>
-#include <Core/IO/File.hpp>
+
+#include <cstdlib>
 
 namespace Forge::Core {
 	void trap() {

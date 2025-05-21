@@ -8,6 +8,7 @@
 
 #include <Core/Async/Scheduler.hpp>
 #include <Core/Windows.hpp>
+#include <GPU/GraphicsPipeline.hpp>
 
 namespace Forge::GUI {
 	static LRESULT CALLBACK window_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
@@ -18,7 +19,7 @@ namespace Forge::GUI {
 
 	Application::Application(const Core::Scheduler& scheduler, const GPU::Device& device)
 		: m_scheduler(scheduler)
-		, m_device(device) {
+		, m_state(device) {
 		::WNDCLASSEXW window_class = {};
 		window_class.cbSize = sizeof(::WNDCLASSEXW);
 		window_class.style = CS_HREDRAW | CS_VREDRAW;
@@ -32,33 +33,11 @@ namespace Forge::GUI {
 		}
 	}
 
-	int Application::run(FunctionRef<void(Frame&)> tick) {
-		static Core::Atomic<bool> running{ false };
-		FORGE_ASSERT(running.exchange(true) == false);
-
-		auto last = Core::Instant::now();
-		u64 frame_count = 0;
-		while (running.load()) {
-			const auto now = Core::Instant::now();
-			const auto delta_time = now.since(last).as_secs_f64();
-			last = now;
-
-			// poll input
-			MSG msg = {};
-			while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE)) {
-				TranslateMessage(&msg);
-				DispatchMessageA(&msg);
-			}
-
-			Frame frame{
-				.index = frame_count,
-				.delta_time = delta_time,
-			};
-			tick(frame);
-
-			frame_count += 1;
+	void Application::pump_events() {
+		MSG msg = {};
+		while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE)) {
+			TranslateMessage(&msg);
+			DispatchMessageA(&msg);
 		}
-
-		return 0;
 	}
 } // namespace Forge::GUI
