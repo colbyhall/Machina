@@ -43,6 +43,7 @@ namespace Forge::Core {
 #if FORGE_OS == FORGE_OS_WINDOWS
 			formatter.format(u8"{}: {}\n"_sv, count - i, stack_trace[i]);
 #else
+			FORGE_UNUSED(count);
 			formatter.format(u8"{}\n"_sv, stack_trace[i]);
 #endif
 		}
