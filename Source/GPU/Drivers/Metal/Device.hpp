@@ -29,7 +29,6 @@ namespace Forge::GPU {
 		Handle<GraphicsPipeline> create_graphics_pipeline(GraphicsPipeline::CreateInfo const& info) const final;
 		Handle<Library> create_library_from_source(ShaderSource const& info) const final;
 		Handle<CommandList> record(FunctionRef<void(CommandRecorder&)> f) const final;
-		Backend backend() const final { return Backend::Metal; }
 		// ~Device Interface
 
 	private:
