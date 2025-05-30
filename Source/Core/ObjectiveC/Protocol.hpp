@@ -10,6 +10,8 @@
 #include <Core/TypeTraits.hpp>
 
 namespace Forge::Core {
+	FORGE_CLANG_DISABLE_WARNINGS_PUSH;
+	FORGE_CLANG_DISABLE_WARNING("-Wobjc-method-access");
 	/**
 	 * Type erased Unique ptr for Objective-C protocols.
 	 *
@@ -34,11 +36,11 @@ namespace Forge::Core {
 			}
 			return *this;
 		}
-		Protocol(Protocol&& move) : m_internal(move.m_internal) { move.m_internal = nil; }
+		Protocol(Protocol&& move) : m_internal(move.m_internal) { move.m_internal = nullptr; }
 		Protocol& operator=(Protocol&& move) {
 			@autoreleasepool {
 				m_internal = move.m_internal;
-				move.m_internal = nil;
+				move.m_internal = nullptr;
 			}
 			return *this;
 		}
@@ -46,7 +48,7 @@ namespace Forge::Core {
 			@autoreleasepool {
 				if (m_internal) {
 					[m_internal release];
-					m_internal = nil;
+					m_internal = nullptr;
 				}
 			}
 		}
@@ -56,4 +58,6 @@ namespace Forge::Core {
 	private:
 		id m_internal;
 	};
+
+	FORGE_CLANG_DISBALE_WARNINGS_POP;
 } // namespace Forge::Core
