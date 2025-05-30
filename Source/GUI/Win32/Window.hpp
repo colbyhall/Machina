@@ -6,10 +6,9 @@
 
 #pragma once
 
-#include <Core/Containers/UniquePtr.hpp>
-#include <GPU/Swapchain.hpp>
 #include <GUI/Window.hpp>
 
+#include <Core/Containers/UniquePtr.hpp>
 #include <Core/Windows.hpp>
 
 namespace Forge::GUI {

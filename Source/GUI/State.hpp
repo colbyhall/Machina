@@ -7,6 +7,7 @@
 #pragma once
 
 #include <Core/Containers/Array.hpp>
+#include <Core/Format.hpp>
 #include <GUI/Window.hpp>
 
 namespace Forge::GUI {
@@ -18,9 +19,9 @@ namespace Forge::GUI {
 
 		static Id from_string(StringView s);
 
-		FORGE_ALWAYS_INLINE bool is_null() const { return m_value == 0; }
-		FORGE_ALWAYS_INLINE bool operator==(const Id& other) { return m_value == other.m_value; };
-		FORGE_ALWAYS_INLINE bool operator!=(const Id& other) { return m_value != other.m_value; };
+		bool is_null() const { return m_value == 0; }
+		bool operator==(const Id& other) const = default;
+		u64 operator*() const { return m_value; }
 
 	private:
 		u64 m_value;
@@ -36,7 +37,8 @@ namespace Forge::GUI {
 
 		explicit State(const GPU::Device& device);
 
-		FORGE_ALWAYS_INLINE GPU::Device const& device() const { return m_device; }
+		GPU::Device const& device() const { return m_device; }
+		GPU::GraphicsPipeline const& pipeline() const { return *m_pipeline; }
 
 		WindowContext& get_or_create_window(Id id, StringView title, Size default_size);
 
@@ -54,3 +56,15 @@ namespace Forge::GUI {
 		Array<WindowContext> m_windows;
 	};
 } // namespace Forge::GUI
+
+namespace Forge {
+	template <>
+	struct TypeFormatter<GUI::Id> {
+		usize format(Core::Writer& writer, const GUI::Id& value) {
+			TypeFormatter<u64> formatter;
+			const auto bytes_written = formatter.format(writer, *value);
+			return bytes_written;
+		}
+	};
+
+} // namespace Forge

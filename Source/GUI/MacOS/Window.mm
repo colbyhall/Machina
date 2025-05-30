@@ -4,9 +4,11 @@
  * This software is released under the MIT License.
  */
 
-#include <GPU/Device.hpp>
-#include <GUI/Application.hpp>
 #include <GUI/MacOS/Window.hpp>
+
+#include <GPU/Device.hpp>
+#include <GPU/Swapchain.hpp>
+#include <GUI/Application.hpp>
 #include <GUI/Window.hpp>
 
 namespace Forge::GUI {
@@ -72,6 +74,8 @@ namespace Forge::GUI {
 			return Bounds{ .min = Point(0), .max = Point(viewport_size.width, viewport_size.height) };
 		}
 	}
+
+	GPU::Swapchain& MacOSWindow::swapchain() const { return *m_swapchain; }
 
 	Point MacOSWindow::cursor_position() const {
 		@autoreleasepool {

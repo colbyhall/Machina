@@ -8,7 +8,7 @@
 
 #include <Core/Containers/StringView.hpp>
 #include <Core/Containers/UniquePtr.hpp>
-#include <GPU/Forward.hpp>
+#include <GPU/Swapchain.hpp>
 #include <GUI/Math.hpp>
 
 namespace Forge::GUI {

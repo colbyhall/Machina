@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2024-2025 colby hall <me@cobeh.com>
+ * Copyright (c) 2024-2025 Colby Hall <me@cobeh.com>
  *
  * This software is released under the MIT License.
  */
@@ -34,8 +34,8 @@ namespace Forge {
 
 		auto app = GUI::Application(scheduler, *device);
 		return app.run([&](auto& frame) {
-			frame.window(u8"Hello World"_sv, [&](auto& builder) {
-				if (builder.button(u8"Hello World"_sv)) {
+			frame.window(u8"Hello World"_sv, [&](auto& ui) {
+				if (ui.button(u8"Hello World"_sv)) {
 					dbgln(u8"Hello World"_sv);
 				}
 			});
