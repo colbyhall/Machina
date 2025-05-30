@@ -32,5 +32,6 @@ namespace Mach::GUI {
 		virtual GPU::Swapchain& swapchain() const = 0;
 		virtual Bounds viewport() const = 0;
 		virtual Point cursor_position() const = 0;
+		virtual Real scale_factor() const = 0;
 	};
 } // namespace Mach::GUI

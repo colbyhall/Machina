@@ -27,6 +27,7 @@ namespace Mach::GUI {
 		GPU::Swapchain& swapchain() const final;
 		Bounds viewport() const final;
 		Point cursor_position() const final;
+		Real scale_factor() const final;
 		// ~Window interface
 
 	private:

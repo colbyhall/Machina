@@ -48,7 +48,7 @@ namespace Mach::GUI {
 			struct Uniforms {
 				Matrix4<f32> view;
 			};
-			const auto viewport = backbuffer->texture().size().xy().as<f32>();
+			const auto viewport = window.viewport().size().as<f32>();
 			const auto projection = Matrix4<f32>::orthographic(viewport.x, viewport.y, 0.01f, 5.f);
 			const auto view = Matrix4<f32>::translate({ -viewport.x / 2.f, -viewport.y / 2.f, 0.f });
 			const auto uniform = Uniforms{

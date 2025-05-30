@@ -71,7 +71,10 @@ namespace Mach::GUI {
 	Bounds MacOSWindow::viewport() const {
 		@autoreleasepool {
 			const CGSize viewport_size = [[m_window contentView] frame].size;
-			return Bounds{ .min = Point(0), .max = Point(viewport_size.width, viewport_size.height) };
+			const auto inv_scale_factor = CGFloat(1); // / [m_window backingScaleFactor];
+			return Bounds{ .min = Point(0),
+						   .max =
+							   Point(viewport_size.width * inv_scale_factor, viewport_size.height * inv_scale_factor) };
 		}
 	}
 
@@ -83,5 +86,10 @@ namespace Mach::GUI {
 			NSPoint windowPoint = [m_window convertPointFromScreen:globalPoint];
 			return { static_cast<Real>(windowPoint.x), static_cast<Real>(windowPoint.y) };
 		}
+	}
+
+	Real MacOSWindow::scale_factor() const {
+		const auto scale_factor = [m_window backingScaleFactor];
+		return static_cast<Real>(scale_factor);
 	}
 } // namespace Mach::GUI
