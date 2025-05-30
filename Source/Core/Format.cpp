@@ -8,6 +8,7 @@
 #include <cstdio>
 
 namespace Mach::Core {
+	// https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 	struct ANSIIdentifier {
 		enum Code : u8 {
 			Default = 0,
@@ -104,32 +105,49 @@ namespace Mach::Core {
 	};
 
 	void Formatter::format_lambda(const StringView& fmt, Option<FunctionRef<void(StringView)>> f) {
+		// Iterate through string fmt characters printing out the codepoints, type formatters, or ansi color codes (if
+		// supported).
+		//
+		// To reduce the amount of writes keep track of the byte index for the first unwritten byte. This is
+		// updated on every write and used to see if we can batch writes
 		usize base = 0;
 		for (auto iter = fmt.chars(); iter; ++iter) {
 			auto c = *iter;
+
+			// Type specifiers and ansi colors are specified in curly brackets. If an open curly is found figure out the
+			// contents within it and either write a type formatter or an ansi color code if supported.
 			if (c == '{') {
+				// Write out all previous chars from base index to current index. This is done to reduce calls to write
 				if (base != iter.byte_offset()) {
 					m_bytes_written += m_writer.write(fmt.substring(base, iter.byte_offset()));
 				}
 
+				// Step over the curly bracket char
 				++iter;
 
+				// Sub iterate through the curly bracket inner to find an identifier
 				const auto start = iter.index();
 				for (; iter; ++iter) {
 					c = *iter;
 
+					// If the next character is a curly bracket then we need to just write a curly bracket to the writer
 					if (c == '{') {
 						const u8 byte = '{';
 						m_bytes_written += m_writer.write(Slice<u8 const>{ &byte, 1 });
-					} else if (c == '}') {
+					}
+					// Once we've found the ending RHS curly bracket gather the substring and check against our LUT
+					else if (c == '}') {
 						base = iter.byte_offset() + 1;
 
+						// If we have an identifier try to find it in the LUT.
 						const auto substring = fmt.substring(start, iter.byte_offset());
 						if (substring.len() > 0) {
 							if (!m_accepts_ansi) break;
 
 							bool found = false;
 							for (auto const& identifier : g_ansi_identifiers) {
+								// If we found the right identifier write out the ansi codes
+								// https://en.wikipedia.org/wiki/ANSI_escape_code#Control_Sequence_Introducer_commands
 								if (substring == identifier.identifier) {
 									const StringView prefix = u8"\033["_sv;
 									m_bytes_written += m_writer.write(prefix);
@@ -141,11 +159,15 @@ namespace Mach::Core {
 									break;
 								}
 							}
+
+							// TODO: Custom type formatting based on info in curly bracket
 							if (!found) {
 								MACH_PANIC("Unknown ANSI identifier");
 							}
 							break;
-						} else if (f) {
+						}
+						// Write out the type formatter using lambda capture and then return
+						else if (f) {
 							const auto rest = fmt.substring(base, fmt.len());
 							(f.as_ref().unwrap())(rest);
 							return;
@@ -159,6 +181,7 @@ namespace Mach::Core {
 
 		MACH_ASSERT(!f.is_set(), "Too many arguments were provided");
 
+		// If we've made it this far write out the rest of the fmt string if there is string left
 		if (base != fmt.len()) {
 			m_bytes_written += m_writer.write(fmt.substring(base, fmt.len()));
 		}

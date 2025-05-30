@@ -7,7 +7,13 @@
 #pragma once
 
 #include <Core/Containers/Option.hpp>
+#include <Core/Format.hpp>
 #include <Core/Math/Math.hpp>
+
+namespace Mach {
+	template <typename T>
+	struct TypeFormatter;
+} // namespace Mach
 
 namespace Mach::Core::Math {
 	template <Number T>
@@ -95,4 +101,13 @@ namespace Mach::Core::Math {
 
 namespace Mach {
 	using Core::Math::Vector2;
+
+	template <typename T>
+	struct TypeFormatter<Vector2<T>> {
+		usize format(Core::Writer& writer, const Vector2<T>& value) {
+			auto formatter = Core::Formatter(writer, false);
+			formatter.format(u8"Vector2({}, {})"_sv, value.x, value.y);
+			return formatter.bytes_written();
+		}
+	};
 } // namespace Mach
