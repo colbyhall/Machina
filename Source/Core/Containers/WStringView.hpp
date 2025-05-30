@@ -8,29 +8,29 @@
 
 #include <Core/Containers/StringView.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	using WChar = wchar_t;
 
 	class WStringView {
 	public:
-		FORGE_ALWAYS_INLINE constexpr WStringView() : m_chars{} {}
-		FORGE_ALWAYS_INLINE WStringView(const Slice<WChar const>& bytes) : m_chars{ bytes } {}
-		FORGE_ALWAYS_INLINE constexpr WStringView(const WChar* ptr) : m_chars{ ptr, Core::strlen(ptr) } {}
+		MACH_ALWAYS_INLINE constexpr WStringView() : m_chars{} {}
+		MACH_ALWAYS_INLINE WStringView(const Slice<WChar const>& bytes) : m_chars{ bytes } {}
+		MACH_ALWAYS_INLINE constexpr WStringView(const WChar* ptr) : m_chars{ ptr, Core::strlen(ptr) } {}
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize len() const { return m_chars.len(); }
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE const WChar* operator*() const { return &m_chars[0]; }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE usize len() const { return m_chars.len(); }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE const WChar* operator*() const { return &m_chars[0]; }
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE const WChar* begin() const { return m_chars.cbegin(); }
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE const WChar* end() const { return m_chars.cend(); }
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE const WChar* cbegin() const { return m_chars.cbegin(); }
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE const WChar* cend() const { return m_chars.cend(); }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE const WChar* begin() const { return m_chars.cbegin(); }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE const WChar* end() const { return m_chars.cend(); }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE const WChar* cbegin() const { return m_chars.cbegin(); }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE const WChar* cend() const { return m_chars.cend(); }
 
-		FORGE_ALWAYS_INLINE WChar operator[](usize index) const { return m_chars[index]; }
+		MACH_ALWAYS_INLINE WChar operator[](usize index) const { return m_chars[index]; }
 
 		bool operator==(const WStringView& rhs) const;
-		FORGE_ALWAYS_INLINE bool operator!=(const WStringView& rhs) const { return !(*this == rhs); }
+		MACH_ALWAYS_INLINE bool operator!=(const WStringView& rhs) const { return !(*this == rhs); }
 
 	private:
 		Slice<WChar const> m_chars;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core

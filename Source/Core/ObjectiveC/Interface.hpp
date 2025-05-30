@@ -9,7 +9,7 @@
 #include <Core/Core.hpp>
 #include <Core/TypeTraits.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	template <typename T>
 	class Interface {
 	public:
@@ -45,10 +45,10 @@ namespace Forge::Core {
 				}
 			}
 		}
-		FORGE_ALWAYS_INLINE T* operator*() const { return m_internal; }
-		FORGE_ALWAYS_INLINE operator T*() const { return m_internal; }
+		MACH_ALWAYS_INLINE T* operator*() const { return m_internal; }
+		MACH_ALWAYS_INLINE operator T*() const { return m_internal; }
 
 	private:
 		T* m_internal;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core

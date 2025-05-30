@@ -11,7 +11,7 @@
 #include <GPU/Swapchain.hpp>
 #include <GUI/Math.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	class Application;
 
 	class Window {
@@ -33,4 +33,4 @@ namespace Forge::GUI {
 		virtual Bounds viewport() const = 0;
 		virtual Point cursor_position() const = 0;
 	};
-} // namespace Forge::GUI
+} // namespace Mach::GUI

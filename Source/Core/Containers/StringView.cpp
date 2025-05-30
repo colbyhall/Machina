@@ -6,7 +6,7 @@
 
 #include <Core/Containers/StringView.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	bool Char::is_whitespace() const {
 		return m_codepoint == 0x20 || m_codepoint == 0x09 || m_codepoint == 0x0A || m_codepoint == 0x0B ||
 			   m_codepoint == 0x0C || m_codepoint == 0x0D;
@@ -73,7 +73,7 @@ namespace Forge::Core {
 	}
 
 	void CharsIterator::next() {
-		FORGE_ASSERT(should_continue());
+		MACH_ASSERT(should_continue());
 
 		for (; m_byte_index < m_string.len(); m_byte_index += 1) {
 			const UTF8Char c = (*m_string)[m_byte_index];
@@ -104,23 +104,23 @@ namespace Forge::Core {
 		}
 		return get_codepoint;
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core
 
 #include <Core/Debug/Test.hpp>
 
-#if FORGE_ENABLE_TEST
-FORGE_TEST_SUITE("Containers") {
-	using namespace Forge::Core;
+#if MACH_ENABLE_TEST
+MACH_TEST_SUITE("Containers") {
+	using namespace Mach::Core;
 
-	FORGE_TEST_CASE("StringView") {
+	MACH_TEST_CASE("StringView") {
 	#if 0
 		const StringView foo = u8"aΠ1"sv;
 		const Char chars[] = { 'a', 0x03A0, '1' };
 		for (auto iter = foo.chars(); iter; ++iter) {
 			const auto c = *iter;
-			FORGE_CHECK(c == chars[iter.index()]);
+			MACH_CHECK(c == chars[iter.index()]);
 		}
 	#endif
 	}
 }
-#endif // FORGE_ENABLE_TEST
+#endif // MACH_ENABLE_TEST

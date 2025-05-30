@@ -8,13 +8,13 @@
 
 #include <Core/Memory.hpp>
 
-namespace Forge::Core {
-	thread_local Option<Forge::SharedPtr<Thread>> g_current_thread = nullopt;
+namespace Mach::Core {
+	thread_local Option<Mach::SharedPtr<Thread>> g_current_thread = nullopt;
 
 	Thread const& Thread::current() {
 		if (!g_current_thread.is_set()) {
 			Win32Thread thread(::GetCurrentThread(), ::GetCurrentThreadId());
-			g_current_thread = Forge::SharedPtr<Win32Thread>::create(Forge::move(thread));
+			g_current_thread = Mach::SharedPtr<Win32Thread>::create(Mach::move(thread));
 		}
 		return *g_current_thread.as_ref().unwrap();
 	}
@@ -27,21 +27,21 @@ namespace Forge::Core {
 		return 0;
 	}
 
-	Forge::SharedPtr<Thread> Thread::spawn(Function&& f, const SpawnInfo& info) {
+	Mach::SharedPtr<Thread> Thread::spawn(Function&& f, const SpawnInfo& info) {
 		DWORD flags = 0;
 		if (info.start_suspended) {
 			flags |= CREATE_SUSPENDED;
 		}
 
 		auto param = Memory::alloc(Memory::Layout::single<Thread::Function>());
-		Memory::emplace<Thread::Function>(param, Forge::move(f));
+		Memory::emplace<Thread::Function>(param, Mach::move(f));
 
 		auto stack_size = info.stack_size.unwrap_or(0);
 
 		DWORD id;
 		const HANDLE thread = ::CreateThread(nullptr, stack_size, &ThreadProc, static_cast<LPVOID>(param), flags, &id);
 
-		return Forge::SharedPtr<Win32Thread>::create(thread, id);
+		return Mach::SharedPtr<Win32Thread>::create(thread, id);
 	}
 
 	void Win32Thread::join() {
@@ -61,4 +61,4 @@ namespace Forge::Core {
 			join();
 		}
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core

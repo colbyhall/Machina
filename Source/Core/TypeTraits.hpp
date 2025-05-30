@@ -13,7 +13,7 @@
 
 // Aliasing type traits found in the C++20 standard library to match our naming conventions
 // https://en.cppreference.com/w/cpp/header/type_traits
-namespace Forge::Core {
+namespace Mach::Core {
 	// https://en.cppreference.com/w/cpp/types/is_void
 	template <typename T>
 	inline constexpr bool is_void = std::is_void_v<T>;
@@ -434,30 +434,30 @@ namespace Forge::Core {
 
 	// https://en.cppreference.com/w/cpp/utility/functional/invoke
 	using std::invoke;
-} // namespace Forge::Core
+} // namespace Mach::Core
 
-namespace Forge {
+namespace Mach {
 	using Core::forward;
 	using Core::move;
-} // namespace Forge
+} // namespace Mach
 
-#define FORGE_ENUM_CLASS_BITFIELD(Enum)                                                                                \
+#define MACH_ENUM_CLASS_BITFIELD(Enum)                                                                                 \
 	inline Enum& operator|=(Enum& A, Enum B) {                                                                         \
-		return (Enum&)((Forge::Core::UnderlyingType<Enum>&)A |= (Forge::Core::UnderlyingType<Enum>)B);                 \
+		return (Enum&)((Mach::Core::UnderlyingType<Enum>&)A |= (Mach::Core::UnderlyingType<Enum>)B);                   \
 	}                                                                                                                  \
 	inline Enum& operator&=(Enum& A, Enum B) {                                                                         \
-		return (Enum&)((Forge::Core::UnderlyingType<Enum>&)A &= (Forge::Core::UnderlyingType<Enum>)B);                 \
+		return (Enum&)((Mach::Core::UnderlyingType<Enum>&)A &= (Mach::Core::UnderlyingType<Enum>)B);                   \
 	}                                                                                                                  \
 	inline Enum& operator^=(Enum& A, Enum B) {                                                                         \
-		return (Enum&)((Forge::Core::UnderlyingType<Enum>&)A ^= (Forge::Core::UnderlyingType<Enum>)B);                 \
+		return (Enum&)((Mach::Core::UnderlyingType<Enum>&)A ^= (Mach::Core::UnderlyingType<Enum>)B);                   \
 	}                                                                                                                  \
 	inline Enum operator|(Enum A, Enum B) {                                                                            \
-		return (Enum)((Forge::Core::UnderlyingType<Enum>)A | (Forge::Core::UnderlyingType<Enum>)B);                    \
+		return (Enum)((Mach::Core::UnderlyingType<Enum>)A | (Mach::Core::UnderlyingType<Enum>)B);                      \
 	}                                                                                                                  \
 	inline Enum operator&(Enum A, Enum B) {                                                                            \
-		return (Enum)((Forge::Core::UnderlyingType<Enum>)A & (Forge::Core::UnderlyingType<Enum>)B);                    \
+		return (Enum)((Mach::Core::UnderlyingType<Enum>)A & (Mach::Core::UnderlyingType<Enum>)B);                      \
 	}                                                                                                                  \
 	inline Enum operator^(Enum A, Enum B) {                                                                            \
-		return (Enum)((Forge::Core::UnderlyingType<Enum>)A ^ (Forge::Core::UnderlyingType<Enum>)B);                    \
+		return (Enum)((Mach::Core::UnderlyingType<Enum>)A ^ (Mach::Core::UnderlyingType<Enum>)B);                      \
 	}                                                                                                                  \
-	inline Enum operator~(Enum A) { return (Enum) ~(Forge::Core::UnderlyingType<Enum>)A; }
+	inline Enum operator~(Enum A) { return (Enum) ~(Mach::Core::UnderlyingType<Enum>)A; }

@@ -1,11 +1,11 @@
-# Forge 
+# Machina 
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 > [!IMPORTANT]
 > This project is still under active development. It is not stable enough to be used in production.
 
-`Forge` is a cross platform game making framework. This framework's primary goal is to make building games and game tools as easy and effeciently as possible.
+`Machina` is a cross platform game making framework. This framework's primary goal is to make building games and game tools as easy and effeciently as possible.
 
 ## Contributing
 Contributions are welcome! Feel free to open issues or submit pull requests if you want to help improve the project.

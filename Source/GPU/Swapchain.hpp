@@ -11,23 +11,23 @@
 #include <GPU/Forward.hpp>
 #include <GPU/Texture.hpp>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	class Backbuffer;
 
 	class Swapchain {
 	public:
 		using Owner = void*;
 
-		FORGE_NO_DISCARD virtual UniquePtr<Backbuffer> next_back_buffer() = 0;
+		MACH_NO_DISCARD virtual UniquePtr<Backbuffer> next_back_buffer() = 0;
 
 		virtual ~Swapchain() {}
 	};
 
 	class Backbuffer {
 	public:
-		FORGE_NO_DISCARD virtual Texture const& texture() const = 0;
+		MACH_NO_DISCARD virtual Texture const& texture() const = 0;
 		virtual void present(Receipt const& wait_on) = 0;
 
 		virtual ~Backbuffer() {}
 	};
-} // namespace Forge::GPU
+} // namespace Mach::GPU

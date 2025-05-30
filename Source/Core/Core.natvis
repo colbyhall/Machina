@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
-    <Type Name="Forge::Core::Array&lt;*&gt;">
+    <Type Name="Mach::Core::Array&lt;*&gt;">
         <Expand>
             <Item Name="[len]">m_len</Item>
             <Item Name="[cap]">m_storage.m_cap</Item>
@@ -11,7 +11,7 @@
         </Expand>
     </Type>
     
-    <Type Name="Forge::Core::Slice&lt;*&gt;">
+    <Type Name="Mach::Core::Slice&lt;*&gt;">
         <Expand>
             <Item Name="[len]">m_len</Item>
             <ArrayItems>
@@ -21,7 +21,7 @@
         </Expand>
     </Type>
 
-    <Type Name="Forge::Core::Option&lt;*&gt;">
+    <Type Name="Mach::Core::Option&lt;*&gt;">
         <DisplayString Condition="!m_set">None</DisplayString>
 
         <Expand>
@@ -29,13 +29,13 @@
         </Expand>
     </Type>
 
-    <Type Name="Forge::Core::Unique&lt;*&gt;">
+    <Type Name="Mach::Core::Unique&lt;*&gt;">
         <Expand>
             <ExpandedItem>m_ptr</ExpandedItem>
         </Expand>
     </Type>
 
-    <Type Name="Forge::Core::Rc&lt;*&gt;">
+    <Type Name="Mach::Core::Rc&lt;*&gt;">
         <Expand>
             <Item Name="[strong]">m_counter->m_strong</Item>
             <Item Name="[weak]">m_counter->m_weak</Item>

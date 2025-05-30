@@ -8,21 +8,19 @@
 
 #include <Core/Memory.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	namespace hidden {
 		template <typename Functor, typename FuncType>
 		struct FunctionRefCaller;
 
 		template <typename Functor, typename R, typename... P>
 		struct FunctionRefCaller<Functor, R(P...)> {
-			static R call(void* obj, P&... params) {
-				return Core::invoke(*(Functor*)obj, Forge::forward<P>(params)...);
-			}
+			static R call(void* obj, P&... params) { return Core::invoke(*(Functor*)obj, Mach::forward<P>(params)...); }
 		};
 
 		template <typename Functor, typename... P>
 		struct FunctionRefCaller<Functor, void(P...)> {
-			static void call(void* obj, P&... params) { Core::invoke(*(Functor*)obj, Forge::forward<P>(params)...); }
+			static void call(void* obj, P&... params) { Core::invoke(*(Functor*)obj, Mach::forward<P>(params)...); }
 		};
 
 		template <typename S, typename F>
@@ -37,10 +35,10 @@ namespace Forge::Core {
 
 			template <typename F>
 			FunctionBase(F&& f)
-				requires(!Forge::Core::is_same<FunctionBase, Forge::Core::Decay<F>>)
+				requires(!Mach::Core::is_same<FunctionBase, Mach::Core::Decay<F>>)
 			{
-				if (auto* binding = m_storage.bind(Forge::forward<F>(f))) {
-					FORGE_UNUSED(binding);
+				if (auto* binding = m_storage.bind(Mach::forward<F>(f))) {
+					MACH_UNUSED(binding);
 					using DecayedFunctor = RemovePointer<decltype(binding)>;
 					m_callable = &FunctionRefCaller<DecayedFunctor, R(Param...)>::call;
 				}
@@ -49,20 +47,20 @@ namespace Forge::Core {
 			FunctionBase& operator=(const FunctionBase& copy) noexcept = delete;
 			FunctionBase(FunctionBase&& move) noexcept
 				: m_callable(move.m_callable)
-				, m_storage(Forge::move(move.m_storage)) {
+				, m_storage(Mach::move(move.m_storage)) {
 				move.m_callable = nullptr;
 			}
 			FunctionBase& operator=(FunctionBase&& move) noexcept {
 				this->~FunctionBase();
 
-				m_callable = Forge::move(move.m_callable);
+				m_callable = Mach::move(move.m_callable);
 				move.m_callable = nullptr;
 
-				m_storage = Forge::move(move.m_storage);
+				m_storage = Mach::move(move.m_storage);
 			}
 
 			R operator()(Param... params) const {
-				FORGE_ASSERT(m_callable != nullptr);
+				MACH_ASSERT(m_callable != nullptr);
 				return (m_callable)(m_storage.ptr(), params...);
 			}
 
@@ -107,14 +105,14 @@ namespace Forge::Core {
 			template <typename... Args>
 			explicit FunctorWrapper(Args&&... args)
 				requires is_constructible<F, Args...>
-				: f{ Forge::forward<Args>(args)... } {}
+				: f{ Mach::forward<Args>(args)... } {}
 			~FunctorWrapper() final = default;
 			FunctorWrapper(const FunctorWrapper& copy) = delete;
 			FunctorWrapper& operator=(const FunctorWrapper& copy) = delete;
-			FunctorWrapper(FunctorWrapper&& m) : f(Forge::move(m.f)) {}
+			FunctorWrapper(FunctorWrapper&& m) : f(Mach::move(m.f)) {}
 			FunctorWrapper& operator=(FunctorWrapper&& m) {
 				this->~FunctionWrapper();
-				f = Forge::move(m.f);
+				f = Mach::move(m.f);
 				return *this;
 			}
 
@@ -149,7 +147,7 @@ namespace Forge::Core {
 			template <typename F>
 			RemoveReference<F>* bind(F&& f) {
 				void* memory = Memory::alloc(Memory::Layout::single<FunctorWrapper<F>>());
-				m_ptr = Memory::emplace<FunctorWrapper<F>>(memory, Forge::forward<F>(f));
+				m_ptr = Memory::emplace<FunctorWrapper<F>>(memory, Mach::forward<F>(f));
 
 				return static_cast<RemoveReference<F>*>(m_ptr->ptr());
 			}
@@ -164,29 +162,29 @@ namespace Forge::Core {
 
 		template <typename F, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible =
-			Forge::Core::is_constructible<R, decltype(declval<F>()(declval<P>()...))>;
+			Mach::Core::is_constructible<R, decltype(declval<F>()(declval<P>()...))>;
 		template <typename MR, typename Class, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR Class::*, R, P...> =
-			Forge::Core::is_constructible<R, MR>;
+			Mach::Core::is_constructible<R, MR>;
 		template <typename MR, typename Class, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR Class::* const, R, P...> =
-			Forge::Core::is_constructible<R, MR>;
+			Mach::Core::is_constructible<R, MR>;
 		template <typename MR, typename Class, typename... MP, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR (Class::*)(MP...), R, P...> =
-			Forge::Core::is_constructible<R, MR>;
+			Mach::Core::is_constructible<R, MR>;
 		template <typename MR, typename Class, typename... MP, typename R, typename... P>
 		inline constexpr bool functor_return_type_is_compatible<MR (Class::*)(MP...) const, R, P...> =
-			Forge::Core::is_constructible<R, MR>;
+			Mach::Core::is_constructible<R, MR>;
 
 		template <typename A, typename B>
 		inline constexpr bool func_can_bind_to_functor = false;
 
 		template <typename F, typename R, typename... P>
 		inline constexpr bool func_can_bind_to_functor<R(P...), F> =
-			Forge::Core::is_invocable<F, P...> && functor_return_type_is_compatible<F, R, P...>;
+			Mach::Core::is_invocable<F, P...> && functor_return_type_is_compatible<F, R, P...>;
 
 		template <typename F, typename... P>
-		inline constexpr bool func_can_bind_to_functor<void(P...), F> = Forge::Core::is_invocable<F, P...>;
+		inline constexpr bool func_can_bind_to_functor<void(P...), F> = Mach::Core::is_invocable<F, P...>;
 	} // namespace hidden
 
 	template <typename F>
@@ -215,7 +213,7 @@ namespace Forge::Core {
 
 		template <typename Functor>
 			requires(!is_function_ref<Decay<Functor>> && hidden::func_can_bind_to_functor<F, Decay<Functor>>)
-		FunctionRef(Functor&& f) : Super(Forge::forward<Functor>(f)) {}
+		FunctionRef(Functor&& f) : Super(Mach::forward<Functor>(f)) {}
 		FunctionRef(const FunctionRef& copy) noexcept = delete;
 		FunctionRef& operator=(const FunctionRef& copy) const noexcept = delete;
 		FunctionRef(FunctionRef&& move) noexcept = default;
@@ -232,16 +230,16 @@ namespace Forge::Core {
 
 		template <typename Functor>
 			requires(!is_op_function<Decay<Functor>> && hidden::func_can_bind_to_functor<F, Decay<Functor>>)
-		Function(Functor&& f) : Super{ Forge::forward<Functor>(f) } {}
+		Function(Functor&& f) : Super{ Mach::forward<Functor>(f) } {}
 		Function(const Function& copy) noexcept = delete;
 		Function& operator=(const Function& copy) noexcept = delete;
 		Function(Function&& move) noexcept = default;
 		Function& operator=(Function&& move) noexcept = default;
 		~Function() = default;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core
 
-namespace Forge {
+namespace Mach {
 	using Core::Function;
 	using Core::FunctionRef;
-} // namespace Forge
+} // namespace Mach

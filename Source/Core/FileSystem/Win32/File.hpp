@@ -10,7 +10,7 @@
 #include <Core/IO/Reader.hpp>
 #include <Core/IO/Writer.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	enum class OpenFlags : u8;
 
 	class Win32File final : public Reader, public Writer {
@@ -19,15 +19,15 @@ namespace Forge::Core {
 		static Win32File stdout;
 		static Win32File stderr;
 
-		FORGE_NO_DISCARD static Option<Win32File> open(const StringView& path, OpenFlags flags);
+		MACH_NO_DISCARD static Option<Win32File> open(const StringView& path, OpenFlags flags);
 
-		FORGE_NO_COPY(Win32File);
+		MACH_NO_COPY(Win32File);
 		Win32File(Win32File&& move) : m_handle(move.m_handle) { move.m_handle = nullptr; }
 		Win32File& operator=(Win32File&& move);
 		~Win32File();
 
 		// Reader interface
-		FORGE_NO_DISCARD usize read(Slice<u8> bytes) final;
+		MACH_NO_DISCARD usize read(Slice<u8> bytes) final;
 		// ~Reader interface
 
 		// Writer interface
@@ -41,4 +41,4 @@ namespace Forge::Core {
 		OpenFlags m_flags;
 		usize m_cursor = 0;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core

@@ -8,12 +8,12 @@
 
 #include <Core/FileSystem/Library.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	class Win32Library final : public Library {
 	public:
 		explicit Win32Library(void* handle) : m_handle(handle) {}
 
-		FORGE_NO_COPY(Win32Library);
+		MACH_NO_COPY(Win32Library);
 		Win32Library(Win32Library&&);
 		Win32Library& operator=(Win32Library&&);
 
@@ -25,4 +25,4 @@ namespace Forge::Core {
 		void* m_handle = nullptr;
 	};
 
-} // namespace Forge::Core
+} // namespace Mach::Core

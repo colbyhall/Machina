@@ -7,82 +7,82 @@
 #include <Core/Containers/UniquePtr.hpp>
 #include <Core/Debug/Test.hpp>
 
-FORGE_TEST_SUITE("Containers") {
-	using namespace Forge::Core;
+MACH_TEST_SUITE("Containers") {
+	using namespace Mach::Core;
 
-	FORGE_TEST_CASE("Unique") {
+	MACH_TEST_CASE("Unique") {
 		struct Foo {
 			int a = 0;
 		};
 
-		FORGE_SUBCASE("default constructor") {
+		MACH_SUBCASE("default constructor") {
 			const UniquePtr<Foo> unique;
-			FORGE_CHECK(!unique.is_valid());
+			MACH_CHECK(!unique.is_valid());
 		}
 
-		FORGE_SUBCASE("create") {
+		MACH_SUBCASE("create") {
 			const auto unique = UniquePtr<Foo>::create(Foo{ .a = 100 });
-			FORGE_CHECK(unique->a == 100);
+			MACH_CHECK(unique->a == 100);
 		}
 
-		FORGE_SUBCASE("copy constructor") {
+		MACH_SUBCASE("copy constructor") {
 			const auto unique = UniquePtr<Foo>::create(Foo{ .a = 100 });
-			FORGE_REQUIRE(unique->a == 100);
+			MACH_REQUIRE(unique->a == 100);
 			const auto copy = unique;
-			FORGE_CHECK(copy->a == 100);
+			MACH_CHECK(copy->a == 100);
 		}
 
-		FORGE_SUBCASE("copy assignment") {
+		MACH_SUBCASE("copy assignment") {
 			const auto unique = UniquePtr<Foo>::create(Foo{ .a = 100 });
-			FORGE_REQUIRE(unique->a == 100);
+			MACH_REQUIRE(unique->a == 100);
 			UniquePtr<Foo> copy_assignment;
-			FORGE_CHECK(!copy_assignment.is_valid());
+			MACH_CHECK(!copy_assignment.is_valid());
 			copy_assignment = unique;
-			FORGE_CHECK(copy_assignment->a == 100);
+			MACH_CHECK(copy_assignment->a == 100);
 		}
 
-		FORGE_SUBCASE("move constructor") {
+		MACH_SUBCASE("move constructor") {
 			auto unique = UniquePtr<Foo>::create(Foo{ .a = 100 });
-			FORGE_REQUIRE(unique->a == 100);
-			const auto move = Forge::move(unique);
-			FORGE_CHECK(move->a == 100);
-			FORGE_CHECK(static_cast<Foo*>(unique) == nullptr);
+			MACH_REQUIRE(unique->a == 100);
+			const auto move = Mach::move(unique);
+			MACH_CHECK(move->a == 100);
+			MACH_CHECK(static_cast<Foo*>(unique) == nullptr);
 		}
 
-		FORGE_SUBCASE("move assignment") {
+		MACH_SUBCASE("move assignment") {
 			auto unique = UniquePtr<Foo>::create(Foo{ .a = 100 });
-			FORGE_REQUIRE(unique->a == 100);
+			MACH_REQUIRE(unique->a == 100);
 			UniquePtr<Foo> move_assignment;
-			FORGE_CHECK(!move_assignment.is_valid());
-			move_assignment = Forge::move(unique);
-			FORGE_CHECK(move_assignment->a == 100);
-			FORGE_CHECK(static_cast<Foo*>(unique) == nullptr);
+			MACH_CHECK(!move_assignment.is_valid());
+			move_assignment = Mach::move(unique);
+			MACH_CHECK(move_assignment->a == 100);
+			MACH_CHECK(static_cast<Foo*>(unique) == nullptr);
 		}
 
 		struct Bar : Foo {
 			int b = 0;
 		};
 
-		FORGE_SUBCASE("derived move constructor") {
+		MACH_SUBCASE("derived move constructor") {
 			auto unique = UniquePtr<Bar>::create(Bar{ .b = 200 });
-			FORGE_REQUIRE(unique->a == 0);
-			FORGE_REQUIRE(unique->b == 200);
-			const UniquePtr<Foo> move = Forge::move(unique);
-			FORGE_CHECK(move->a == 0);
-			FORGE_CHECK(static_cast<Bar*>(unique) == nullptr);
-			FORGE_CHECK(static_cast<const Bar*>(static_cast<const Foo*>(move))->b == 200);
+			MACH_REQUIRE(unique->a == 0);
+			MACH_REQUIRE(unique->b == 200);
+			const UniquePtr<Foo> move = Mach::move(unique);
+			MACH_CHECK(move->a == 0);
+			MACH_CHECK(static_cast<Bar*>(unique) == nullptr);
+			MACH_CHECK(static_cast<const Bar*>(static_cast<const Foo*>(move))->b == 200);
 		}
 
-		FORGE_SUBCASE("derived move assignment") {
+		MACH_SUBCASE("derived move assignment") {
 			auto unique = UniquePtr<Bar>::create(Bar{ .b = 200 });
-			FORGE_REQUIRE(unique->a == 0);
-			FORGE_REQUIRE(unique->b == 200);
+			MACH_REQUIRE(unique->a == 0);
+			MACH_REQUIRE(unique->b == 200);
 			UniquePtr<Foo> move_assignment;
-			FORGE_CHECK(!move_assignment.is_valid());
-			move_assignment = Forge::move(unique);
-			FORGE_CHECK(move_assignment->a == 0);
-			FORGE_CHECK(static_cast<Bar*>(unique) == nullptr);
-			FORGE_CHECK(static_cast<const Bar*>(static_cast<const Foo*>(move_assignment))->b == 200);
+			MACH_CHECK(!move_assignment.is_valid());
+			move_assignment = Mach::move(unique);
+			MACH_CHECK(move_assignment->a == 0);
+			MACH_CHECK(static_cast<Bar*>(unique) == nullptr);
+			MACH_CHECK(static_cast<const Bar*>(static_cast<const Foo*>(move_assignment))->b == 200);
 		}
 	}
 }

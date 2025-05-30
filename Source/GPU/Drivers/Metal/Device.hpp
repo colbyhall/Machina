@@ -8,13 +8,13 @@
 
 #include <GPU/Device.hpp>
 
-#if FORGE_LANGUAGE == FORGE_LANGUAGE_OBJCPP
+#if MACH_LANGUAGE == MACH_LANGUAGE_OBJCPP
 	#include <Core/ObjectiveC/Protocol.hpp>
 	#import <Metal/Metal.h>
 #endif
 
-namespace Forge::GPU {
-#if FORGE_LANGUAGE == FORGE_LANGUAGE_OBJCPP
+namespace Mach::GPU {
+#if MACH_LANGUAGE == MACH_LANGUAGE_OBJCPP
 	class MetalDevice final : public Device {
 	public:
 		explicit MetalDevice(id<MTLDevice> device, id<MTLCommandQueue> command_queue)
@@ -38,4 +38,4 @@ namespace Forge::GPU {
 #endif
 
 	UniquePtr<Device> create_metal_device();
-} // namespace Forge::GPU
+} // namespace Mach::GPU

@@ -10,8 +10,8 @@
 #include <Core/Containers/SharedPtr.hpp>
 #include <Core/Containers/StringView.hpp>
 
-namespace Forge::Core {
-	class Thread : public Forge::SharedPtrFromThis<Thread> {
+namespace Mach::Core {
+	class Thread : public Mach::SharedPtrFromThis<Thread> {
 	public:
 		using Function = Function<void()>;
 		struct SpawnInfo {
@@ -19,8 +19,8 @@ namespace Forge::Core {
 			Option<usize> stack_size = nullopt;
 			bool start_suspended = false;
 		};
-		static Forge::SharedPtr<Thread> spawn(Function&& f, const SpawnInfo& info);
-		static Forge::SharedPtr<Thread> spawn(Function&& f);
+		static Mach::SharedPtr<Thread> spawn(Function&& f, const SpawnInfo& info);
+		static Mach::SharedPtr<Thread> spawn(Function&& f);
 		static Thread const& current();
 
 		using Id = u64;
@@ -31,4 +31,4 @@ namespace Forge::Core {
 
 		virtual ~Thread() {}
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core

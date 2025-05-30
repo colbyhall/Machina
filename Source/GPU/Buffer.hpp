@@ -11,7 +11,7 @@
 #include <Core/Containers/Slice.hpp>
 #include <GPU/Resource.hpp>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	enum class Heap : u8 {
 		Storage,
 		Upload,
@@ -28,9 +28,9 @@ namespace Forge::GPU {
 			Constant = (1 << 4),
 		};
 
-		FORGE_ALWAYS_INLINE Usage usage() const { return m_usage; }
-		FORGE_ALWAYS_INLINE Heap heap() const { return m_heap; }
-		FORGE_ALWAYS_INLINE usize len() const { return m_len; }
+		MACH_ALWAYS_INLINE Usage usage() const { return m_usage; }
+		MACH_ALWAYS_INLINE Heap heap() const { return m_heap; }
+		MACH_ALWAYS_INLINE usize len() const { return m_len; }
 
 	protected:
 		explicit Buffer(Usage usage, Heap heap, usize len) : m_usage(usage), m_heap(heap), m_len(len) {}
@@ -39,5 +39,5 @@ namespace Forge::GPU {
 		Heap m_heap;
 		usize m_len;
 	};
-	FORGE_ENUM_CLASS_BITFIELD(Buffer::Usage)
-} // namespace Forge::GPU
+	MACH_ENUM_CLASS_BITFIELD(Buffer::Usage)
+} // namespace Mach::GPU

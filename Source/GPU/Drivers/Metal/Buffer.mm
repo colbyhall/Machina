@@ -7,4 +7,4 @@
 #include <Core/Debug/Log.hpp>
 #include <GPU/Drivers/Metal/Buffer.hpp>
 
-namespace Forge::GPU {} // namespace Forge::GPU
+namespace Mach::GPU {} // namespace Mach::GPU

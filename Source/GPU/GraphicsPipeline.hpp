@@ -11,7 +11,7 @@
 #include <GPU/Shader.hpp>
 #include <GPU/Texture.hpp>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	class GraphicsPipeline : public SharedPtrFromThis<GraphicsPipeline> {
 	public:
 		enum class DrawMode : u8 {
@@ -133,15 +133,15 @@ namespace Forge::GPU {
 			, m_cull_mode(create_info.cull_mode) {}
 		virtual ~GraphicsPipeline() {}
 
-		FORGE_ALWAYS_INLINE VertexShader const& vertex_shader() const { return *m_vertex_shader; }
-		FORGE_ALWAYS_INLINE FragmentShader const& fragment_shader() const { return *m_fragment_shader; }
-		FORGE_ALWAYS_INLINE Slice<ColorAttachment const> color_attachments() const {
+		MACH_ALWAYS_INLINE VertexShader const& vertex_shader() const { return *m_vertex_shader; }
+		MACH_ALWAYS_INLINE FragmentShader const& fragment_shader() const { return *m_fragment_shader; }
+		MACH_ALWAYS_INLINE Slice<ColorAttachment const> color_attachments() const {
 			return m_color_attachments.as_const_slice();
 		}
-		FORGE_ALWAYS_INLINE Option<DepthAttachment> depth_attachment() const { return m_depth_attachment; }
-		FORGE_ALWAYS_INLINE DrawMode draw_mode() const { return m_draw_mode; }
-		FORGE_ALWAYS_INLINE f32 line_width() const { return m_line_width; }
-		FORGE_ALWAYS_INLINE CullMode cull_mode() const { return m_cull_mode; }
+		MACH_ALWAYS_INLINE Option<DepthAttachment> depth_attachment() const { return m_depth_attachment; }
+		MACH_ALWAYS_INLINE DrawMode draw_mode() const { return m_draw_mode; }
+		MACH_ALWAYS_INLINE f32 line_width() const { return m_line_width; }
+		MACH_ALWAYS_INLINE CullMode cull_mode() const { return m_cull_mode; }
 
 	protected:
 		SharedPtr<VertexShader> m_vertex_shader;
@@ -154,5 +154,5 @@ namespace Forge::GPU {
 		f32 m_line_width;
 		CullMode m_cull_mode;
 	};
-	FORGE_ENUM_CLASS_BITFIELD(GraphicsPipeline::ColorComponents);
-} // namespace Forge::GPU
+	MACH_ENUM_CLASS_BITFIELD(GraphicsPipeline::ColorComponents);
+} // namespace Mach::GPU

@@ -10,31 +10,31 @@
 #include <Core/Primitives.hpp>
 #include <Core/TypeTraits.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	enum class OpenFlags : u8 {
 		Read = (1 << 0),
 		Write = (1 << 1),
 		Create = (1 << 2),
 	};
-	FORGE_ENUM_CLASS_BITFIELD(OpenFlags);
-} // namespace Forge::Core
+	MACH_ENUM_CLASS_BITFIELD(OpenFlags);
+} // namespace Mach::Core
 
-#if FORGE_OS == FORGE_OS_WINDOWS
+#if MACH_OS == MACH_OS_WINDOWS
 
 	#include <Core/FileSystem/Win32/File.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	using OpenFlags = OpenFlags;
 	using File = Win32File;
-} // namespace Forge::Core
+} // namespace Mach::Core
 
 #else
 
 	#include <Core/FileSystem/Posix/File.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	using OpenFlags = OpenFlags;
 	using File = PosixFile;
-} // namespace Forge::Core
+} // namespace Mach::Core
 
 #endif

@@ -10,7 +10,7 @@
 #include <Core/Format.hpp>
 #include <GUI/Window.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	class Id {
 	public:
 		explicit Id() : m_value(0) {}
@@ -55,9 +55,9 @@ namespace Forge::GUI {
 		Id m_hover;
 		Array<WindowContext> m_windows;
 	};
-} // namespace Forge::GUI
+} // namespace Mach::GUI
 
-namespace Forge {
+namespace Mach {
 	template <>
 	struct TypeFormatter<GUI::Id> {
 		usize format(Core::Writer& writer, const GUI::Id& value) {
@@ -67,4 +67,4 @@ namespace Forge {
 		}
 	};
 
-} // namespace Forge
+} // namespace Mach

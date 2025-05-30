@@ -12,7 +12,7 @@
 
 #import <Metal/Metal.h>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	inline MTLPixelFormat format_to_mtl_pixel_format(Format format) {
 		switch (format) {
 		case Format::Undefined:
@@ -34,7 +34,7 @@ namespace Forge::GPU {
 		case Format::Depth24_Stencil8:
 			return MTLPixelFormatDepth24Unorm_Stencil8;
 		default:
-			FORGE_UNIMPLEMENTED;
+			MACH_UNIMPLEMENTED;
 			break;
 		}
 		return MTLPixelFormatInvalid;
@@ -59,7 +59,7 @@ namespace Forge::GPU {
 		case GraphicsPipeline::CompareOp::Always:
 			return MTLCompareFunctionAlways;
 		default:
-			FORGE_UNIMPLEMENTED;
+			MACH_UNIMPLEMENTED;
 			break;
 		}
 	}
@@ -77,7 +77,7 @@ namespace Forge::GPU {
 		case GraphicsPipeline::BlendOp::Max:
 			return MTLBlendOperationMax;
 		default:
-			FORGE_UNIMPLEMENTED;
+			MACH_UNIMPLEMENTED;
 			break;
 		}
 		return MTLBlendOperationAdd;
@@ -102,7 +102,7 @@ namespace Forge::GPU {
 		case GraphicsPipeline::BlendFactor::OneMinusSrcAlpha:
 			return MTLBlendFactorOneMinusSourceAlpha;
 		default:
-			FORGE_UNIMPLEMENTED;
+			MACH_UNIMPLEMENTED;
 			break;
 		}
 		return MTLBlendFactorZero;
@@ -117,7 +117,7 @@ namespace Forge::GPU {
 		case GraphicsPipeline::DrawMode::Fill:
 			return MTLPrimitiveTopologyClassTriangle;
 		default:
-			FORGE_UNIMPLEMENTED;
+			MACH_UNIMPLEMENTED;
 			break;
 		}
 		return MTLPrimitiveTopologyClassUnspecified;
@@ -130,7 +130,7 @@ namespace Forge::GPU {
 		case GraphicsPipeline::Winding::CounterClockwise:
 			return MTLWindingCounterClockwise;
 		default:
-			FORGE_UNIMPLEMENTED;
+			MACH_UNIMPLEMENTED;
 			break;
 		}
 		return MTLWindingClockwise;
@@ -147,7 +147,7 @@ namespace Forge::GPU {
 			return MTLLoadActionDontCare;
 		}
 
-		FORGE_UNIMPLEMENTED;
+		MACH_UNIMPLEMENTED;
 		return MTLLoadActionDontCare;
 	}
 
@@ -162,7 +162,7 @@ namespace Forge::GPU {
 			return MTLLoadActionDontCare;
 		}
 
-		FORGE_UNIMPLEMENTED;
+		MACH_UNIMPLEMENTED;
 		return MTLLoadActionDontCare;
 	}
 
@@ -173,7 +173,7 @@ namespace Forge::GPU {
 		case StoreAction::DontCare:
 			return MTLStoreActionDontCare;
 		default:
-			FORGE_UNIMPLEMENTED;
+			MACH_UNIMPLEMENTED;
 			break;
 		}
 		return MTLStoreActionDontCare;
@@ -188,10 +188,10 @@ namespace Forge::GPU {
 		case GraphicsPipeline::CullMode::Back:
 			return MTLCullModeBack;
 		default:
-			FORGE_UNIMPLEMENTED;
+			MACH_UNIMPLEMENTED;
 			break;
 		}
 		return MTLCullModeNone;
 	}
 
-} // namespace Forge::GPU
+} // namespace Mach::GPU

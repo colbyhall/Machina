@@ -8,15 +8,15 @@
 
 #include <GUI/Window.hpp>
 
-#if FORGE_LANGUAGE == FORGE_LANGUAGE_OBJCPP
+#if MACH_LANGUAGE == MACH_LANGUAGE_OBJCPP
 	#import <AppKit/AppKit.h>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	class MacOSWindow final : public Window {
 	public:
 		explicit MacOSWindow(NSWindow* window, UniquePtr<GPU::Swapchain>&& swapchain)
 			: m_window{ window }
-			, m_swapchain(Forge::forward<UniquePtr<GPU::Swapchain>>(swapchain)) {}
+			, m_swapchain(Mach::forward<UniquePtr<GPU::Swapchain>>(swapchain)) {}
 
 		// Window interface
 		bool close() final;
@@ -33,6 +33,6 @@ namespace Forge::GUI {
 		NSWindow* m_window;
 		UniquePtr<GPU::Swapchain> m_swapchain;
 	};
-} // namespace Forge::GUI
+} // namespace Mach::GUI
 
-#endif // FORGE_LANGUAGE == FORGE_LANGUAGE_OBJCPP
+#endif // MACH_LANGUAGE == MACH_LANGUAGE_OBJCPP

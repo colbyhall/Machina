@@ -38,7 +38,7 @@ elseif(OS_WINDOWS)
 	)
 endif()
 
-add_forge_library(GUI ${GUI_ROOT} ${GUI_SRC_FILES})
+add_machina_library(GUI ${GUI_ROOT} ${GUI_SRC_FILES})
 target_link_libraries(GUI Core GPU)
 
 if (OS_MACOS)

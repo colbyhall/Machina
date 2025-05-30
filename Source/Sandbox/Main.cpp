@@ -11,13 +11,13 @@
 #include <Core/Memory.hpp>
 #include <GUI/Application.hpp>
 
-#if FORGE_OS == FORGE_OS_MACOS
+#if MACH_OS == MACH_OS_MACOS
 	#include <GPU/Drivers/Metal/Device.hpp>
-#elif FORGE_OS == FORGE_OS_WINDOWS
+#elif MACH_OS == MACH_OS_WINDOWS
 	#include <GPU/Drivers/D3D12/Device.hpp>
 #endif
 
-namespace Forge {
+namespace Mach {
 	int main() {
 		Core::Scheduler scheduler;
 		scheduler.init({
@@ -26,9 +26,9 @@ namespace Forge {
 			.waiting_count = 1024,
 		});
 
-#if FORGE_OS == FORGE_OS_MACOS
+#if MACH_OS == MACH_OS_MACOS
 		const auto device = GPU::create_metal_device();
-#elif FORGE_OS == FORGE_OS_WINDOWS
+#elif MACH_OS == MACH_OS_WINDOWS
 		const auto device = GPU::D3D12Device::create();
 #endif
 
@@ -41,4 +41,4 @@ namespace Forge {
 			});
 		});
 	}
-} // namespace Forge
+} // namespace Mach

@@ -18,7 +18,7 @@
 @implementation GrizzlyApplicationDelegate
 
 @end // GrizzlyApplicationDelegate
-namespace Forge::GUI {
+namespace Mach::GUI {
 	Application::Application(const Core::Scheduler& scheduler, const GPU::Device& device)
 		: m_scheduler(scheduler)
 		, m_state(device) {
@@ -64,4 +64,4 @@ namespace Forge::GUI {
 		}
 	}
 
-} // namespace Forge::GUI
+} // namespace Mach::GUI

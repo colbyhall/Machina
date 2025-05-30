@@ -11,7 +11,7 @@
 #include <Core/Memory.hpp>
 #include <Core/TypeTraits.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	enum class SharedType { NonAtomic, Atomic };
 
 	template <SharedType Type>
@@ -27,23 +27,23 @@ namespace Forge::Core {
 	public:
 		SharedCounter() = default;
 
-		FORGE_ALWAYS_INLINE u32 strong() const { return m_strong; }
-		FORGE_ALWAYS_INLINE u32 weak() const { return m_weak; }
+		MACH_ALWAYS_INLINE u32 strong() const { return m_strong; }
+		MACH_ALWAYS_INLINE u32 weak() const { return m_weak; }
 
-		FORGE_ALWAYS_INLINE u32 add_strong() const {
+		MACH_ALWAYS_INLINE u32 add_strong() const {
 			m_strong += 1;
 			return m_strong - 1;
 		}
-		FORGE_ALWAYS_INLINE u32 remove_strong() const {
+		MACH_ALWAYS_INLINE u32 remove_strong() const {
 			m_strong -= 1;
 			return m_strong + 1;
 		}
 
-		FORGE_ALWAYS_INLINE u32 add_weak() const {
+		MACH_ALWAYS_INLINE u32 add_weak() const {
 			m_weak += 1;
 			return m_weak - 1;
 		}
-		FORGE_ALWAYS_INLINE u32 remove_weak() const {
+		MACH_ALWAYS_INLINE u32 remove_weak() const {
 			m_weak -= 1;
 			return m_weak + 1;
 		}
@@ -58,14 +58,14 @@ namespace Forge::Core {
 	public:
 		SharedCounter() = default;
 
-		FORGE_ALWAYS_INLINE u32 strong() const { return m_strong.load(Order::Acquire); }
-		FORGE_ALWAYS_INLINE u32 weak() const { return m_weak.load(Order::Acquire); }
+		MACH_ALWAYS_INLINE u32 strong() const { return m_strong.load(Order::Acquire); }
+		MACH_ALWAYS_INLINE u32 weak() const { return m_weak.load(Order::Acquire); }
 
-		FORGE_ALWAYS_INLINE u32 add_strong() const { return m_strong.fetch_add(1, Order::AcqRel); }
-		FORGE_ALWAYS_INLINE u32 remove_strong() const { return m_strong.fetch_sub(1, Order::AcqRel); }
+		MACH_ALWAYS_INLINE u32 add_strong() const { return m_strong.fetch_add(1, Order::AcqRel); }
+		MACH_ALWAYS_INLINE u32 remove_strong() const { return m_strong.fetch_sub(1, Order::AcqRel); }
 
-		FORGE_ALWAYS_INLINE u32 add_weak() const { return m_weak.fetch_add(1, Order::AcqRel); }
-		FORGE_ALWAYS_INLINE u32 remove_weak() const { return m_weak.fetch_sub(1, Order::AcqRel); }
+		MACH_ALWAYS_INLINE u32 add_weak() const { return m_weak.fetch_add(1, Order::AcqRel); }
+		MACH_ALWAYS_INLINE u32 remove_weak() const { return m_weak.fetch_sub(1, Order::AcqRel); }
 
 	private:
 		Atomic<u32> m_strong{ 1 };
@@ -80,7 +80,7 @@ namespace Forge::Core {
 		explicit SharedPtr() : m_counter(nullptr), m_base(nullptr) {}
 
 		template <typename... Args>
-		static FORGE_ALWAYS_INLINE SharedPtr<Base, Type> create(Args&&... args)
+		static MACH_ALWAYS_INLINE SharedPtr<Base, Type> create(Args&&... args)
 			requires ConstructibleFrom<Base, Args...>
 		{
 			struct Combined {
@@ -93,7 +93,7 @@ namespace Forge::Core {
 				Memory::alloc(layout),
 				Combined{
 					.counter = SharedCounter<Type>{},
-					.base = Base{ Forge::forward<Args>(args)... },
+					.base = Base{ Mach::forward<Args>(args)... },
 				});
 
 			auto* counter = &ptr->counter;
@@ -191,70 +191,68 @@ namespace Forge::Core {
 			}
 		}
 
-		FORGE_ALWAYS_INLINE WeakPtr<Base, Type> downgrade() const {
+		MACH_ALWAYS_INLINE WeakPtr<Base, Type> downgrade() const {
 			auto& c = counter();
 			c.add_weak();
 			return WeakPtr<Base, Type>{ m_counter, m_base };
 		}
 
 		// Non Atomic Accessors
-		FORGE_ALWAYS_INLINE explicit operator Base*() const
+		MACH_ALWAYS_INLINE explicit operator Base*() const
 			requires(Type == SharedType::NonAtomic)
 		{
 			return &value();
 		}
-		FORGE_ALWAYS_INLINE explicit operator Base&() const
+		MACH_ALWAYS_INLINE explicit operator Base&() const
 			requires(Type == SharedType::NonAtomic)
 		{
 			return value();
 		}
-		FORGE_ALWAYS_INLINE Base* operator->() const
+		MACH_ALWAYS_INLINE Base* operator->() const
 			requires(Type == SharedType::NonAtomic)
 		{
 			return &value();
 		}
-		FORGE_ALWAYS_INLINE Base& operator*() const
+		MACH_ALWAYS_INLINE Base& operator*() const
 			requires(Type == SharedType::NonAtomic)
 		{
 			return value();
 		}
 
 		// Atomic Accessors are const only
-		FORGE_NO_DISCARD Base& unsafe_get_mut() const
+		MACH_NO_DISCARD Base& unsafe_get_mut() const
 			requires(Type == SharedType::Atomic)
 		{
 			return value();
 		}
 
-		FORGE_ALWAYS_INLINE explicit operator Base const*() const
+		MACH_ALWAYS_INLINE explicit operator Base const*() const
 			requires(Type == SharedType::Atomic)
 		{
 			return &value();
 		}
-		FORGE_ALWAYS_INLINE explicit operator Base const&() const
+		MACH_ALWAYS_INLINE explicit operator Base const&() const
 			requires(Type == SharedType::Atomic)
 		{
 			return value();
 		}
-		FORGE_ALWAYS_INLINE Base const* operator->() const
+		MACH_ALWAYS_INLINE Base const* operator->() const
 			requires(Type == SharedType::Atomic)
 		{
 			return &value();
 		}
-		FORGE_ALWAYS_INLINE Base const& operator*() const
+		MACH_ALWAYS_INLINE Base const& operator*() const
 			requires(Type == SharedType::Atomic)
 		{
 			return value();
 		}
 
-		FORGE_ALWAYS_INLINE bool is_valid() const { return m_counter != nullptr; }
+		MACH_ALWAYS_INLINE bool is_valid() const { return m_counter != nullptr; }
 
-		FORGE_ALWAYS_INLINE bool is_null() const { return m_counter != nullptr; }
+		MACH_ALWAYS_INLINE bool is_null() const { return m_counter != nullptr; }
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE u32 strong() const {
-			return m_counter != nullptr ? counter().strong() : 0;
-		}
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE u32 weak() const { return m_counter != nullptr ? counter().weak() : 0; }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE u32 strong() const { return m_counter != nullptr ? counter().strong() : 0; }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE u32 weak() const { return m_counter != nullptr ? counter().weak() : 0; }
 
 	private:
 		explicit SharedPtr(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
@@ -265,8 +263,8 @@ namespace Forge::Core {
 		template <typename, SharedType>
 		friend class WeakPtr;
 
-		FORGE_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
-		FORGE_ALWAYS_INLINE Base& value() const { return *m_base; }
+		MACH_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
+		MACH_ALWAYS_INLINE Base& value() const { return *m_base; }
 
 		Counter* m_counter = nullptr;
 		Base* m_base = nullptr;
@@ -336,7 +334,7 @@ namespace Forge::Core {
 			}
 		}
 
-		FORGE_NO_DISCARD Option<SharedPtr<Base, Type>> upgrade() const {
+		MACH_NO_DISCARD Option<SharedPtr<Base, Type>> upgrade() const {
 			auto& c = counter();
 			const auto strong_count = c.strong();
 			if (strong_count > 0) {
@@ -346,16 +344,14 @@ namespace Forge::Core {
 			return nullopt;
 		}
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE u32 strong() const {
-			return m_counter != nullptr ? counter().strong() : 0;
-		}
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE u32 weak() const { return m_counter != nullptr ? counter().weak() : 0; }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE u32 strong() const { return m_counter != nullptr ? counter().strong() : 0; }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE u32 weak() const { return m_counter != nullptr ? counter().weak() : 0; }
 
-		FORGE_ALWAYS_INLINE bool is_valid() const { return m_counter != nullptr; }
-		FORGE_ALWAYS_INLINE bool is_null() const { return m_counter != nullptr; }
+		MACH_ALWAYS_INLINE bool is_valid() const { return m_counter != nullptr; }
+		MACH_ALWAYS_INLINE bool is_null() const { return m_counter != nullptr; }
 
 	private:
-		FORGE_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
+		MACH_ALWAYS_INLINE Counter const& counter() const { return *m_counter; }
 
 		explicit WeakPtr(Counter* counter, Base* base) : m_counter(counter), m_base(base) {}
 
@@ -374,7 +370,7 @@ namespace Forge::Core {
 	public:
 		using Counter = SharedCounter<Type>;
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE SharedPtr<T, Type> to_shared() const {
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE SharedPtr<T, Type> to_shared() const {
 			return m_this.as_const_ref().unwrap().upgrade().unwrap();
 		}
 
@@ -384,9 +380,9 @@ namespace Forge::Core {
 
 		Option<WeakPtr<T, Type>> m_this = nullopt;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core
 
-namespace Forge {
+namespace Mach {
 	template <typename T>
 	using SharedPtr = Core::SharedPtr<T, Core::SharedType::Atomic>;
 
@@ -395,4 +391,4 @@ namespace Forge {
 
 	template <typename T>
 	using WeakPtr = Core::WeakPtr<T, Core::SharedType::Atomic>;
-} // namespace Forge
+} // namespace Mach

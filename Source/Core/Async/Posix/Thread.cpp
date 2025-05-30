@@ -7,20 +7,20 @@
 #include <Core/Async/Posix/Thread.hpp>
 #include <Core/Debug/Log.hpp>
 
-namespace Forge::Core {
-	thread_local Option<Forge::SharedPtr<Thread>> g_current_thread = nullopt;
+namespace Mach::Core {
+	thread_local Option<Mach::SharedPtr<Thread>> g_current_thread = nullopt;
 
 	Thread const& Thread::current() {
 		if (!g_current_thread.is_set()) {
 			PosixThread thread{ pthread_self() };
-			g_current_thread = Forge::SharedPtr<PosixThread>::create(Forge::move(thread));
+			g_current_thread = Mach::SharedPtr<PosixThread>::create(Mach::move(thread));
 		}
 		return *g_current_thread.as_ref().unwrap();
 	}
 
 	struct ThreadArg {
 		Thread::Function f;
-		Forge::SharedPtr<PosixThread> thread;
+		Mach::SharedPtr<PosixThread> thread;
 	};
 	static void* posix_thread_main(void* arg) {
 		auto* param = static_cast<ThreadArg*>(arg);
@@ -39,20 +39,20 @@ namespace Forge::Core {
 		return nullptr;
 	}
 
-	Forge::SharedPtr<Thread> Thread::spawn(Function&& f, SpawnInfo const& info) {
+	Mach::SharedPtr<Thread> Thread::spawn(Function&& f, SpawnInfo const& info) {
 		// TODO: Figure out how to use the data from info
-		FORGE_UNUSED(info);
+		MACH_UNUSED(info);
 
-		auto result = Forge::SharedPtr<PosixThread>::create(nullptr);
+		auto result = Mach::SharedPtr<PosixThread>::create(nullptr);
 		auto& mut_result = result.unsafe_get_mut();
 
 		auto param = Memory::alloc(Memory::Layout::single<ThreadArg>());
-		Memory::emplace<ThreadArg>(param, ThreadArg{ .f = Forge::forward<Function>(f), .thread = result });
+		Memory::emplace<ThreadArg>(param, ThreadArg{ .f = Mach::forward<Function>(f), .thread = result });
 
 		pthread_t thread;
 		const int create_result = pthread_create(&thread, nullptr, posix_thread_main, param);
 		// TODO: Error handling
-		FORGE_UNUSED(create_result);
+		MACH_UNUSED(create_result);
 
 		mut_result.m_thread = thread;
 
@@ -65,13 +65,13 @@ namespace Forge::Core {
 	void PosixThread::join() {
 		const int result = pthread_join(m_thread, nullptr);
 		// TODO: Error handling
-		FORGE_UNUSED(result);
+		MACH_UNUSED(result);
 		m_thread = nullptr;
 	}
 
 	void PosixThread::detach() {
 		const int result = pthread_detach(m_thread);
-		FORGE_UNUSED(result);
+		MACH_UNUSED(result);
 		m_thread = nullptr;
 	}
 
@@ -82,4 +82,4 @@ namespace Forge::Core {
 			// join();
 		}
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core

@@ -9,7 +9,7 @@
 #include <Core/FileSystem/File.hpp>
 #include <Core/Format.hpp>
 
-namespace Forge {
+namespace Mach {
 	template <typename... Args>
 	void dbgln(const StringView& fmt, const Args&... args) {
 		Core::BufferedWriter writer{ Core::File::stderr };
@@ -19,4 +19,4 @@ namespace Forge {
 		formatter.format(u8"\n{default}"_sv);
 		writer.flush();
 	}
-} // namespace Forge
+} // namespace Mach

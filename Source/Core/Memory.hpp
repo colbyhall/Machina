@@ -15,7 +15,7 @@
 #undef stdout
 #undef stderr
 
-namespace Forge::Core::Memory {
+namespace Mach::Core::Memory {
 	struct Layout {
 		usize size;
 		usize alignment;
@@ -33,14 +33,14 @@ namespace Forge::Core::Memory {
 
 	template <typename T, typename... Args>
 	NonNull<T> emplace(void* memory, Args&&... args) {
-		return new (memory) T{ Forge::forward<Args>(args)... };
+		return new (memory) T{ Mach::forward<Args>(args)... };
 	}
 
-	FORGE_NO_DISCARD NonNull<void> alloc(const Layout& layout);
+	MACH_NO_DISCARD NonNull<void> alloc(const Layout& layout);
 
 	template <typename T>
-	FORGE_ALWAYS_INLINE NonNull<T> alloc(usize len = 1) {
-		static_assert(Forge::Core::is_trivial<T>, "Value must be a trivial type to malloc");
+	MACH_ALWAYS_INLINE NonNull<T> alloc(usize len = 1) {
+		static_assert(Mach::Core::is_trivial<T>, "Value must be a trivial type to malloc");
 		return Memory::alloc(Layout::array<T>(len)).template as<T>();
 	}
 
@@ -53,7 +53,7 @@ namespace Forge::Core::Memory {
 	u8 count_ones(u8 byte);
 
 	template <typename T>
-	FORGE_ALWAYS_INLINE u32 count_ones(T t) {
+	MACH_ALWAYS_INLINE u32 count_ones(T t) {
 		const usize size = sizeof(T);
 		void* ptr = &t;
 		u8 const* u8_casted = (u8 const*)ptr;
@@ -70,8 +70,8 @@ namespace Forge::Core::Memory {
 	Slice<u8 const> as_slice_of_bytes(const T& t) {
 		return Slice<T const>(t).as_bytes();
 	}
-} // namespace Forge::Core::Memory
+} // namespace Mach::Core::Memory
 
-namespace Forge::Memory {
-	using namespace Forge::Core::Memory;
-} // namespace Forge::Memory
+namespace Mach::Memory {
+	using namespace Mach::Core::Memory;
+} // namespace Mach::Memory

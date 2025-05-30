@@ -11,12 +11,12 @@
 #include <Core/Debug/Assertions.hpp>
 #include <Core/IO/Writer.hpp>
 
-namespace Forge {
+namespace Mach {
 	template <typename T>
 	struct TypeFormatter;
-} // namespace Forge
+} // namespace Mach
 
-namespace Forge::Core {
+namespace Mach::Core {
 	class Formatter {
 	public:
 		explicit Formatter(Writer& writer, bool accepts_ansi = true)
@@ -29,7 +29,7 @@ namespace Forge::Core {
 			return *this;
 		}
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize bytes_written() const { return m_bytes_written; }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE usize bytes_written() const { return m_bytes_written; }
 
 	private:
 		void format_lambda(const StringView& fmt, Option<FunctionRef<void(StringView)>> f);
@@ -66,9 +66,9 @@ namespace Forge::Core {
 	usize print_float(Writer& writer, f32 value);
 	usize print_double(Writer& writer, f64 value);
 
-} // namespace Forge::Core
+} // namespace Mach::Core
 
-namespace Forge {
+namespace Mach {
 	template <>
 	struct TypeFormatter<u8> {
 		usize format(Core::Writer& writer, u8 value) { return Core::print_unsigned_integer(writer, value); }
@@ -125,4 +125,4 @@ namespace Forge {
 			return writer.write(Slice<u8 const>{ (const u8*)*value, value.len() });
 		}
 	};
-} // namespace Forge
+} // namespace Mach

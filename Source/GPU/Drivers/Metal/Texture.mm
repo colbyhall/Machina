@@ -6,4 +6,4 @@
 
 #include <GPU/Drivers/Metal/Texture.hpp>
 
-namespace Forge::GPU {} // namespace Forge::GPU
+namespace Mach::GPU {} // namespace Mach::GPU

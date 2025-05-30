@@ -7,7 +7,7 @@
 #include <Foundation/Foundation.h>
 #include <GPU/Drivers/Metal/Shader.hpp>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	static id<MTLFunction> get_function_from_library(id<MTLLibrary> library, StringView function_name) {
 		@autoreleasepool {
 			NSString* name = [[NSString alloc] initWithBytesNoCopy:(void*)*function_name
@@ -22,8 +22,8 @@ namespace Forge::GPU {
 	SharedPtr<VertexShader> MetalLibrary::create_vertex_shader(StringView function_name) const {
 		@autoreleasepool {
 			id<MTLFunction> function = get_function_from_library(m_library, function_name);
-			FORGE_ASSERT(function != nil);
-			FORGE_ASSERT(function.functionType == MTLFunctionTypeVertex);
+			MACH_ASSERT(function != nil);
+			MACH_ASSERT(function.functionType == MTLFunctionTypeVertex);
 			return SharedPtr<MetalVertexShader>::create(function);
 		}
 	}
@@ -31,9 +31,9 @@ namespace Forge::GPU {
 	SharedPtr<FragmentShader> MetalLibrary::create_fragment_shader(StringView function_name) const {
 		@autoreleasepool {
 			id<MTLFunction> function = get_function_from_library(m_library, function_name);
-			FORGE_ASSERT(function != nil);
-			FORGE_ASSERT(function.functionType == MTLFunctionTypeFragment);
+			MACH_ASSERT(function != nil);
+			MACH_ASSERT(function.functionType == MTLFunctionTypeFragment);
 			return SharedPtr<MetalFragmentShader>::create(function);
 		}
 	}
-} // namespace Forge::GPU
+} // namespace Mach::GPU

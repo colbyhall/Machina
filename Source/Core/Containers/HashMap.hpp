@@ -9,24 +9,20 @@
 #include <Core/Containers/Array.hpp>
 #include <Core/Hash.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	template <typename Key, typename Value>
 		requires Copyable<Key> && EqualityComparable<Key>
 	class HashMap {
 	public:
 		constexpr HashMap() = default;
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize len() const { return m_buckets.len(); }
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize cap() const { return m_buckets.cap(); }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE usize len() const { return m_buckets.len(); }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE usize cap() const { return m_buckets.cap(); }
 
 		void insert(const Key& key, Value&& value)
 			requires Movable<Value>
 		{
-			m_buckets.push(Bucket{
-				.key = key,
-				.value = Forge::forward<Value>(value),
-				.next = nullopt,
-			});
+			m_buckets.push(Bucket{ .key = key, .value = Mach::forward<Value>(value) });
 			refresh_layout();
 		}
 		void insert(const Key& key, const Value& value)
@@ -156,4 +152,4 @@ namespace Forge::Core {
 		Array<Bucket> m_buckets;
 		Array<Option<usize>> m_layout;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core

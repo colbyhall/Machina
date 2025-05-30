@@ -12,7 +12,7 @@
 #include <GPU/Resource.hpp>
 #include <GUI/Math.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	struct Mesh {
 		struct Vertex {
 			Point position;
@@ -48,7 +48,7 @@ namespace Forge::GUI {
 
 	private:
 		explicit Shape(MyVariant&& variant, const Bounds& bounds, Color color)
-			: m_variant(Forge::move(variant))
+			: m_variant(Mach::move(variant))
 			, m_bounds(bounds)
 			, m_color(color) {}
 
@@ -61,7 +61,7 @@ namespace Forge::GUI {
 	public:
 		explicit Canvas() = default;
 
-		FORGE_ALWAYS_INLINE void set_clip(Option<Bounds> clip) { m_active_clip = clip; }
+		MACH_ALWAYS_INLINE void set_clip(Option<Bounds> clip) { m_active_clip = clip; }
 
 		usize push(const Shape& shape);
 		void insert(usize index, const Shape& shape);
@@ -77,4 +77,4 @@ namespace Forge::GUI {
 		};
 		Array<ShapeAndClip> m_shapes;
 	};
-} // namespace Forge::GUI
+} // namespace Mach::GUI

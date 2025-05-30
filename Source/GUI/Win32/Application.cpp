@@ -10,7 +10,7 @@
 #include <Core/Windows.hpp>
 #include <GPU/GraphicsPipeline.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	static LRESULT CALLBACK window_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		return DefWindowProcW(hwnd, msg, wparam, lparam);
 	}
@@ -29,7 +29,7 @@ namespace Forge::GUI {
 		window_class.lpszClassName = window_class_name;
 
 		if (::RegisterClassExW(&window_class) == 0) {
-			FORGE_PANIC("Failure when registering window class.");
+			MACH_PANIC("Failure when registering window class.");
 		}
 	}
 
@@ -40,4 +40,4 @@ namespace Forge::GUI {
 			DispatchMessageA(&msg);
 		}
 	}
-} // namespace Forge::GUI
+} // namespace Mach::GUI

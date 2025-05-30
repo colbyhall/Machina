@@ -6,7 +6,7 @@
 
 #include <GUI/Canvas.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	Shape Shape::text(StringView s, const Bounds& bounds, Color color) {
 		return Shape(MyVariant(Text{ .string = s }), bounds, color);
 	}
@@ -66,7 +66,7 @@ namespace Forge::GUI {
 			mesh.indices.push(static_cast<Mesh::Index>(top_right));
 			mesh.indices.push(static_cast<Mesh::Index>(bottom_right));
 		} else {
-			FORGE_UNIMPLEMENTED;
+			MACH_UNIMPLEMENTED;
 		}
 	}
 
@@ -92,4 +92,4 @@ namespace Forge::GUI {
 		return result;
 	}
 
-} // namespace Forge::GUI
+} // namespace Mach::GUI

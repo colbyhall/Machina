@@ -6,7 +6,7 @@
 
 #include <Core/Containers/String.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	constexpr u32 utf8_reject = 12;
 
 	usize utf8_encode(Char c, UTF8Char* dest, u32& errors) {
@@ -40,7 +40,7 @@ namespace Forge::Core {
 		UTF8Char local[4] = {};
 		u32 error;
 		const usize char_len = utf8_encode(c, local, error);
-		FORGE_ASSERT(error != utf8_reject);
+		MACH_ASSERT(error != utf8_reject);
 
 		// Preallocate enough space to add the bytes
 		const usize slag = m_bytes.cap() - m_bytes.len();
@@ -83,35 +83,35 @@ namespace Forge::Core {
 		}
 		return written;
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core
 
 #include <Core/Debug/Test.hpp>
 
-#if FORGE_ENABLE_TEST
-FORGE_TEST_SUITE("Containers") {
-	using namespace Forge::Core;
+#if MACH_ENABLE_TEST
+MACH_TEST_SUITE("Containers") {
+	using namespace Mach::Core;
 
-	FORGE_TEST_CASE("String") {
-		FORGE_SUBCASE("default constructor") {
+	MACH_TEST_CASE("String") {
+		MACH_SUBCASE("default constructor") {
 			String string;
-			FORGE_CHECK(string.len() == 0);
+			MACH_CHECK(string.len() == 0);
 		}
 
-		FORGE_SUBCASE("push") {
+		MACH_SUBCASE("push") {
 			String string;
 			string.push('f');
 			string.push('o');
 			string.push('o');
-			FORGE_CHECK(string.len() == 3);
-			FORGE_CHECK(string == u8"foo"_sv);
+			MACH_CHECK(string.len() == 3);
+			MACH_CHECK(string == u8"foo"_sv);
 		}
 
-		FORGE_SUBCASE("append") {
+		MACH_SUBCASE("append") {
 			String string;
 			string.append(u8"foo"_sv);
-			FORGE_CHECK(string.len() == 3);
-			FORGE_CHECK(string == u8"foo"_sv);
+			MACH_CHECK(string.len() == 3);
+			MACH_CHECK(string == u8"foo"_sv);
 		}
 	}
 }
-#endif // FORGE_ENABLE_TEST
+#endif // MACH_ENABLE_TEST

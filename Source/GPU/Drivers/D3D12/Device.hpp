@@ -10,7 +10,7 @@
 
 #include <GPU/Drivers/D3D12/D3D12.hpp>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	class D3D12Device final : public Device {
 	public:
 		using CreateDevice = Core::RemovePointer<PFN_D3D12_CREATE_DEVICE>;
@@ -29,4 +29,4 @@ namespace Forge::GPU {
 
 	private:
 	};
-} // namespace Forge::GPU
+} // namespace Mach::GPU

@@ -10,7 +10,7 @@
 #include <Core/Containers/Option.hpp>
 #include <Core/Memory.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	template <typename T, typename... Ts>
 	struct TypeIndex;
 
@@ -70,7 +70,7 @@ namespace Forge::Core {
 			requires Contains<T, Ts...>
 		Variant(T&& value) {
 			static_assert(Contains<T, Ts...>);
-			Memory::emplace<T>(m_data, T(Forge::forward<T>(value)));
+			Memory::emplace<T>(m_data, T(Mach::forward<T>(value)));
 			m_tag = static_cast<Tag>(type_index<T, Ts...>);
 		}
 
@@ -85,14 +85,14 @@ namespace Forge::Core {
 		}
 
 		Variant(Variant&& other) noexcept {
-			move_by_index(Forge::move(other));
+			move_by_index(Mach::move(other));
 			other.m_tag = 0;
 		}
 
 		Variant& operator=(Variant&& other) noexcept {
 			if (this != &other) {
 				destroy_by_index();
-				move_by_index(Forge::move(other));
+				move_by_index(Mach::move(other));
 				other.m_tag = 0;
 			}
 			return *this;
@@ -170,17 +170,17 @@ namespace Forge::Core {
 				if (other.m_tag == Index) {
 					using T = Nth<Index, Ts...>;
 					auto* from = reinterpret_cast<T*>(other.m_data);
-					Memory::emplace<T>(m_data, T(Forge::move(*from)));
+					Memory::emplace<T>(m_data, T(Mach::move(*from)));
 					m_tag = other.m_tag;
 				} else {
-					move_by_index<Index + 1>(Forge::move(other));
+					move_by_index<Index + 1>(Mach::move(other));
 				}
 			}
 		}
 	};
 
-} // namespace Forge::Core
+} // namespace Mach::Core
 
-namespace Forge {
+namespace Mach {
 	using Core::Variant;
 }

@@ -6,7 +6,7 @@
 
 #include <GUI/Layout.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	Layout::Layout(Direction direction, const Bounds& bounds) : m_direction(direction), m_bounds(bounds) {
 		switch (m_direction) {
 		case Direction::UpToDown:
@@ -101,7 +101,7 @@ namespace Forge::GUI {
 		} break;
 		}
 
-		FORGE_UNREACHABLE;
+		MACH_UNREACHABLE;
 		// C++ requires a return statement, but we should never reach this point.
 		return Bounds{};
 	}
@@ -117,7 +117,7 @@ namespace Forge::GUI {
 		case Direction::RightToLeft:
 			return m_cursor - m_bounds.min.x;
 		}
-		FORGE_UNREACHABLE;
+		MACH_UNREACHABLE;
 		return 0;
 	}
-} // namespace Forge::GUI
+} // namespace Mach::GUI

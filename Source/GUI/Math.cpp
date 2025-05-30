@@ -6,7 +6,7 @@
 
 #include <GUI/Math.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	const Color Color::white = Color(0xFFFFFFFF);
 	const Color Color::black = Color(0x000000FF);
 	const Color Color::transparent = Color(0x00000000);
@@ -46,4 +46,4 @@ namespace Forge::GUI {
 			.max = Point(x_max, y_max),
 		};
 	}
-} // namespace Forge::GUI
+} // namespace Mach::GUI

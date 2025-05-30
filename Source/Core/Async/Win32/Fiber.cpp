@@ -7,8 +7,8 @@
 #include <Core/Async/Win32/Fiber.hpp>
 #include <Core/Debug/Log.hpp>
 
-namespace Forge::Core {
-	thread_local Option<Forge::SharedPtr<Fiber>> g_current_fiber = nullopt;
+namespace Mach::Core {
+	thread_local Option<Mach::SharedPtr<Fiber>> g_current_fiber = nullopt;
 
 	static void fiber_entry(LPVOID param) {
 		Fiber::Function* const f = static_cast<Fiber::Function*>(param);
@@ -16,13 +16,13 @@ namespace Forge::Core {
 		Memory::free(f);
 	}
 
-	Forge::SharedPtr<Fiber> Fiber::spawn(Function&& f, SpawnInfo const& spawn_info) {
+	Mach::SharedPtr<Fiber> Fiber::spawn(Function&& f, SpawnInfo const& spawn_info) {
 		auto param = Memory::alloc(Memory::Layout::single<Function>());
-		Memory::emplace<Function>(param, Forge::move(f));
+		Memory::emplace<Function>(param, Mach::move(f));
 
 		LPVOID handle = ::CreateFiber(static_cast<SIZE_T>(spawn_info.stack_size), fiber_entry, NULL);
 		Win32Fiber fiber(handle);
-		return Forge::SharedPtr<Win32Fiber>::create(Forge::move(fiber));
+		return Mach::SharedPtr<Win32Fiber>::create(Mach::move(fiber));
 	}
 
 	Fiber const& Fiber::current() {
@@ -30,7 +30,7 @@ namespace Forge::Core {
 			LPVOID handle = ::ConvertThreadToFiber(NULL);
 
 			Win32Fiber fiber(handle, true);
-			g_current_fiber = Forge::SharedPtr<Win32Fiber>::create(Forge::move(fiber));
+			g_current_fiber = Mach::SharedPtr<Win32Fiber>::create(Mach::move(fiber));
 		}
 		return *g_current_fiber.as_ref().unwrap();
 	}
@@ -43,4 +43,4 @@ namespace Forge::Core {
 	}
 
 	void Win32Fiber::switch_to() const { ::SwitchToFiber(m_handle); }
-} // namespace Forge::Core
+} // namespace Mach::Core

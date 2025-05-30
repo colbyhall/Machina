@@ -9,7 +9,7 @@
 #include <Core/Containers/Option.hpp>
 #include <Core/Containers/Slice.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	class CharsIterator;
 
 	class Char {
@@ -55,26 +55,26 @@ namespace Forge::Core {
 	 */
 	class StringView {
 	public:
-		FORGE_ALWAYS_INLINE constexpr StringView() = default;
-		FORGE_ALWAYS_INLINE StringView(const Slice<UTF8Char const>& bytes) : m_bytes(bytes) {}
-		FORGE_ALWAYS_INLINE constexpr StringView(const UTF8Char* ptr, usize size) : m_bytes(ptr, size) {}
-		FORGE_ALWAYS_INLINE static StringView from_cstring(const char* ptr) {
+		MACH_ALWAYS_INLINE constexpr StringView() = default;
+		MACH_ALWAYS_INLINE StringView(const Slice<UTF8Char const>& bytes) : m_bytes(bytes) {}
+		MACH_ALWAYS_INLINE constexpr StringView(const UTF8Char* ptr, usize size) : m_bytes(ptr, size) {}
+		MACH_ALWAYS_INLINE static StringView from_cstring(const char* ptr) {
 			return StringView(reinterpret_cast<const UTF8Char*>(ptr), strlen(ptr));
 		}
 
-		FORGE_ALWAYS_INLINE explicit operator Slice<UTF8Char const>() const { return m_bytes; }
-		FORGE_ALWAYS_INLINE const UTF8Char* operator*() const { return &m_bytes[0]; }
+		MACH_ALWAYS_INLINE explicit operator Slice<UTF8Char const>() const { return m_bytes; }
+		MACH_ALWAYS_INLINE const UTF8Char* operator*() const { return &m_bytes[0]; }
 
-		FORGE_ALWAYS_INLINE StringView substring(usize start, usize end) const {
+		MACH_ALWAYS_INLINE StringView substring(usize start, usize end) const {
 			if (start == end) {
 				return StringView{};
 			}
-			FORGE_ASSERT(start <= end);
+			MACH_ASSERT(start <= end);
 			return StringView{ &m_bytes[start], end - start };
 		}
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize len() const { return m_bytes.len(); }
-		FORGE_NO_DISCARD CharsIterator chars() const;
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE usize len() const { return m_bytes.len(); }
+		MACH_NO_DISCARD CharsIterator chars() const;
 		bool operator==(const StringView& right) const;
 		bool operator!=(const StringView& right) const;
 
@@ -84,26 +84,26 @@ namespace Forge::Core {
 
 	class CharsIterator {
 	public:
-		FORGE_ALWAYS_INLINE explicit CharsIterator(const StringView& string)
+		MACH_ALWAYS_INLINE explicit CharsIterator(const StringView& string)
 			: m_string{ string }
 			, m_byte_index{ 0 }
 			, m_char_index{ 0 }
 			, m_decoder_state{ 0 }
 			, m_codepoint{ 0 } {}
 
-		FORGE_ALWAYS_INLINE explicit operator bool() const { return should_continue(); }
-		FORGE_ALWAYS_INLINE CharsIterator& operator++() {
+		MACH_ALWAYS_INLINE explicit operator bool() const { return should_continue(); }
+		MACH_ALWAYS_INLINE CharsIterator& operator++() {
 			next();
 			return *this;
 		}
-		FORGE_ALWAYS_INLINE Char operator*() const { return get(); }
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize index() const { return m_char_index; }
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize byte_offset() const { return m_byte_index; }
+		MACH_ALWAYS_INLINE Char operator*() const { return get(); }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE usize index() const { return m_char_index; }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE usize byte_offset() const { return m_byte_index; }
 
 	private:
-		FORGE_NO_DISCARD bool should_continue() const;
+		MACH_NO_DISCARD bool should_continue() const;
 		void next();
-		FORGE_NO_DISCARD Char get() const;
+		MACH_NO_DISCARD Char get() const;
 
 		StringView m_string;
 		usize m_byte_index;
@@ -111,9 +111,9 @@ namespace Forge::Core {
 		u32 m_decoder_state;
 		Char m_codepoint;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core
 
-namespace Forge {
+namespace Mach {
 	using Core::StringView;
 
 	template <typename Hasher>
@@ -121,8 +121,8 @@ namespace Forge {
 		const auto bytes = static_cast<Slice<Core::UTF8Char const>>(value).as_bytes();
 		hasher.write(bytes);
 	}
-} // namespace Forge
+} // namespace Mach
 
-constexpr Forge::StringView operator"" _sv(const Forge::Core::UTF8Char* literal, Forge::usize length) noexcept {
-	return Forge::StringView(literal, length);
+constexpr Mach::StringView operator"" _sv(const Mach::Core::UTF8Char* literal, Mach::usize length) noexcept {
+	return Mach::StringView(literal, length);
 }

@@ -10,7 +10,7 @@
 #include <Core/Containers/StringView.hpp>
 #include <Core/TypeTraits.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	class Library;
 
 	template <typename T>
@@ -34,8 +34,8 @@ namespace Forge::Core {
 		 */
 		Symbol(FunctionPtr f, const Library& library);
 
-		FORGE_NO_COPY(Symbol);
-		Symbol(Symbol&& move) : m_function(move.m_function), m_library(Forge::move(move.m_library)) {
+		MACH_NO_COPY(Symbol);
+		Symbol(Symbol&& move) : m_function(move.m_function), m_library(Mach::move(move.m_library)) {
 			move.m_function = nullptr;
 		}
 		Symbol& operator=(Symbol&& move) {
@@ -43,7 +43,7 @@ namespace Forge::Core {
 
 			m_function = move.m_function;
 			move.m_function = nullptr;
-			m_library = Forge::move(move.m_library);
+			m_library = Mach::move(move.m_library);
 
 			return *this;
 		}
@@ -55,8 +55,8 @@ namespace Forge::Core {
 		 * @return The result of the function call.
 		 */
 		Ret operator()(Args... args) const {
-			FORGE_ASSERT(m_function != nullptr);
-			return m_function(Forge::forward<Args>(args)...);
+			MACH_ASSERT(m_function != nullptr);
+			return m_function(Mach::forward<Args>(args)...);
 		}
 
 		/**
@@ -68,10 +68,10 @@ namespace Forge::Core {
 
 	private:
 		FunctionPtr m_function = nullptr;
-		Forge::SharedPtr<Library> m_library;
+		Mach::SharedPtr<Library> m_library;
 	};
 
-	class Library : public Forge::SharedPtrFromThis<Library> {
+	class Library : public Mach::SharedPtrFromThis<Library> {
 	public:
 		/**
 		 * Loads a library from the specified path.
@@ -79,7 +79,7 @@ namespace Forge::Core {
 		 * @param path The path to the library.
 		 * @return A shared pointer to the loaded library. It may be null if the library could not be loaded.
 		 */
-		static Forge::SharedPtr<Library> load(const StringView& path);
+		static Mach::SharedPtr<Library> load(const StringView& path);
 
 		template <typename T>
 		Symbol<T> find_symbol(const StringView& name) const {
@@ -100,7 +100,7 @@ namespace Forge::Core {
 	Symbol<Ret(Args...)>::Symbol(FunctionPtr f, const Library& library)
 		: m_function(f)
 		, m_library(library.to_shared()) {
-		FORGE_ASSERT(m_function != nullptr);
+		MACH_ASSERT(m_function != nullptr);
 	}
 
-} // namespace Forge::Core
+} // namespace Mach::Core

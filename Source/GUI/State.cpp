@@ -10,12 +10,12 @@
 #include <GPU/Device.hpp>
 #include <GPU/GraphicsPipeline.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	Id::Id(u32 item, u32 index) : m_value((static_cast<u64>(item) << 32) | static_cast<u64>(index)) {}
 
 	Id Id::from_string(StringView s) {
 		Core::FNV1Hasher hasher;
-		Forge::hash(hasher, s);
+		Mach::hash(hasher, s);
 		return Id(hasher.finish());
 	}
 
@@ -91,8 +91,8 @@ namespace Forge::GUI {
 		const auto index = m_windows.push(WindowContext{
 			.id = id,
 			.last_frame = m_frame,
-			.window = Forge::move(window),
+			.window = Mach::move(window),
 		});
 		return m_windows[index];
 	}
-} // namespace Forge::GUI
+} // namespace Mach::GUI

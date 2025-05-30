@@ -8,7 +8,7 @@
 
 #include <GUI/Math.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	class Layout {
 	public:
 		/** Defines the direction elements will be layed out. */
@@ -39,4 +39,4 @@ namespace Forge::GUI {
 		Bounds m_bounds;
 		Real m_cursor;
 	};
-} // namespace Forge::GUI
+} // namespace Mach::GUI

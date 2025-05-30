@@ -9,12 +9,12 @@
 #include <Core/Debug/Assertions.hpp>
 #include <dirent.h>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	Option<PosixDirectory> PosixDirectory::open(const StringView& path) { return PosixDirectory{ String::from(path) }; }
 
 	void PosixDirectory::for_each(FunctionRef<bool()> f) {
 		DIR* const dir = ::opendir((const char*)*m_path);
-		FORGE_ASSERT(dir != nullptr);
+		MACH_ASSERT(dir != nullptr);
 
 		dirent* entry = nullptr;
 		while ((entry = ::readdir(dir)) != nullptr) {
@@ -25,4 +25,4 @@ namespace Forge::Core {
 
 		::closedir(dir);
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core

@@ -11,7 +11,7 @@
 #include <GUI/Application.hpp>
 #include <GUI/Window.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	UniquePtr<Window> Window::create(CreateInfo const& create_info) {
 		@autoreleasepool {
 			const NSRect size = NSMakeRect(0.f, 0.f, create_info.size.x, create_info.size.y);
@@ -29,7 +29,7 @@ namespace Forge::GUI {
 			[window setTabbingMode:NSWindowTabbingModeDisallowed];
 
 			auto swapchain = create_info.device.create_swapchain(window);
-			return UniquePtr<MacOSWindow>::create(window, Forge::move(swapchain));
+			return UniquePtr<MacOSWindow>::create(window, Mach::move(swapchain));
 		}
 	}
 
@@ -84,4 +84,4 @@ namespace Forge::GUI {
 			return { static_cast<Real>(windowPoint.x), static_cast<Real>(windowPoint.y) };
 		}
 	}
-} // namespace Forge::GUI
+} // namespace Mach::GUI

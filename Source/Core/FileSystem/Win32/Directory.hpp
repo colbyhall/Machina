@@ -9,20 +9,20 @@
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/String.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	class Win32Directory {
 	public:
 		static Option<Win32Directory> open(const StringView& path);
 		static Win32Directory cwd();
 
-		FORGE_NO_COPY(Win32Directory);
+		MACH_NO_COPY(Win32Directory);
 		Win32Directory(Win32Directory&& move) = default;
 		Win32Directory& operator=(Win32Directory&& move) = default;
 
 		void for_each(FunctionRef<bool()> f);
 
 	private:
-		explicit Win32Directory(String&& path) : m_path(Forge::move(path)) {}
+		explicit Win32Directory(String&& path) : m_path(Mach::move(path)) {}
 		String m_path;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core

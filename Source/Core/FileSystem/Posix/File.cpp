@@ -9,7 +9,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	PosixFile PosixFile::stdin{ 0 };
 	PosixFile PosixFile::stdout{ 1 };
 	PosixFile PosixFile::stderr{ 2 };
@@ -30,8 +30,8 @@ namespace Forge::Core {
 	}
 
 	PosixFile& PosixFile::operator=(PosixFile&& move) {
-		auto to_destroy = Forge::move(*this);
-		FORGE_UNUSED(to_destroy);
+		auto to_destroy = Mach::move(*this);
+		MACH_UNUSED(to_destroy);
 
 		m_fd = move.m_fd;
 		move.m_fd = -1;
@@ -40,12 +40,12 @@ namespace Forge::Core {
 	}
 
 	usize PosixFile::read(Slice<u8> bytes) {
-		FORGE_ASSERT(m_fd != -1);
+		MACH_ASSERT(m_fd != -1);
 		return static_cast<usize>(::read(m_fd, bytes.begin(), bytes.len()));
 	}
 
 	usize PosixFile::write(Slice<u8 const> bytes) {
-		FORGE_ASSERT(m_fd != -1);
+		MACH_ASSERT(m_fd != -1);
 		return static_cast<usize>(::write(m_fd, bytes.begin(), bytes.len()));
 	}
 
@@ -56,4 +56,4 @@ namespace Forge::Core {
 			m_fd = -1;
 		}
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core

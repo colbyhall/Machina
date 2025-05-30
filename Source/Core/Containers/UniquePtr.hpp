@@ -9,7 +9,7 @@
 #include <Core/Concepts.hpp>
 #include <Core/Memory.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	template <typename Base>
 	class UniquePtr {
 	public:
@@ -17,7 +17,7 @@ namespace Forge::Core {
 		explicit UniquePtr(NullPtr) : m_ptr(nullptr) {}
 
 		template <typename... Args>
-		static FORGE_ALWAYS_INLINE UniquePtr<Base> create(Args&&... args)
+		static MACH_ALWAYS_INLINE UniquePtr<Base> create(Args&&... args)
 			requires ConstructibleFrom<Base, Args...>
 		{
 			return UniquePtr<Base>{ Base(std::forward<Args>(args)...) };
@@ -62,22 +62,22 @@ namespace Forge::Core {
 			}
 		}
 
-		FORGE_ALWAYS_INLINE operator Base*() { return m_ptr; }
-		FORGE_ALWAYS_INLINE operator Base*() const { return m_ptr; }
-		FORGE_ALWAYS_INLINE operator Base&() { return *m_ptr; }
-		FORGE_ALWAYS_INLINE operator Base&() const { return *m_ptr; }
-		FORGE_ALWAYS_INLINE Base* operator->() { return m_ptr; }
-		FORGE_ALWAYS_INLINE Base* operator->() const { return m_ptr; }
-		FORGE_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
-		FORGE_ALWAYS_INLINE Base& operator*() const { return *m_ptr; }
-		FORGE_ALWAYS_INLINE bool is_valid() const { return m_ptr != nullptr; }
+		MACH_ALWAYS_INLINE operator Base*() { return m_ptr; }
+		MACH_ALWAYS_INLINE operator Base*() const { return m_ptr; }
+		MACH_ALWAYS_INLINE operator Base&() { return *m_ptr; }
+		MACH_ALWAYS_INLINE operator Base&() const { return *m_ptr; }
+		MACH_ALWAYS_INLINE Base* operator->() { return m_ptr; }
+		MACH_ALWAYS_INLINE Base* operator->() const { return m_ptr; }
+		MACH_ALWAYS_INLINE Base& operator*() { return *m_ptr; }
+		MACH_ALWAYS_INLINE Base& operator*() const { return *m_ptr; }
+		MACH_ALWAYS_INLINE bool is_valid() const { return m_ptr != nullptr; }
 
 	private:
-		FORGE_ALWAYS_INLINE explicit UniquePtr(Base&& base)
+		MACH_ALWAYS_INLINE explicit UniquePtr(Base&& base)
 			requires MoveConstructible<Base>
 		{
 			const auto ptr = Memory::alloc(Memory::Layout::single<Base>());
-			m_ptr = Memory::emplace<Base>(ptr, Forge::forward<Base>(base));
+			m_ptr = Memory::emplace<Base>(ptr, Mach::forward<Base>(base));
 		}
 
 		template <typename Derived>
@@ -95,10 +95,10 @@ namespace Forge::Core {
 		explicit UniquePtr() : m_ptr(nullptr) {}
 		explicit UniquePtr(NullPtr) : m_ptr(nullptr) {}
 
-		static FORGE_ALWAYS_INLINE UniquePtr create(usize len)
+		static MACH_ALWAYS_INLINE UniquePtr create(usize len)
 			requires DefaultInitializable<T>
 		{
-			FORGE_ASSERT(len > 0);
+			MACH_ASSERT(len > 0);
 			const auto memory = Memory::alloc(Memory::Layout::array<T>(len));
 			T* const ptr = reinterpret_cast<T*>(*memory);
 			for (usize i = 0; i < len; ++i) {
@@ -110,7 +110,7 @@ namespace Forge::Core {
 		UniquePtr(const UniquePtr& copy) noexcept
 			requires CopyConstructible<T>
 		{
-			FORGE_ASSERT(copy.len() > 0);
+			MACH_ASSERT(copy.len() > 0);
 			const auto memory = Memory::alloc(Memory::Layout::array<T>(copy.len()));
 			T* const ptr = reinterpret_cast<T*>(*memory);
 			for (usize i = 0; i < copy.len(); ++i) {
@@ -123,7 +123,7 @@ namespace Forge::Core {
 			requires CopyConstructible<T>
 		{
 			this->~UniquePtr();
-			FORGE_ASSERT(copy.len() > 0);
+			MACH_ASSERT(copy.len() > 0);
 			const auto memory = Memory::alloc(Memory::Layout::array<T>(copy.len()));
 			T* const ptr = reinterpret_cast<T*>(*memory);
 			for (usize i = 0; i < copy.len(); ++i) {
@@ -150,27 +150,27 @@ namespace Forge::Core {
 			return *this;
 		}
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE usize len() const { return m_len; }
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_valid_index(usize index) const { return index < len(); }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE usize len() const { return m_len; }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE bool is_valid_index(usize index) const { return index < len(); }
 
-		FORGE_ALWAYS_INLINE T* begin() { return m_ptr; }
-		FORGE_ALWAYS_INLINE T* end() { return m_ptr + m_len; }
-		FORGE_ALWAYS_INLINE const T* begin() const { return m_ptr; }
-		FORGE_ALWAYS_INLINE const T* end() const { return m_ptr + m_len; }
-		FORGE_ALWAYS_INLINE const T* cbegin() const { return m_ptr; }
-		FORGE_ALWAYS_INLINE const T* cend() const { return m_ptr + m_len; }
+		MACH_ALWAYS_INLINE T* begin() { return m_ptr; }
+		MACH_ALWAYS_INLINE T* end() { return m_ptr + m_len; }
+		MACH_ALWAYS_INLINE const T* begin() const { return m_ptr; }
+		MACH_ALWAYS_INLINE const T* end() const { return m_ptr + m_len; }
+		MACH_ALWAYS_INLINE const T* cbegin() const { return m_ptr; }
+		MACH_ALWAYS_INLINE const T* cend() const { return m_ptr + m_len; }
 
-		FORGE_ALWAYS_INLINE operator T*() { return m_ptr; }
-		FORGE_ALWAYS_INLINE operator T*() const { return m_ptr; }
-		FORGE_ALWAYS_INLINE T& operator[](usize index) {
-			FORGE_ASSERT(is_valid_index(index), "Index out of bounds");
+		MACH_ALWAYS_INLINE operator T*() { return m_ptr; }
+		MACH_ALWAYS_INLINE operator T*() const { return m_ptr; }
+		MACH_ALWAYS_INLINE T& operator[](usize index) {
+			MACH_ASSERT(is_valid_index(index), "Index out of bounds");
 			return m_ptr[index];
 		}
-		FORGE_ALWAYS_INLINE T const& operator[](usize index) const {
-			FORGE_ASSERT(is_valid_index(index), "Index out of bounds");
+		MACH_ALWAYS_INLINE T const& operator[](usize index) const {
+			MACH_ASSERT(is_valid_index(index), "Index out of bounds");
 			return m_ptr[index];
 		}
-		FORGE_ALWAYS_INLINE bool is_valid() const { return m_ptr != nullptr; }
+		MACH_ALWAYS_INLINE bool is_valid() const { return m_ptr != nullptr; }
 
 		~UniquePtr() {
 			if (m_ptr) {
@@ -187,13 +187,13 @@ namespace Forge::Core {
 		}
 
 	private:
-		FORGE_ALWAYS_INLINE explicit UniquePtr(T* ptr, usize len) : m_ptr(ptr), m_len(len) {}
+		MACH_ALWAYS_INLINE explicit UniquePtr(T* ptr, usize len) : m_ptr(ptr), m_len(len) {}
 
 		T* m_ptr;
 		usize m_len;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core
 
-namespace Forge {
+namespace Mach {
 	using Core::UniquePtr;
-} // namespace Forge
+} // namespace Mach

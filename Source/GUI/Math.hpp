@@ -8,7 +8,7 @@
 
 #include <Core/Math/Vector2.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	using Real = f32;
 	using Point = Vector2<Real>;
 	using Size = Vector2<Real>;
@@ -29,7 +29,7 @@ namespace Forge::GUI {
 		static const Color magenta;
 		static const Color yellow;
 
-		FORGE_ALWAYS_INLINE explicit operator u32() const { return m_rgba; }
+		MACH_ALWAYS_INLINE explicit operator u32() const { return m_rgba; }
 
 	private:
 		u32 m_rgba;
@@ -64,8 +64,8 @@ namespace Forge::GUI {
 		 */
 		Option<Bounds> intersects(const Bounds& other) const;
 
-		FORGE_ALWAYS_INLINE Real width() const { return max.x - min.x; }
-		FORGE_ALWAYS_INLINE Real height() const { return max.y - min.y; }
-		FORGE_ALWAYS_INLINE Size size() const { return Size(width(), height()); }
+		MACH_ALWAYS_INLINE Real width() const { return max.x - min.x; }
+		MACH_ALWAYS_INLINE Real height() const { return max.y - min.y; }
+		MACH_ALWAYS_INLINE Size size() const { return Size(width(), height()); }
 	};
-} // namespace Forge::GUI
+} // namespace Mach::GUI

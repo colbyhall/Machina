@@ -9,7 +9,7 @@
 #include <Core/Core.hpp>
 #include <initializer_list>
 
-namespace Forge {
+namespace Mach {
 	template <typename T>
 	using InitializerList = std::initializer_list<T>;
-} // namespace Forge
+} // namespace Mach

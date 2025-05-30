@@ -9,17 +9,17 @@
 #include <Core/Containers/WString.hpp>
 #include <Core/Windows.hpp>
 
-namespace Forge::Core {
-	Forge::SharedPtr<Library> Library::load(const StringView& path) {
+namespace Mach::Core {
+	Mach::SharedPtr<Library> Library::load(const StringView& path) {
 		WString wide_path;
 		wide_path.append(path);
 
 		auto handle = ::LoadLibraryW(wide_path.begin());
 		if (handle == nullptr) {
-			return Forge::SharedPtr<Library>();
+			return Mach::SharedPtr<Library>();
 		}
 
-		return Forge::SharedPtr<Win32Library>::create(handle);
+		return Mach::SharedPtr<Win32Library>::create(handle);
 	}
 
 	void* Win32Library::find_symbol_impl(const StringView& name) const {
@@ -41,4 +41,4 @@ namespace Forge::Core {
 			m_handle = nullptr;
 		}
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core

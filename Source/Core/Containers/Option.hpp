@@ -13,12 +13,12 @@
 	({                                                                                                                 \
 		auto&& _temp_result = (expression);                                                                            \
 		if (!_temp_result.is_set()) {                                                                                  \
-			return Forge::Core::nullopt;                                                                               \
+			return Mach::Core::nullopt;                                                                                \
 		}                                                                                                              \
 		_temp_result.unwrap();                                                                                         \
 	})
 
-namespace Forge::Core {
+namespace Mach::Core {
 	struct NullOpt {
 		constexpr explicit NullOpt(int) {};
 	};
@@ -33,15 +33,15 @@ namespace Forge::Core {
 	public:
 		// Constructors
 		Option() = default;
-		FORGE_ALWAYS_INLINE constexpr Option(NullOpt) : m_set(false), m_data() {}
-		FORGE_ALWAYS_INLINE Option(T&& t)
+		MACH_ALWAYS_INLINE constexpr Option(NullOpt) : m_set(false), m_data() {}
+		MACH_ALWAYS_INLINE Option(T&& t)
 			requires MoveConstructible<T>
 			: m_set(true)
 			, m_data() {
 			auto* p = m_data;
-			Memory::emplace<T>(p, Forge::forward<T>(t));
+			Memory::emplace<T>(p, Mach::forward<T>(t));
 		}
-		FORGE_ALWAYS_INLINE Option& operator=(T&& t)
+		MACH_ALWAYS_INLINE Option& operator=(T&& t)
 			requires MoveConstructible<T>
 		{
 			if (m_set) {
@@ -50,18 +50,18 @@ namespace Forge::Core {
 			}
 			auto* p = m_data;
 			m_set = true;
-			Memory::emplace<T>(p, Forge::forward<T>(t));
+			Memory::emplace<T>(p, Mach::forward<T>(t));
 			return *this;
 		}
 
-		FORGE_ALWAYS_INLINE Option(const T& t)
+		MACH_ALWAYS_INLINE Option(const T& t)
 			requires CopyConstructible<T>
 			: m_set(true)
 			, m_data() {
 			auto* p = m_data;
 			Memory::emplace<T>(p, t);
 		}
-		FORGE_ALWAYS_INLINE Option& operator=(const T& t)
+		MACH_ALWAYS_INLINE Option& operator=(const T& t)
 			requires CopyConstructible<T>
 		{
 			if (m_set) {
@@ -74,7 +74,7 @@ namespace Forge::Core {
 			return *this;
 		}
 
-		FORGE_ALWAYS_INLINE Option(const Option<T>& copy)
+		MACH_ALWAYS_INLINE Option(const Option<T>& copy)
 			requires CopyConstructible<T>
 		{
 			m_set = copy.m_set;
@@ -84,11 +84,11 @@ namespace Forge::Core {
 			}
 		}
 
-		FORGE_ALWAYS_INLINE Option& operator=(const Option<T>& copy)
+		MACH_ALWAYS_INLINE Option& operator=(const Option<T>& copy)
 			requires CopyConstructible<T>
 		{
-			auto to_destroy = Forge::move(*this);
-			FORGE_UNUSED(to_destroy);
+			auto to_destroy = Mach::move(*this);
+			MACH_UNUSED(to_destroy);
 
 			m_set = copy.m_set;
 			if (m_set) {
@@ -99,7 +99,7 @@ namespace Forge::Core {
 			return *this;
 		}
 
-		FORGE_ALWAYS_INLINE Option(Option<T>&& move) noexcept : m_set(move.m_set) {
+		MACH_ALWAYS_INLINE Option(Option<T>&& move) noexcept : m_set(move.m_set) {
 			if (m_set) {
 				Memory::copy(m_data, move.m_data, sizeof(T));
 				Memory::set(move.m_data, 0, sizeof(T));
@@ -107,23 +107,23 @@ namespace Forge::Core {
 			move.m_set = false;
 		}
 
-		FORGE_ALWAYS_INLINE Option& operator=(Option<T>&& move) noexcept {
-			auto to_destroy = Forge::move(*this);
-			FORGE_UNUSED(to_destroy);
+		MACH_ALWAYS_INLINE Option& operator=(Option<T>&& move) noexcept {
+			auto to_destroy = Mach::move(*this);
+			MACH_UNUSED(to_destroy);
 
 			m_set = move.m_set;
 			move.m_set = false;
 
 			if (m_set) {
 				Memory::copy(m_data, move.m_data, sizeof(T));
-#if FORGE_BUILD == FORGE_BUILD_DEBUG
+#if MACH_BUILD == MACH_BUILD_DEBUG
 				Memory::set(move.m_data, 0, sizeof(T));
 #endif
 			}
 			return *this;
 		}
 
-		FORGE_ALWAYS_INLINE ~Option() {
+		MACH_ALWAYS_INLINE ~Option() {
 			if (m_set) {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				p->~T();
@@ -132,25 +132,25 @@ namespace Forge::Core {
 			}
 		}
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_set() const { return m_set; }
-		FORGE_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE bool is_set() const { return m_set; }
+		MACH_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
 
-		FORGE_ALWAYS_INLINE T unwrap()
+		MACH_ALWAYS_INLINE T unwrap()
 			requires Movable<T> || Copyable<T>
 		{
-			FORGE_ASSERT(is_set(), "Value must be set to be unwrapped");
+			MACH_ASSERT(is_set(), "Value must be set to be unwrapped");
 			m_set = false;
 
 			auto* p = reinterpret_cast<T*>(&m_data[0]);
 
 			if constexpr (Movable<T>) {
-				return Forge::move(*p);
+				return Mach::move(*p);
 			} else {
 				return *p;
 			}
 		}
 
-		FORGE_ALWAYS_INLINE T unwrap_or_default()
+		MACH_ALWAYS_INLINE T unwrap_or_default()
 			requires is_default_constructible<T>
 		{
 			if (is_set()) {
@@ -159,16 +159,16 @@ namespace Forge::Core {
 			return T{};
 		}
 
-		FORGE_ALWAYS_INLINE T unwrap_or(T&& t)
+		MACH_ALWAYS_INLINE T unwrap_or(T&& t)
 			requires Movable<T>
 		{
 			if (is_set()) {
 				return unwrap();
 			}
-			return Forge::move(t);
+			return Mach::move(t);
 		}
 
-		FORGE_ALWAYS_INLINE T unwrap_or(const T& t)
+		MACH_ALWAYS_INLINE T unwrap_or(const T& t)
 			requires Copyable<T>
 		{
 			if (is_set()) {
@@ -177,7 +177,7 @@ namespace Forge::Core {
 			return t;
 		}
 
-		FORGE_ALWAYS_INLINE Option<T&> as_ref() {
+		MACH_ALWAYS_INLINE Option<T&> as_ref() {
 			if (is_set()) {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				return Option<T&>{ *p };
@@ -186,7 +186,7 @@ namespace Forge::Core {
 			return nullopt;
 		}
 
-		FORGE_ALWAYS_INLINE Option<T const&> as_const_ref() const {
+		MACH_ALWAYS_INLINE Option<T const&> as_const_ref() const {
 			if (is_set()) {
 				auto* p = reinterpret_cast<T const*>(&m_data[0]);
 				return Option<T const&>{ *p };
@@ -205,13 +205,13 @@ namespace Forge::Core {
 	class Option<T> {
 	public:
 		Option() = default;
-		FORGE_ALWAYS_INLINE constexpr Option(NullOpt) : m_set(false), m_data() {}
-		FORGE_ALWAYS_INLINE Option(const T& t) : m_set(true), m_data() {
+		MACH_ALWAYS_INLINE constexpr Option(NullOpt) : m_set(false), m_data() {}
+		MACH_ALWAYS_INLINE Option(const T& t) : m_set(true), m_data() {
 			auto* p = m_data;
 			Memory::emplace<T>(p, t);
 		}
 
-		FORGE_ALWAYS_INLINE Option& operator=(const T& t) {
+		MACH_ALWAYS_INLINE Option& operator=(const T& t) {
 			if (m_set) {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				*p = t;
@@ -224,19 +224,19 @@ namespace Forge::Core {
 			return *this;
 		}
 
-		FORGE_ALWAYS_INLINE Option(const Option<T>& copy) {
+		MACH_ALWAYS_INLINE Option(const Option<T>& copy) {
 			Memory::copy(m_data, copy.m_data, sizeof(m_data));
 			m_set = copy.m_set;
 		}
 
-		FORGE_ALWAYS_INLINE Option& operator=(const Option<T>& copy) {
+		MACH_ALWAYS_INLINE Option& operator=(const Option<T>& copy) {
 			Memory::copy(m_data, copy.m_data, sizeof(m_data));
 			m_set = copy.m_set;
 
 			return *this;
 		}
 
-		FORGE_ALWAYS_INLINE ~Option() {
+		MACH_ALWAYS_INLINE ~Option() {
 			if (m_set) {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				p->~T();
@@ -244,11 +244,11 @@ namespace Forge::Core {
 			}
 		}
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_set() const { return m_set; }
-		FORGE_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE bool is_set() const { return m_set; }
+		MACH_ALWAYS_INLINE explicit operator bool() const { return is_set(); }
 
-		FORGE_ALWAYS_INLINE T unwrap() const {
-			FORGE_ASSERT(is_set(), "Value must be set to be unwrapped");
+		MACH_ALWAYS_INLINE T unwrap() const {
+			MACH_ASSERT(is_set(), "Value must be set to be unwrapped");
 
 			// Do not reset m_set for trivially copyable types
 
@@ -256,7 +256,7 @@ namespace Forge::Core {
 			return *p;
 		}
 
-		FORGE_ALWAYS_INLINE T unwrap_or_default() const
+		MACH_ALWAYS_INLINE T unwrap_or_default() const
 			requires is_default_constructible<T>
 		{
 			if (is_set()) {
@@ -265,14 +265,14 @@ namespace Forge::Core {
 			return T{};
 		}
 
-		FORGE_ALWAYS_INLINE T unwrap_or(const T& t) const {
+		MACH_ALWAYS_INLINE T unwrap_or(const T& t) const {
 			if (is_set()) {
 				return unwrap();
 			}
 			return t;
 		}
 
-		FORGE_ALWAYS_INLINE Option<T&> as_ref() {
+		MACH_ALWAYS_INLINE Option<T&> as_ref() {
 			if (is_set()) {
 				auto* p = reinterpret_cast<T*>(&m_data[0]);
 				return Option<T&>(*p);
@@ -281,7 +281,7 @@ namespace Forge::Core {
 			}
 		}
 
-		FORGE_ALWAYS_INLINE Option<T const&> as_const_ref() const {
+		MACH_ALWAYS_INLINE Option<T const&> as_const_ref() const {
 			if (is_set()) {
 				auto* p = reinterpret_cast<T const*>(&m_data[0]);
 				return Option<T const&>(*p);
@@ -302,26 +302,26 @@ namespace Forge::Core {
 		using Underlying = RemoveReference<T>;
 
 		explicit Option() = default;
-		FORGE_ALWAYS_INLINE constexpr Option(NullOpt) : m_ptr(nullptr) {}
-		FORGE_ALWAYS_INLINE constexpr Option(T t) : m_ptr(&t) {}
+		MACH_ALWAYS_INLINE constexpr Option(NullOpt) : m_ptr(nullptr) {}
+		MACH_ALWAYS_INLINE constexpr Option(T t) : m_ptr(&t) {}
 
-		FORGE_NO_DISCARD FORGE_ALWAYS_INLINE bool is_set() const { return m_ptr != nullptr; }
-		FORGE_ALWAYS_INLINE operator bool() const { return is_set(); }
+		MACH_NO_DISCARD MACH_ALWAYS_INLINE bool is_set() const { return m_ptr != nullptr; }
+		MACH_ALWAYS_INLINE operator bool() const { return is_set(); }
 
-		FORGE_ALWAYS_INLINE Underlying* operator->() { return m_ptr; }
-		FORGE_ALWAYS_INLINE Underlying* operator->() const { return m_ptr; }
+		MACH_ALWAYS_INLINE Underlying* operator->() { return m_ptr; }
+		MACH_ALWAYS_INLINE Underlying* operator->() const { return m_ptr; }
 
-		FORGE_ALWAYS_INLINE T unwrap() {
-			FORGE_ASSERT(is_set());
+		MACH_ALWAYS_INLINE T unwrap() {
+			MACH_ASSERT(is_set());
 			return *m_ptr;
 		}
 
 	private:
 		Underlying* m_ptr = nullptr;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core
 
-namespace Forge {
+namespace Mach {
 	using Core::nullopt;
 	using Core::Option;
-} // namespace Forge
+} // namespace Mach

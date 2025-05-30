@@ -7,107 +7,107 @@
 #include <Core/Atomic.hpp>
 #include <Core/Debug/Test.hpp>
 
-#if FORGE_ENABLE_TEST
-FORGE_TEST_SUITE("Core") {
-	using namespace Forge::Core;
+#if MACH_ENABLE_TEST
+MACH_TEST_SUITE("Core") {
+	using namespace Mach::Core;
 
-	FORGE_TEST_CASE("Atomic") {
-		FORGE_SUBCASE("default constructor") {
+	MACH_TEST_CASE("Atomic") {
+		MACH_SUBCASE("default constructor") {
 			Atomic<int> atomic;
-			FORGE_CHECK(atomic.load() == 0);
+			MACH_CHECK(atomic.load() == 0);
 		}
 
-		FORGE_SUBCASE("value constructor") {
+		MACH_SUBCASE("value constructor") {
 			Atomic<int> atomic{ 5 };
-			FORGE_CHECK(atomic.load() == 5);
+			MACH_CHECK(atomic.load() == 5);
 		}
 
-		FORGE_SUBCASE("copy constructor") {
+		MACH_SUBCASE("copy constructor") {
 			Atomic<int> atomic{ 5 };
 			Atomic<int> copy{ atomic };
-			FORGE_CHECK(copy.load() == 5);
+			MACH_CHECK(copy.load() == 5);
 		}
 
-		FORGE_SUBCASE("copy assignment") {
+		MACH_SUBCASE("copy assignment") {
 			Atomic<int> atomic{ 5 };
 			Atomic<int> copy;
 			copy = atomic;
-			FORGE_CHECK(copy.load() == 5);
+			MACH_CHECK(copy.load() == 5);
 		}
 
-		FORGE_SUBCASE("move constructor") {
+		MACH_SUBCASE("move constructor") {
 			Atomic<int> atomic{ 5 };
-			Atomic<int> move{ Forge::move(atomic) };
-			FORGE_CHECK(move.load() == 5);
-			FORGE_CHECK(atomic.load() == 5);
+			Atomic<int> move{ Mach::move(atomic) };
+			MACH_CHECK(move.load() == 5);
+			MACH_CHECK(atomic.load() == 5);
 		}
 
-		FORGE_SUBCASE("move assignment") {
+		MACH_SUBCASE("move assignment") {
 			Atomic<int> atomic{ 5 };
 			Atomic<int> move;
-			move = Forge::move(atomic);
-			FORGE_CHECK(move.load() == 5);
-			FORGE_CHECK(atomic.load() == 5);
+			move = Mach::move(atomic);
+			MACH_CHECK(move.load() == 5);
+			MACH_CHECK(atomic.load() == 5);
 		}
 
-		FORGE_SUBCASE("load") {
+		MACH_SUBCASE("load") {
 			Atomic<int> atomic{ 5 };
-			FORGE_CHECK(atomic.load() == 5);
+			MACH_CHECK(atomic.load() == 5);
 		}
 
-		FORGE_SUBCASE("store") {
+		MACH_SUBCASE("store") {
 			Atomic<int> atomic;
 			atomic.store(5);
-			FORGE_CHECK(atomic.load() == 5);
+			MACH_CHECK(atomic.load() == 5);
 		}
 
-		FORGE_SUBCASE("exchange") {
+		MACH_SUBCASE("exchange") {
 			Atomic<int> atomic{ 5 };
-			FORGE_CHECK(atomic.exchange(10) == 5);
-			FORGE_CHECK(atomic.load() == 10);
+			MACH_CHECK(atomic.exchange(10) == 5);
+			MACH_CHECK(atomic.load() == 10);
 		}
 
-		FORGE_SUBCASE("compare_exchange_weak") {
+		MACH_SUBCASE("compare_exchange_weak") {
 			Atomic<int> atomic{ 5 };
-			FORGE_CHECK(atomic.compare_exchange_weak(5, 10).unwrap() == 5);
-			FORGE_CHECK(atomic.load() == 10);
+			MACH_CHECK(atomic.compare_exchange_weak(5, 10).unwrap() == 5);
+			MACH_CHECK(atomic.load() == 10);
 		}
 
-		FORGE_SUBCASE("compare_exchange_strong") {
+		MACH_SUBCASE("compare_exchange_strong") {
 			Atomic<int> atomic{ 5 };
-			FORGE_CHECK(atomic.compare_exchange_strong(5, 10).unwrap() == 5);
-			FORGE_CHECK(atomic.load() == 10);
+			MACH_CHECK(atomic.compare_exchange_strong(5, 10).unwrap() == 5);
+			MACH_CHECK(atomic.load() == 10);
 		}
 
-		FORGE_SUBCASE("fetch_add") {
+		MACH_SUBCASE("fetch_add") {
 			Atomic<int> atomic{ 5 };
-			FORGE_CHECK(atomic.fetch_add(5) == 5);
-			FORGE_CHECK(atomic.load() == 10);
+			MACH_CHECK(atomic.fetch_add(5) == 5);
+			MACH_CHECK(atomic.load() == 10);
 		}
 
-		FORGE_SUBCASE("fetch_sub") {
+		MACH_SUBCASE("fetch_sub") {
 			Atomic<int> atomic{ 5 };
-			FORGE_CHECK(atomic.fetch_sub(5) == 5);
-			FORGE_CHECK(atomic.load() == 0);
+			MACH_CHECK(atomic.fetch_sub(5) == 5);
+			MACH_CHECK(atomic.load() == 0);
 		}
 
-		FORGE_SUBCASE("fetch_and") {
+		MACH_SUBCASE("fetch_and") {
 			Atomic<int> atomic{ 5 };
-			FORGE_CHECK(atomic.fetch_and(3) == 5);
-			FORGE_CHECK(atomic.load() == 1);
+			MACH_CHECK(atomic.fetch_and(3) == 5);
+			MACH_CHECK(atomic.load() == 1);
 		}
 
-		FORGE_SUBCASE("fetch_or") {
+		MACH_SUBCASE("fetch_or") {
 			Atomic<int> atomic{ 5 };
-			FORGE_CHECK(atomic.fetch_or(3) == 5);
-			FORGE_CHECK(atomic.load() == 7);
+			MACH_CHECK(atomic.fetch_or(3) == 5);
+			MACH_CHECK(atomic.load() == 7);
 		}
 
-		FORGE_SUBCASE("fetch_xor") {
+		MACH_SUBCASE("fetch_xor") {
 			Atomic<int> atomic{ 5 };
-			FORGE_CHECK(atomic.fetch_xor(3) == 5);
-			FORGE_CHECK(atomic.load() == 6);
+			MACH_CHECK(atomic.fetch_xor(3) == 5);
+			MACH_CHECK(atomic.load() == 6);
 		}
 	}
 }
-#endif // FORGE_ENABLE_TEST
+#endif // MACH_ENABLE_TEST

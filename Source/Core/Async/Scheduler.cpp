@@ -8,7 +8,7 @@
 
 #include <Core/Debug/Log.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	thread_local Option<u32> g_fiber_index = nullopt;
 
 	void Scheduler::init(InitInfo const& create_info) {
@@ -29,7 +29,7 @@ namespace Forge::Core {
 		}
 		for (u32 index = create_info.thread_count; index < create_info.fiber_count; index += 1) {
 			auto fiber = Fiber::spawn([index, this]() { worker_main(index); });
-			m_fiber_controller.fibers.push(Forge::move(fiber));
+			m_fiber_controller.fibers.push(Mach::move(fiber));
 			m_fiber_controller.dormant_fibers.push(index);
 		}
 
@@ -44,7 +44,7 @@ namespace Forge::Core {
 				}
 				worker_main(index);
 			});
-			m_thread_controller.threads.push(Forge::move(thread));
+			m_thread_controller.threads.push(Mach::move(thread));
 		}
 
 		g_fiber_index = 0;
@@ -52,7 +52,7 @@ namespace Forge::Core {
 	}
 
 	bool Scheduler::wait_until(Duration const& duration, Task const& task) const {
-		FORGE_UNUSED(duration);
+		MACH_UNUSED(duration);
 
 		while (true) {
 			for (auto& waiting : m_task_tracker.waiting_task) {
@@ -145,4 +145,4 @@ namespace Forge::Core {
 			}
 		}
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core

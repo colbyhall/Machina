@@ -9,21 +9,21 @@
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/String.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	class PosixDirectory {
 	public:
 		static Option<PosixDirectory> open(const StringView& path);
 		static PosixDirectory cwd();
 
-		FORGE_NO_COPY(PosixDirectory);
+		MACH_NO_COPY(PosixDirectory);
 		PosixDirectory(PosixDirectory&& move) = default;
 		PosixDirectory& operator=(PosixDirectory&& move) = default;
 
 		void for_each(FunctionRef<bool()> f);
 
 	private:
-		explicit PosixDirectory(String&& path) : m_path(Forge::move(path)) {}
+		explicit PosixDirectory(String&& path) : m_path(Mach::move(path)) {}
 		String m_path;
 	};
 
-} // namespace Forge::Core
+} // namespace Mach::Core

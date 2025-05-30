@@ -7,133 +7,133 @@
 #include <Core/Containers/SharedPtr.hpp>
 #include <Core/Debug/Test.hpp>
 
-#if FORGE_ENABLE_TEST
-FORGE_TEST_SUITE("Containers") {
-	using namespace Forge;
+#if MACH_ENABLE_TEST
+MACH_TEST_SUITE("Containers") {
+	using namespace Mach;
 
-	FORGE_TEST_CASE("SharedPtr") {
-		FORGE_SUBCASE("default constructor") {
+	MACH_TEST_CASE("SharedPtr") {
+		MACH_SUBCASE("default constructor") {
 			const auto shared = SharedPtr<int>::create(0);
-			FORGE_CHECK(*shared == 0);
+			MACH_CHECK(*shared == 0);
 		}
 
-		FORGE_SUBCASE("create") {
+		MACH_SUBCASE("create") {
 			const auto shared = SharedPtr<int>::create(100);
-			FORGE_CHECK(*shared == 100);
+			MACH_CHECK(*shared == 100);
 		}
 
-		FORGE_SUBCASE("copy constructor") {
+		MACH_SUBCASE("copy constructor") {
 			const auto shared = SharedPtr<int>::create(100);
-			FORGE_REQUIRE(*shared == 100);
-			FORGE_CHECK(shared.strong() == 1);
+			MACH_REQUIRE(*shared == 100);
+			MACH_CHECK(shared.strong() == 1);
 			const auto copy = shared;
-			FORGE_CHECK(*copy == 100);
-			FORGE_CHECK(shared.strong() == 2);
-			FORGE_CHECK(copy.strong() == 2);
-			FORGE_CHECK(copy.strong() == shared.strong());
-			FORGE_CHECK(&*shared == &*copy);
+			MACH_CHECK(*copy == 100);
+			MACH_CHECK(shared.strong() == 2);
+			MACH_CHECK(copy.strong() == 2);
+			MACH_CHECK(copy.strong() == shared.strong());
+			MACH_CHECK(&*shared == &*copy);
 		}
 
-		FORGE_SUBCASE("copy assignment") {
+		MACH_SUBCASE("copy assignment") {
 			const auto shared = SharedPtr<int>::create(100);
-			FORGE_REQUIRE(*shared == 100);
-			FORGE_CHECK(shared.strong() == 1);
+			MACH_REQUIRE(*shared == 100);
+			MACH_CHECK(shared.strong() == 1);
 			auto copy_assignment = SharedPtr<int>::create(0);
-			FORGE_CHECK(*copy_assignment == 0);
-			FORGE_CHECK(copy_assignment.strong() == 1);
+			MACH_CHECK(*copy_assignment == 0);
+			MACH_CHECK(copy_assignment.strong() == 1);
 			copy_assignment = shared;
-			FORGE_CHECK(*copy_assignment == 100);
-			FORGE_CHECK(shared.strong() == 2);
-			FORGE_CHECK(copy_assignment.strong() == 2);
-			FORGE_CHECK(copy_assignment.strong() == shared.strong());
-			FORGE_CHECK(&*shared == &*copy_assignment);
+			MACH_CHECK(*copy_assignment == 100);
+			MACH_CHECK(shared.strong() == 2);
+			MACH_CHECK(copy_assignment.strong() == 2);
+			MACH_CHECK(copy_assignment.strong() == shared.strong());
+			MACH_CHECK(&*shared == &*copy_assignment);
 		}
 
-		FORGE_SUBCASE("move constructor") {
+		MACH_SUBCASE("move constructor") {
 			auto shared = SharedPtr<int>::create(100);
-			FORGE_REQUIRE(*shared == 100);
-			FORGE_CHECK(shared.strong() == 1);
-			auto move = Forge::move(shared);
-			FORGE_CHECK(*move == 100);
-			FORGE_CHECK(shared.strong() == 0);
-			FORGE_CHECK(move.strong() == 1);
+			MACH_REQUIRE(*shared == 100);
+			MACH_CHECK(shared.strong() == 1);
+			auto move = Mach::move(shared);
+			MACH_CHECK(*move == 100);
+			MACH_CHECK(shared.strong() == 0);
+			MACH_CHECK(move.strong() == 1);
 		}
 
-		FORGE_SUBCASE("move assignment") {
+		MACH_SUBCASE("move assignment") {
 			auto shared = SharedPtr<int>::create(100);
-			FORGE_REQUIRE(*shared == 100);
-			FORGE_CHECK(shared.strong() == 1);
+			MACH_REQUIRE(*shared == 100);
+			MACH_CHECK(shared.strong() == 1);
 			auto move_assignment = SharedPtr<int>::create(0);
-			FORGE_CHECK(*move_assignment == 0);
-			FORGE_CHECK(move_assignment.strong() == 1);
-			move_assignment = Forge::move(shared);
-			FORGE_CHECK(move_assignment.strong() == 1);
-			FORGE_CHECK(shared.strong() == 0);
-			FORGE_CHECK(*move_assignment == 100);
+			MACH_CHECK(*move_assignment == 0);
+			MACH_CHECK(move_assignment.strong() == 1);
+			move_assignment = Mach::move(shared);
+			MACH_CHECK(move_assignment.strong() == 1);
+			MACH_CHECK(shared.strong() == 0);
+			MACH_CHECK(*move_assignment == 100);
 		}
 
-		FORGE_SUBCASE("destructor") {
+		MACH_SUBCASE("destructor") {
 			auto shared = SharedPtr<int>::create(0);
-			FORGE_CHECK(shared.strong() == 1);
+			MACH_CHECK(shared.strong() == 1);
 			{
 				const auto copy = shared;
-				FORGE_CHECK(shared.strong() == 2);
+				MACH_CHECK(shared.strong() == 2);
 			}
-			FORGE_CHECK(shared.strong() == 1);
+			MACH_CHECK(shared.strong() == 1);
 		}
 
-		FORGE_SUBCASE("downgrade") {
+		MACH_SUBCASE("downgrade") {
 			const auto shared = SharedPtr<int>::create(100);
-			FORGE_REQUIRE(*shared == 100);
-			FORGE_CHECK(shared.strong() == 1);
-			FORGE_CHECK(shared.weak() == 0);
+			MACH_REQUIRE(*shared == 100);
+			MACH_CHECK(shared.strong() == 1);
+			MACH_CHECK(shared.weak() == 0);
 			{
 				const auto weak = shared.downgrade();
-				FORGE_CHECK(shared.strong() == 1);
-				FORGE_CHECK(shared.weak() == 1);
-				FORGE_CHECK(shared.strong() == weak.strong());
-				FORGE_CHECK(shared.weak() == weak.weak());
+				MACH_CHECK(shared.strong() == 1);
+				MACH_CHECK(shared.weak() == 1);
+				MACH_CHECK(shared.strong() == weak.strong());
+				MACH_CHECK(shared.weak() == weak.weak());
 			}
-			FORGE_CHECK(shared.strong() == 1);
-			FORGE_CHECK(shared.weak() == 0);
+			MACH_CHECK(shared.strong() == 1);
+			MACH_CHECK(shared.weak() == 0);
 		}
 
-		FORGE_SUBCASE("upgrade") {
+		MACH_SUBCASE("upgrade") {
 			const auto shared = SharedPtr<int>::create(100);
-			FORGE_REQUIRE(*shared == 100);
-			FORGE_CHECK(shared.strong() == 1);
-			FORGE_CHECK(shared.weak() == 0);
+			MACH_REQUIRE(*shared == 100);
+			MACH_CHECK(shared.strong() == 1);
+			MACH_CHECK(shared.weak() == 0);
 			{
 				const auto weak = shared.downgrade();
-				FORGE_CHECK(shared.strong() == 1);
-				FORGE_CHECK(shared.weak() == 1);
-				FORGE_CHECK(shared.strong() == weak.strong());
-				FORGE_CHECK(shared.weak() == weak.weak());
+				MACH_CHECK(shared.strong() == 1);
+				MACH_CHECK(shared.weak() == 1);
+				MACH_CHECK(shared.strong() == weak.strong());
+				MACH_CHECK(shared.weak() == weak.weak());
 				const auto upgrade = weak.upgrade();
-				FORGE_REQUIRE(upgrade.is_set());
-				FORGE_CHECK(shared.strong() == 2);
-				FORGE_CHECK(shared.weak() == 1);
-				FORGE_CHECK(shared.strong() == upgrade.as_const_ref().unwrap().strong());
-				FORGE_CHECK(shared.weak() == upgrade.as_const_ref().unwrap().weak());
+				MACH_REQUIRE(upgrade.is_set());
+				MACH_CHECK(shared.strong() == 2);
+				MACH_CHECK(shared.weak() == 1);
+				MACH_CHECK(shared.strong() == upgrade.as_const_ref().unwrap().strong());
+				MACH_CHECK(shared.weak() == upgrade.as_const_ref().unwrap().weak());
 			}
-			FORGE_CHECK(shared.strong() == 1);
-			FORGE_CHECK(shared.weak() == 0);
+			MACH_CHECK(shared.strong() == 1);
+			MACH_CHECK(shared.weak() == 0);
 		}
 
-		FORGE_SUBCASE("SharedPtrFromThis") {
+		MACH_SUBCASE("SharedPtrFromThis") {
 			class Test : public SharedPtrFromThis<Test> {
 			public:
 				int a = 120;
 			};
 
 			const auto test = SharedPtr<Test>::create();
-			FORGE_CHECK(test->a == 120);
+			MACH_CHECK(test->a == 120);
 			const auto& test_ref = *test;
-			FORGE_CHECK(test_ref.a == 120);
+			MACH_CHECK(test_ref.a == 120);
 			const auto shared = test_ref.to_shared();
-			FORGE_CHECK(shared.strong() == 2);
-			FORGE_CHECK(shared->a == 120);
+			MACH_CHECK(shared.strong() == 2);
+			MACH_CHECK(shared->a == 120);
 		}
 	}
 }
-#endif // FORGE_ENABLE_TEST
+#endif // MACH_ENABLE_TEST

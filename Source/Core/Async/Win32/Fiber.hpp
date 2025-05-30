@@ -9,7 +9,7 @@
 #include <Core/Async/Fiber.hpp>
 #include <Core/Windows.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	class Win32Fiber final : public Fiber {
 	public:
 		explicit Win32Fiber(LPVOID handle, bool thread_owned = false)
@@ -23,8 +23,8 @@ namespace Forge::Core {
 			m.m_handle = NULL;
 		}
 		Win32Fiber& operator=(Win32Fiber&& m) {
-			auto to_destroy = Forge::move(*this);
-			FORGE_UNUSED(to_destroy);
+			auto to_destroy = Mach::move(*this);
+			MACH_UNUSED(to_destroy);
 			m_thread_owned = m.m_thread_owned;
 			m_handle = m.m_handle;
 			m.m_thread_owned = false;
@@ -41,4 +41,4 @@ namespace Forge::Core {
 		bool m_thread_owned = false;
 		LPVOID m_handle;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core

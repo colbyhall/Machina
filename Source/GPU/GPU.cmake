@@ -61,7 +61,7 @@ if(OS_SUPPORTS_D3D12)
 	)
 endif()
 
-add_forge_library(GPU ${GPU_ROOT} ${GPU_SRC_FILES})
+add_machina_library(GPU ${GPU_ROOT} ${GPU_SRC_FILES})
 
 # Link the drivers if the OS supports them
 if(OS_SUPPORTS_METAL)

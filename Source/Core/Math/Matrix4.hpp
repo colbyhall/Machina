@@ -9,7 +9,7 @@
 #include <Core/Math/Quaternion.hpp>
 #include <Core/Math/Vector4.hpp>
 
-namespace Forge::Core::Math {
+namespace Mach::Core::Math {
 	/**
 	 * @class Matrix4
 	 * @brief A template class for creating and manipulating column major 4x4 matrices.
@@ -23,7 +23,7 @@ namespace Forge::Core::Math {
 		/**
 		 * @brief Default constructor. Initializes the matrix to the 0 matrix.
 		 */
-		FORGE_ALWAYS_INLINE constexpr Matrix4() : x{}, y{}, z{}, w{} {}
+		MACH_ALWAYS_INLINE constexpr Matrix4() : x{}, y{}, z{}, w{} {}
 
 		/**
 		 * @brief Constructs a matrix from its columns.
@@ -51,7 +51,7 @@ namespace Forge::Core::Math {
 		 * @brief Creates an identity matrix.
 		 * @return An identity matrix of type Matrix4.
 		 */
-		static constexpr FORGE_ALWAYS_INLINE Matrix4 identity();
+		static constexpr MACH_ALWAYS_INLINE Matrix4 identity();
 
 		/**
 		 * @brief Creates an orthographic projection matrix.
@@ -93,14 +93,14 @@ namespace Forge::Core::Math {
 		 * @brief Attempts to calculate the inverse of the matrix.
 		 * @return An optional Matrix4 containing the inverse if it exists, otherwise an empty option.
 		 */
-		FORGE_NO_DISCARD Option<Matrix4> inverse() const;
+		MACH_NO_DISCARD Option<Matrix4> inverse() const;
 
 		/**
 		 * @brief Retrieves a row of the matrix as a Vector4.
 		 * @param index Index of the row to retrieve.
 		 * @return The requested row as a Vector4.
 		 */
-		FORGE_NO_DISCARD Vector4<T> row(usize index) const;
+		MACH_NO_DISCARD Vector4<T> row(usize index) const;
 
 		/**
 		 * @brief Multiplies this matrix by another matrix.
@@ -117,7 +117,7 @@ namespace Forge::Core::Math {
 		Vector4<T> operator*(const Vector4<T>& rhs) const;
 
 	private:
-		FORGE_ALWAYS_INLINE constexpr explicit Matrix4(
+		MACH_ALWAYS_INLINE constexpr explicit Matrix4(
 			const Vector4<T>& _x,
 			const Vector4<T>& _y,
 			const Vector4<T>& _z,
@@ -145,7 +145,7 @@ namespace Forge::Core::Math {
 	}
 
 	template <FloatingPoint T>
-	constexpr FORGE_ALWAYS_INLINE Matrix4<T> Matrix4<T>::identity() {
+	constexpr MACH_ALWAYS_INLINE Matrix4<T> Matrix4<T>::identity() {
 		return Matrix4{ Vector4<T>{ 1, 0, 0, 0 },
 						Vector4<T>{ 0, 1, 0, 0 },
 						Vector4<T>{ 0, 0, 1, 0 },
@@ -278,7 +278,7 @@ namespace Forge::Core::Math {
 
 	template <FloatingPoint T>
 	Vector4<T> Matrix4<T>::row(usize index) const {
-		FORGE_ASSERT(index < 4);
+		MACH_ASSERT(index < 4);
 		switch (index) {
 		case 0:
 			return { x.x, y.x, z.x, w.x };
@@ -334,8 +334,8 @@ namespace Forge::Core::Math {
 
 		return { _x, _y, _z, _w };
 	}
-} // namespace Forge::Core::Math
+} // namespace Mach::Core::Math
 
-namespace Forge {
+namespace Mach {
 	using Core::Math::Matrix4;
-} // namespace Forge
+} // namespace Mach

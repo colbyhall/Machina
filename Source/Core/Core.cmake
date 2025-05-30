@@ -129,8 +129,8 @@ if(ARCH_AARCH64)
 	)
 endif()
 
-add_forge_library(Core ${CORE_ROOT} ${CORE_SRC_FILES})
-test_forge_library(Core ${CORE_SRC_FILES})
+add_machina_library(Core ${CORE_ROOT} ${CORE_SRC_FILES})
+test_machina_library(Core ${CORE_SRC_FILES})
 
 if (OS_WINDOWS)
 	# Link dbghelp for call stack symbol loading

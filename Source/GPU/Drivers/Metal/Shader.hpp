@@ -11,7 +11,7 @@
 #include <Core/ObjectiveC/Protocol.hpp>
 #include <GPU/Shader.hpp>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	class MetalLibrary final : public Library {
 	public:
 		explicit MetalLibrary(id<MTLLibrary> library) : m_library(library) {}
@@ -27,7 +27,7 @@ namespace Forge::GPU {
 	public:
 		explicit MetalVertexShader(id<MTLFunction> function) : m_function(function) {}
 
-		FORGE_ALWAYS_INLINE id<MTLFunction> function() const { return m_function; }
+		MACH_ALWAYS_INLINE id<MTLFunction> function() const { return m_function; }
 
 	private:
 		Core::Protocol m_function; // MTLFunction
@@ -37,9 +37,9 @@ namespace Forge::GPU {
 	public:
 		explicit MetalFragmentShader(id<MTLFunction> function) : m_function(function) {}
 
-		FORGE_ALWAYS_INLINE id<MTLFunction> function() const { return m_function; }
+		MACH_ALWAYS_INLINE id<MTLFunction> function() const { return m_function; }
 
 	private:
 		Core::Protocol m_function; // MTLFunction
 	};
-} // namespace Forge::GPU
+} // namespace Mach::GPU

@@ -6,6 +6,6 @@
 
 #include <Core/Async/Thread.hpp>
 
-namespace Forge::Core {
-	Forge::SharedPtr<Thread> Thread::spawn(Function&& f) { return Thread::spawn(Forge::forward<Function>(f), {}); }
-} // namespace Forge::Core
+namespace Mach::Core {
+	Mach::SharedPtr<Thread> Thread::spawn(Function&& f) { return Thread::spawn(Mach::forward<Function>(f), {}); }
+} // namespace Mach::Core

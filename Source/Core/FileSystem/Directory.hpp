@@ -8,20 +8,20 @@
 
 #include <Core/Core.hpp>
 
-#if FORGE_OS == FORGE_OS_WINDOWS
+#if MACH_OS == MACH_OS_WINDOWS
 
 	#include <Core/FileSystem/Win32/Directory.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	using Directory = Win32Directory;
-} // namespace Forge::Core
+} // namespace Mach::Core
 
 #else
 
 	#include <Core/FileSystem/Posix/Directory.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	using Directory = PosixDirectory;
-} // namespace Forge::Core
+} // namespace Mach::Core
 
 #endif

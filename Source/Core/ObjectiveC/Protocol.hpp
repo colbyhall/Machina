@@ -9,9 +9,9 @@
 #include <Core/Core.hpp>
 #include <Core/TypeTraits.hpp>
 
-namespace Forge::Core {
-	FORGE_CLANG_DISABLE_WARNINGS_PUSH;
-	FORGE_CLANG_DISABLE_WARNING("-Wobjc-method-access");
+namespace Mach::Core {
+	MACH_CLANG_DISABLE_WARNINGS_PUSH;
+	MACH_CLANG_DISABLE_WARNING("-Wobjc-method-access");
 	/**
 	 * Type erased Unique ptr for Objective-C protocols.
 	 *
@@ -52,12 +52,12 @@ namespace Forge::Core {
 				}
 			}
 		}
-		FORGE_ALWAYS_INLINE id operator*() const { return m_internal; }
-		FORGE_ALWAYS_INLINE operator id() const { return m_internal; }
+		MACH_ALWAYS_INLINE id operator*() const { return m_internal; }
+		MACH_ALWAYS_INLINE operator id() const { return m_internal; }
 
 	private:
 		id m_internal;
 	};
 
-	FORGE_CLANG_DISBALE_WARNINGS_POP;
-} // namespace Forge::Core
+	MACH_CLANG_DISBALE_WARNINGS_POP;
+} // namespace Mach::Core

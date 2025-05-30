@@ -9,7 +9,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	template <typename T>
 	struct NumericLimits;
 
@@ -93,9 +93,9 @@ namespace Forge::Core {
 	static_assert(sizeof(f64) == 8, "f64 should only be 8 bytes");
 
 	using NullPtr = decltype(nullptr);
-} // namespace Forge::Core
+} // namespace Mach::Core
 
-namespace Forge {
+namespace Mach {
 	// Export core primitives to the op namespace
 	using Core::f32;
 	using Core::f64;
@@ -110,4 +110,4 @@ namespace Forge {
 	using Core::u64;
 	using Core::u8;
 	using Core::usize;
-} // namespace Forge
+} // namespace Mach

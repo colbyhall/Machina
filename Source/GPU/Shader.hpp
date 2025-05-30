@@ -9,7 +9,7 @@
 #include <Core/Containers/SharedPtr.hpp>
 #include <Core/Containers/String.hpp>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	class VertexShader;
 	class FragmentShader;
 
@@ -27,8 +27,8 @@ namespace Forge::GPU {
 
 	class Library : public SharedPtrFromThis<Library> {
 	public:
-		FORGE_NO_DISCARD virtual SharedPtr<VertexShader> create_vertex_shader(StringView function_name) const = 0;
-		FORGE_NO_DISCARD virtual SharedPtr<FragmentShader> create_fragment_shader(StringView function_name) const = 0;
+		MACH_NO_DISCARD virtual SharedPtr<VertexShader> create_vertex_shader(StringView function_name) const = 0;
+		MACH_NO_DISCARD virtual SharedPtr<FragmentShader> create_fragment_shader(StringView function_name) const = 0;
 
 		virtual ~Library() {}
 	};
@@ -42,4 +42,4 @@ namespace Forge::GPU {
 	public:
 		virtual ~FragmentShader() {}
 	};
-} // namespace Forge::GPU
+} // namespace Mach::GPU

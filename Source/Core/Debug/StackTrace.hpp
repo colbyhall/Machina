@@ -10,7 +10,7 @@
 #include <Core/Containers/String.hpp>
 #include <Core/Primitives.hpp>
 
-namespace Forge::Core::StackTrace {
+namespace Mach::Core::StackTrace {
 	using Frame = String;
 	Array<Frame> capture();
-} // namespace Forge::Core::StackTrace
+} // namespace Mach::Core::StackTrace

@@ -7,6 +7,6 @@
 #include <Core/Async/Fiber.hpp>
 #include <Core/Debug/Log.hpp>
 
-namespace Forge::Core {
-	Forge::SharedPtr<Fiber> Fiber::spawn(Function&& f) { return Fiber::spawn(Forge::move(f), SpawnInfo{}); }
-} // namespace Forge::Core
+namespace Mach::Core {
+	Mach::SharedPtr<Fiber> Fiber::spawn(Function&& f) { return Fiber::spawn(Mach::move(f), SpawnInfo{}); }
+} // namespace Mach::Core

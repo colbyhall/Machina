@@ -6,7 +6,7 @@
 
 #include <Core/Containers/WString.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	WChar utf32_to_utf16(Char c) {
 		u32 h;
 		u32 l;
@@ -98,35 +98,35 @@ namespace Forge::Core {
 
 		return *this;
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core
 
 #include <Core/Debug/Test.hpp>
 
-#if FORGE_ENABLE_TEST
-FORGE_TEST_SUITE("Containers") {
-	using namespace Forge::Core;
+#if MACH_ENABLE_TEST
+MACH_TEST_SUITE("Containers") {
+	using namespace Mach::Core;
 
-	FORGE_TEST_CASE("WString") {
-		FORGE_SUBCASE("default constructor") {
+	MACH_TEST_CASE("WString") {
+		MACH_SUBCASE("default constructor") {
 			const WString string;
-			FORGE_CHECK(string.len() == 0);
+			MACH_CHECK(string.len() == 0);
 		}
 
-		FORGE_SUBCASE("from WStringView") {
+		MACH_SUBCASE("from WStringView") {
 			const WStringView view = L"Hello, World!";
 			const WString string = WString::from(view);
-			FORGE_CHECK(string.len() == view.len());
-			FORGE_CHECK(string == view);
+			MACH_CHECK(string.len() == view.len());
+			MACH_CHECK(string == view);
 		}
 
-		FORGE_SUBCASE("from StringView") {
+		MACH_SUBCASE("from StringView") {
 			const StringView view = u8"Hello, World!"_sv;
 			const WString string = WString::from(view);
-			FORGE_CHECK(string.len() == view.len());
-			FORGE_CHECK(string == L"Hello, World!");
+			MACH_CHECK(string.len() == view.len());
+			MACH_CHECK(string == L"Hello, World!");
 		}
 
-		FORGE_SUBCASE("push") {
+		MACH_SUBCASE("push") {
 			WString string;
 			string.reserve(13);
 			string.push(L'H');
@@ -142,24 +142,24 @@ FORGE_TEST_SUITE("Containers") {
 			string.push(L'l');
 			string.push(L'd');
 			string.push(L'!');
-			FORGE_CHECK(string.len() == 13);
-			FORGE_CHECK(string == L"Hello, World!");
+			MACH_CHECK(string.len() == 13);
+			MACH_CHECK(string == L"Hello, World!");
 		}
 
-		FORGE_SUBCASE("append WStringView") {
+		MACH_SUBCASE("append WStringView") {
 			WString string;
 			string.append(L"Hello, ");
 			string.append(L"World!");
-			FORGE_CHECK(string.len() == 13);
-			FORGE_CHECK(string == L"Hello, World!");
+			MACH_CHECK(string.len() == 13);
+			MACH_CHECK(string == L"Hello, World!");
 		}
 
-		FORGE_SUBCASE("append StringView") {
+		MACH_SUBCASE("append StringView") {
 			WString string;
 			string.append(u8"Hello, "_sv);
 			string.append(u8"World!"_sv);
-			FORGE_CHECK(string.len() == 13);
-			FORGE_CHECK(string == L"Hello, World!");
+			MACH_CHECK(string.len() == 13);
+			MACH_CHECK(string == L"Hello, World!");
 		}
 	}
 }

@@ -8,10 +8,10 @@
 
 #include <Core/Containers/Slice.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	class Reader {
 	public:
 		virtual ~Reader() {}
 		virtual usize read(Slice<u8> bytes) = 0;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core

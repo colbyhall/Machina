@@ -10,7 +10,7 @@
 #include <GPU/Drivers/Metal/GraphicsPipeline.hpp>
 #include <GPU/Drivers/Metal/Texture.hpp>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	void MetalReceipt::wait_until_complete() const {
 		@autoreleasepool {
 			[m_command_buffer waitUntilCompleted];
@@ -25,24 +25,24 @@ namespace Forge::GPU {
 	}
 
 	CommandRecorder& MetalCommandRecorder::copy_buffer_to_texture(Texture const& dst, Buffer const& src) {
-		FORGE_UNUSED(dst);
-		FORGE_UNUSED(src);
-		FORGE_UNIMPLEMENTED;
+		MACH_UNUSED(dst);
+		MACH_UNUSED(src);
+		MACH_UNIMPLEMENTED;
 		return *this;
 	}
 
 	CommandRecorder& MetalCommandRecorder::copy_buffer_to_buffer(Buffer const& dst, Buffer const& src) {
-		FORGE_UNUSED(dst);
-		FORGE_UNUSED(src);
-		FORGE_UNIMPLEMENTED;
+		MACH_UNUSED(dst);
+		MACH_UNUSED(src);
+		MACH_UNIMPLEMENTED;
 		return *this;
 	}
 
 	CommandRecorder& MetalCommandRecorder::texture_barrier(Texture const& texture, Layout before, Layout after) {
-		FORGE_UNUSED(texture);
-		FORGE_UNUSED(before);
-		FORGE_UNUSED(after);
-		FORGE_UNIMPLEMENTED;
+		MACH_UNUSED(texture);
+		MACH_UNUSED(before);
+		MACH_UNUSED(after);
+		MACH_UNIMPLEMENTED;
 		return *this;
 	}
 
@@ -134,9 +134,9 @@ namespace Forge::GPU {
 		return *this;
 	}
 	RenderPassRecorder& MetalRenderPassRecorder::draw_indexed(usize index_count, usize first_index) {
-		FORGE_UNUSED(index_count);
-		FORGE_UNUSED(first_index);
-		FORGE_UNIMPLEMENTED;
+		MACH_UNUSED(index_count);
+		MACH_UNUSED(first_index);
+		MACH_UNIMPLEMENTED;
 		return *this;
 	}
-} // namespace Forge::GPU
+} // namespace Mach::GPU

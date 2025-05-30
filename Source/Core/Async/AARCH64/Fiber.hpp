@@ -9,8 +9,8 @@
 #include <Core/Async/Fiber.hpp>
 #include <Core/Containers/UniquePtr.hpp>
 
-#if FORGE_CPU == FORGE_CPU_ARM
-namespace Forge::Core {
+#if MACH_CPU == MACH_CPU_ARM
+namespace Mach::Core {
 	class AARCH64Fiber final : public Fiber {
 	public:
 		struct Registers {
@@ -18,11 +18,11 @@ namespace Forge::Core {
 			u64 sp;
 			u64 pc;
 		};
-		explicit AARCH64Fiber(Registers&& registers) : Fiber(), m_registers(Forge::move(registers)) {}
+		explicit AARCH64Fiber(Registers&& registers) : Fiber(), m_registers(Mach::move(registers)) {}
 		explicit AARCH64Fiber(Registers&& registers, UniquePtr<u8[]>&& stack)
 			: Fiber()
-			, m_registers(Forge::move(registers))
-			, m_stack(Forge::move(stack)) {}
+			, m_registers(Mach::move(registers))
+			, m_stack(Mach::move(stack)) {}
 
 		// Fiber Interface
 		void switch_to() const final;
@@ -32,5 +32,5 @@ namespace Forge::Core {
 		Registers m_registers;
 		UniquePtr<u8[]> m_stack;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core
 #endif

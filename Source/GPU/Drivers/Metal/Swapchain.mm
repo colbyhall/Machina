@@ -8,7 +8,7 @@
 #include <GPU/Drivers/Metal/Swapchain.hpp>
 #include <GPU/Drivers/Metal/Texture.hpp>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	UniquePtr<Backbuffer> MetalSwapchain::next_back_buffer() {
 		@autoreleasepool {
 			id<CAMetalDrawable> drawable = [m_layer nextDrawable];
@@ -21,7 +21,7 @@ namespace Forge::GPU {
 							  static_cast<u32>(drawable.texture.depth) },
 				},
 				drawable.texture);
-			return UniquePtr<MetalBackbuffer>::create(Forge::move(texture), drawable);
+			return UniquePtr<MetalBackbuffer>::create(Mach::move(texture), drawable);
 		}
 	}
 
@@ -33,4 +33,4 @@ namespace Forge::GPU {
 			[m_drawable present];
 		}
 	}
-} // namespace Forge::GPU
+} // namespace Mach::GPU

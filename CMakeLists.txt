@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-project(Forge LANGUAGES C CXX)
+project(Machina LANGUAGES C CXX)
 
 # ------------- Options Declerations -------------
 option(GENERATE_DEBUG_SYMBOLS "Generate debug symbols for libraries and executables" ON)
@@ -266,7 +266,7 @@ endif ()
 message("Using " ${CMAKE_CXX_COMPILER_ID} " (" ${CMAKE_CXX_COMPILER_VERSION} ")")
 
 # Set repository root
-set(FORGE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(MACHINA_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Enable testing using CTest
 enable_testing()
@@ -274,10 +274,10 @@ enable_testing()
 set(TARGETS_TO_SIGN)
 
 # Include the source directory cmake file
-include(${FORGE_ROOT}/Source/Source.cmake)
+include(${MACHINA_ROOT}/Source/Source.cmake)
 
 if (APPLE)
-	set(ENTITLEMENTS_FILE "${CMAKE_BINARY_DIR}/Forge.entitlements")
+	set(ENTITLEMENTS_FILE "${CMAKE_BINARY_DIR}/Machina.entitlements")
 	execute_process(COMMAND /usr/libexec/PlistBuddy -c "Add :com.apple.security.get-task-allow bool true" "${ENTITLEMENTS_FILE}")
 	foreach(target "${TARGETS_TO_SIGN}")
 		add_custom_command(TARGET "${target}" POST_BUILD

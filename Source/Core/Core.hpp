@@ -7,10 +7,10 @@
 #pragma once
 
 // Define supported platforms
-#define FORGE_OS_UNKNOWN 0
-#define FORGE_OS_WINDOWS 1
-#define FORGE_OS_MACOS	 2
-#define FORGE_OS_LINUX	 3
+#define MACH_OS_UNKNOWN 0
+#define MACH_OS_WINDOWS 1
+#define MACH_OS_MACOS	2
+#define MACH_OS_LINUX	3
 
 // Determine platform
 #if defined(_WIN32) || defined(_WIN64)
@@ -18,130 +18,130 @@
 	#if WINAPI_FAMILY == WINAPI_FAMILY_APP
 		#error UWP is not supported
 	#endif
-	#define FORGE_OS FORGE_OS_WINDOWS
+	#define MACH_OS MACH_OS_WINDOWS
 #elif __APPLE__
-	#define FORGE_OS FORGE_OS_MACOS
+	#define MACH_OS MACH_OS_MACOS
 #endif
 
-#ifndef FORGE_OS
-	#define FORGE_OS FORGE_OS_UNKNOWN
+#ifndef MACH_OS
+	#define MACH_OS MACH_OS_UNKNOWN
 #endif
 
-#if FORGE_OS == FORGE_OS_UNKNOWN
+#if MACH_OS == MACH_OS_UNKNOWN
 	#error Unsupported platform
 #endif
 
 // Define supported compilers
-#define FORGE_COMPILER_UNKNOWN 0
-#define FORGE_COMPILER_MSVC	   1
-#define FORGE_COMPILER_CLANG   2
+#define MACH_COMPILER_UNKNOWN 0
+#define MACH_COMPILER_MSVC	  1
+#define MACH_COMPILER_CLANG	  2
 
 // Determine the compiler
 #if defined(_MSC_VER)
-	#define FORGE_COMPILER FORGE_COMPILER_MSVC
+	#define MACH_COMPILER MACH_COMPILER_MSVC
 #elif defined(__clang__)
-	#define FORGE_COMPILER FORGE_COMPILER_CLANG
+	#define MACH_COMPILER MACH_COMPILER_CLANG
 #endif
 
-#ifndef FORGE_COMPILER
-	#define FORGE_COMPILER FORGE_COMPILER_UNKNOWN
+#ifndef MACH_COMPILER
+	#define MACH_COMPILER MACH_COMPILER_UNKNOWN
 #endif
 
-#if FORGE_COMPILER == FORGE_COMPILER_UNKNOWN
+#if MACH_COMPILER == MACH_COMPILER_UNKNOWN
 	#error Unsupported compiler
 #endif
 
 // Determine what language this translation unit is
-#define FORGE_LANGUAGE_C	  0
-#define FORGE_LANGUAGE_CPP	  1
-#define FORGE_LANGUAGE_OBJC	  2
-#define FORGE_LANGUAGE_OBJCPP 3
+#define MACH_LANGUAGE_C		 0
+#define MACH_LANGUAGE_CPP	 1
+#define MACH_LANGUAGE_OBJC	 2
+#define MACH_LANGUAGE_OBJCPP 3
 
 #if defined(__cplusplus) && defined(__OBJC__)
-	#define FORGE_LANGUAGE FORGE_LANGUAGE_OBJCPP
+	#define MACH_LANGUAGE MACH_LANGUAGE_OBJCPP
 #elif defined(__cplusplus)
-	#define FORGE_LANGUAGE FORGE_LANGUAGE_CPP
+	#define MACH_LANGUAGE MACH_LANGUAGE_CPP
 #elif defined(__OBJC__)
-	#define FORGE_LANGUAGE FORGE_LANGUAGE_OBJC
+	#define MACH_LANGUAGE MACH_LANGUAGE_OBJC
 #else
-	#define FORGE_LANGUAGE FORGE_LANGUAGE_C
+	#define MACH_LANGUAGE MACH_LANGUAGE_C
 #endif
 
 // Define supported CPU architectures
-#define FORGE_CPU_UNKNOWN 0
-#define FORGE_CPU_X86	  1
-#define FORGE_CPU_ARM	  2
+#define MACH_CPU_UNKNOWN 0
+#define MACH_CPU_X86	 1
+#define MACH_CPU_ARM	 2
 
 // Determine the CPU architecture
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
 	// X86 CPU architecture
-	#define FORGE_CPU FORGE_CPU_X86
+	#define MACH_CPU MACH_CPU_X86
 	#if !defined(__x86_64__) && !defined(_M_X64)
 		#error Only support 64 bit architecture
 	#endif
 #elif __arm64__
-	#define FORGE_CPU FORGE_CPU_ARM
+	#define MACH_CPU MACH_CPU_ARM
 #endif
 
-#ifndef FORGE_CPU_X86
-	#define FORGE_CPU FORGE_CPU_UNKNOWN
+#ifndef MACH_CPU_X86
+	#define MACH_CPU MACH_CPU_UNKNOWN
 #endif
 
-#if FORGE_CPU == FORGE_CPU_UNKNOWN
+#if MACH_CPU == MACH_CPU_UNKNOWN
 	#error Unsupported CPU architecture
 #endif
 
 // Pragmas to store / restore the warning state and to disable individual
 // warnings
-#if FORGE_COMPILER == FORGE_COMPILER_MSVC
-	#define FORGE_PRAGMA(x)				   __pragma(x)
-	#define FORGE_SUPPRESS_WARNING_PUSH	   FORGE_PRAGMA(warning(push))
-	#define FORGE_SUPPRESS_WARNING_POP	   FORGE_PRAGMA(warning(pop))
-	#define FORGE_MSVC_SUPPRESS_WARNING(w) FORGE_PRAGMA(warning(disable : w))
+#if MACH_COMPILER == MACH_COMPILER_MSVC
+	#define MACH_PRAGMA(x)				  __pragma(x)
+	#define MACH_SUPPRESS_WARNING_PUSH	  MACH_PRAGMA(warning(push))
+	#define MACH_SUPPRESS_WARNING_POP	  MACH_PRAGMA(warning(pop))
+	#define MACH_MSVC_SUPPRESS_WARNING(w) MACH_PRAGMA(warning(disable : w))
 #else
-	#define FORGE_MSVC_SUPPRESS_WARNING(w)
+	#define MACH_MSVC_SUPPRESS_WARNING(w)
 #endif
 
-#if FORGE_COMPILER == FORGE_COMPILER_MSVC
-	#define FORGE_ALWAYS_INLINE __forceinline
-#elif FORGE_COMPILER == FORGE_COMPILER_CLANG
-	#define FORGE_ALWAYS_INLINE __attribute__((always_inline))
+#if MACH_COMPILER == MACH_COMPILER_MSVC
+	#define MACH_ALWAYS_INLINE __forceinline
+#elif MACH_COMPILER == MACH_COMPILER_CLANG
+	#define MACH_ALWAYS_INLINE __attribute__((always_inline))
 #else
 	#error Undefined inline
 #endif
 
-#define FORGE_NO_DISCARD [[nodiscard]]
-#define FORGE_NO_RETURN	 [[noreturn]]
+#define MACH_NO_DISCARD [[nodiscard]]
+#define MACH_NO_RETURN	[[noreturn]]
 
 // Cache line size (used for aligning to cache line)
-#ifndef FORGE_CACHE_LINE_SIZE
-	#define FORGE_CACHE_LINE_SIZE 64
+#ifndef MACH_CACHE_LINE_SIZE
+	#define MACH_CACHE_LINE_SIZE 64
 #endif
 
 // Define macro to get current function name
-#if FORGE_COMPILER == FORGE_COMPILER_MSVC || FORGE_COMPILER == FORGE_COMPILER_CLANG
-	#define FORGE_FUNCTION_NAME __FUNCTION__
+#if MACH_COMPILER == MACH_COMPILER_MSVC || MACH_COMPILER == MACH_COMPILER_CLANG
+	#define MACH_FUNCTION_NAME __FUNCTION__
 #else
 	#error Undefined function name
 #endif
 
-#define FORGE_BUILD_RELEASE 0
-#define FORGE_BUILD_DEBUG	1
+#define MACH_BUILD_RELEASE 0
+#define MACH_BUILD_DEBUG   1
 #ifdef _DEBUG
-	#define FORGE_BUILD FORGE_BUILD_DEBUG
+	#define MACH_BUILD MACH_BUILD_DEBUG
 #else
-	#define FORGE_BUILD FORGE_BUILD_RELEASE
+	#define MACH_BUILD MACH_BUILD_RELEASE
 #endif
 
-#define FORGE_THREAD_LOCAL __declspec(thread)
+#define MACH_THREAD_LOCAL __declspec(thread)
 
 // Macro to indicate that a parameter / variable is unused
-#define FORGE_UNUSED(x) (void)x
+#define MACH_UNUSED(x) (void)x
 
-namespace Forge::Core {
+namespace Mach::Core {
 	void trap();
-	FORGE_NO_RETURN void abort();
-	FORGE_NO_RETURN void exit(int status);
+	MACH_NO_RETURN void abort();
+	MACH_NO_RETURN void exit(int status);
 
 	template <typename F>
 	struct Defer {
@@ -154,30 +154,30 @@ namespace Forge::Core {
 	Defer<F> defer_func(F f) {
 		return Defer<F>(f);
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core
 
-#define _FORGE_DEFER_1(x, y) x##y
-#define _FORGE_DEFER_2(x, y) _FORGE_DEFER_1(x, y)
-#define _FORGE_DEFER_3(x)	 _FORGE_DEFER_2(x, __COUNTER__)
-#define FORGE_DEFER(code)	 auto _FORGE_DEFER_3(_defer_) = Forge::Core::defer_func([&]() { code; })
+#define _MACH_DEFER_1(x, y) x##y
+#define _MACH_DEFER_2(x, y) _MACH_DEFER_1(x, y)
+#define _MACH_DEFER_3(x)	_MACH_DEFER_2(x, __COUNTER__)
+#define MACH_DEFER(code)	auto _MACH_DEFER_3(_defer_) = Mach::Core::defer_func([&]() { code; })
 
-#define FORGE_NO_COPY(Class)                                                                                           \
+#define MACH_NO_COPY(Class)                                                                                            \
 	Class(const Class&) = delete;                                                                                      \
 	Class& operator=(const Class&) = delete
 
-#define FORGE_NO_MOVE(Class)                                                                                           \
+#define MACH_NO_MOVE(Class)                                                                                            \
 	Class(Class&&) = delete;                                                                                           \
 	Class& operator=(Class&&) = delete
 
-#if FORGE_COMPILER == FORGE_COMPILER_MSVC
-	#define FORGE_MSVC_DISABLE_WARNINGS_PUSH __pragma(warning(push))
-	#define FORGE_MSVC_DISABLE_WARNINGS_POP	 __pragma(warning(pop))
-	#define FORGE_MSVC_DISABLE_WARNING(x)	 __pragma(warning(disable : x))
-#elif FORGE_COMPILER == FORGE_COMPILER_CLANG
-	#define FORGE_CLANG_DISABLE_WARNINGS_PUSH _Pragma("clang diagnostic push")
-	#define FORGE_CLANG_DISBALE_WARNINGS_POP  _Pragma("clang diagnostic pop")
-	#define FORGE_CLANG_DO_PRAGMA(x)		  _Pragma(#x)
-	#define FORGE_CLANG_DISABLE_WARNING(x)	  FORGE_CLANG_DO_PRAGMA(clang diagnostic ignored x)
+#if MACH_COMPILER == MACH_COMPILER_MSVC
+	#define MACH_MSVC_DISABLE_WARNINGS_PUSH __pragma(warning(push))
+	#define MACH_MSVC_DISABLE_WARNINGS_POP	__pragma(warning(pop))
+	#define MACH_MSVC_DISABLE_WARNING(x)	__pragma(warning(disable : x))
+#elif MACH_COMPILER == MACH_COMPILER_CLANG
+	#define MACH_CLANG_DISABLE_WARNINGS_PUSH _Pragma("clang diagnostic push")
+	#define MACH_CLANG_DISBALE_WARNINGS_POP	 _Pragma("clang diagnostic pop")
+	#define MACH_CLANG_DO_PRAGMA(x)			 _Pragma(#x)
+	#define MACH_CLANG_DISABLE_WARNING(x)	 MACH_CLANG_DO_PRAGMA(clang diagnostic ignored x)
 #else
 	#error Undefined warning suppress
 #endif

@@ -11,16 +11,16 @@
 
 #include <GUI/Builder.hpp>
 
-namespace Forge {
+namespace Mach {
 	namespace Core {
 		class Scheduler;
 	}
 	namespace GPU {
 		class Device;
 	}
-} // namespace Forge
+} // namespace Mach
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	class Frame {
 	public:
 		explicit Frame(u64 index, f64 delta_time, State& state)
@@ -28,8 +28,8 @@ namespace Forge::GUI {
 			, m_delta_time(delta_time)
 			, m_state(state) {}
 
-		FORGE_ALWAYS_INLINE u64 index() const { return m_index; }
-		FORGE_ALWAYS_INLINE f64 delta_time() const { return m_delta_time; }
+		MACH_ALWAYS_INLINE u64 index() const { return m_index; }
+		MACH_ALWAYS_INLINE f64 delta_time() const { return m_delta_time; }
 
 		bool window(StringView title, FunctionRef<void(Builder&)> f);
 
@@ -43,7 +43,7 @@ namespace Forge::GUI {
 	public:
 		explicit Application(const Core::Scheduler& scheduler, const GPU::Device& device);
 
-		FORGE_ALWAYS_INLINE Core::Scheduler const& scheduler() const { return m_scheduler; }
+		MACH_ALWAYS_INLINE Core::Scheduler const& scheduler() const { return m_scheduler; }
 
 		void pump_events();
 		int run(FunctionRef<void(Frame&)> f);
@@ -53,4 +53,4 @@ namespace Forge::GUI {
 		State m_state;
 	};
 
-} // namespace Forge::GUI
+} // namespace Mach::GUI

@@ -15,13 +15,13 @@
 #include <Core/Containers/UniquePtr.hpp>
 #include <Core/Time.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	class Scheduler;
 
 	class Task {
 	public:
 		enum class Status : u8 { NotStarted, InProgress, Complete };
-		FORGE_NO_DISCARD virtual Status status() const = 0;
+		MACH_NO_DISCARD virtual Status status() const = 0;
 		virtual ~Task() {}
 	};
 
@@ -29,8 +29,8 @@ namespace Forge::Core {
 	public:
 		explicit Scheduler() = default;
 
-		FORGE_NO_COPY(Scheduler);
-		FORGE_NO_MOVE(Scheduler);
+		MACH_NO_COPY(Scheduler);
+		MACH_NO_MOVE(Scheduler);
 
 		struct InitInfo {
 			u32 thread_count;
@@ -47,25 +47,25 @@ namespace Forge::Core {
 		enum class Priority : u8 { Low, Normal, High };
 		using Job = Function<void()>;
 
-		void enqueue(Job&& job) const { return enqueue(Priority::Normal, Forge::forward<Function<void()>>(job)); }
+		void enqueue(Job&& job) const { return enqueue(Priority::Normal, Mach::forward<Function<void()>>(job)); }
 
 		void enqueue(Priority priority, Job&& job) const {
 			auto& queue = m_work_queue.get(priority);
-			queue.push(Forge::move(job));
+			queue.push(Mach::move(job));
 		}
 
-		FORGE_NO_DISCARD bool wait_until(Duration const& duration, Task const& task) const;
-		FORGE_ALWAYS_INLINE void wait_for(Task const& task) const {
+		MACH_NO_DISCARD bool wait_until(Duration const& duration, Task const& task) const;
+		MACH_ALWAYS_INLINE void wait_for(Task const& task) const {
 			// Not infinite but 584.9 billion years seems like enough time
 			const bool complete = wait_until(Duration{ NumericLimits<u64>::max(), 0 }, task);
-			FORGE_UNUSED(complete);
+			MACH_UNUSED(complete);
 		}
 
 		bool is_running() const;
 
 	private:
 		struct ThreadController {
-			Array<Forge::SharedPtr<Thread>> threads;
+			Array<Mach::SharedPtr<Thread>> threads;
 			Atomic<u32> ready_count{ 0 };
 		};
 		struct WaitingTask {
@@ -89,7 +89,7 @@ namespace Forge::Core {
 		};
 
 		struct FiberController {
-			Array<Forge::SharedPtr<Fiber>> fibers;
+			Array<Mach::SharedPtr<Fiber>> fibers;
 			MPMC<u32> dormant_fibers;
 		};
 
@@ -98,7 +98,7 @@ namespace Forge::Core {
 			MPMC<Job> normal_priority;
 			MPMC<Job> low_priority;
 
-			FORGE_ALWAYS_INLINE MPMC<Job> const& get(Priority priority) const {
+			MACH_ALWAYS_INLINE MPMC<Job> const& get(Priority priority) const {
 				switch (priority) {
 				case Priority::Low:
 					return low_priority;
@@ -110,7 +110,7 @@ namespace Forge::Core {
 					return high_priority;
 					break;
 				default:
-					FORGE_UNIMPLEMENTED;
+					MACH_UNIMPLEMENTED;
 					break;
 				}
 			}
@@ -123,4 +123,4 @@ namespace Forge::Core {
 		TaskTracker m_task_tracker;
 		WorkQueue m_work_queue;
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core

@@ -10,7 +10,7 @@
 #include <GPU/Device.hpp>
 #include <GUI/Application.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	UniquePtr<Window> Window::create(CreateInfo const& create_info) {
 		const auto dpi = static_cast<f32>(::GetDpiForSystem()) / 96.f;
 
@@ -50,7 +50,7 @@ namespace Forge::GUI {
 		// TODO: Error handling
 
 		auto swapchain = create_info.device.create_swapchain(handle);
-		auto result = UniquePtr<Win32Window>::create(handle, Forge::move(swapchain));
+		auto result = UniquePtr<Win32Window>::create(handle, Mach::move(swapchain));
 		::SetWindowLongPtrW(handle, GWLP_USERDATA, (LONG_PTR) & *result);
 		return result;
 	}
@@ -74,4 +74,4 @@ namespace Forge::GUI {
 	Point Win32Window::cursor_position() const { return { 0, 0 }; }
 
 	Bounds Win32Window::viewport() const { return { 0, 0 }; }
-} // namespace Forge::GUI
+} // namespace Mach::GUI

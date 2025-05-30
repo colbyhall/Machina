@@ -10,4 +10,4 @@ set(DOCTEST_SRC_FILES
         ${DOCTEST_ROOT}/Doctest.cpp
 )
 
-add_forge_library(Doctest ${DOCTEST_ROOT} ${DOCTEST_SRC_FILES})
+add_machina_library(Doctest ${DOCTEST_ROOT} ${DOCTEST_SRC_FILES})

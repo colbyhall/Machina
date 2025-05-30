@@ -13,7 +13,7 @@
 
 #include <Core/Debug/Log.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	bool Frame::window(StringView title, FunctionRef<void(Builder&)> f) {
 		const auto default_size = Size(1280, 720);
 		const auto id = Id::from_string(title);
@@ -84,7 +84,7 @@ namespace Forge::GUI {
 
 	int Application::run(FunctionRef<void(Frame&)> tick) {
 		static Core::Atomic<bool> running{ false };
-		FORGE_ASSERT(running.exchange(true) == false);
+		MACH_ASSERT(running.exchange(true) == false);
 
 		auto last = Core::Instant::now();
 		u64 frame_count = 0;
@@ -102,4 +102,4 @@ namespace Forge::GUI {
 
 		return 0;
 	}
-} // namespace Forge::GUI
+} // namespace Mach::GUI

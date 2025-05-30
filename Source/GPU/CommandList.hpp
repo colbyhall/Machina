@@ -14,7 +14,7 @@
 #include <Core/Math/Vector4.hpp>
 #include <GPU/Forward.hpp>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	enum class Layout : u8 {
 		Undefined,
 		General,
@@ -35,7 +35,7 @@ namespace Forge::GPU {
 
 	class CommandList : public SharedPtrFromThis<CommandList> {
 	public:
-		FORGE_NO_DISCARD virtual SharedPtr<Receipt> submit() const = 0;
+		MACH_NO_DISCARD virtual SharedPtr<Receipt> submit() const = 0;
 
 		virtual ~CommandList() {}
 	};
@@ -105,4 +105,4 @@ namespace Forge::GPU {
 
 		virtual ~CommandRecorder() {}
 	};
-} // namespace Forge::GPU
+} // namespace Mach::GPU

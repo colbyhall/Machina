@@ -11,23 +11,23 @@
 #include <Core/Containers/UniquePtr.hpp>
 #include <Core/Windows.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	class Win32Window final : public Window {
 	public:
 		explicit Win32Window(HWND handle, UniquePtr<GPU::Swapchain>&& swapchain)
 			: m_handle{ handle }
-			, m_swapchain{ Forge::move(swapchain) } {}
+			, m_swapchain{ Mach::move(swapchain) } {}
 
-		FORGE_NO_COPY(Win32Window);
-		Win32Window(Win32Window&& move) : m_handle{ move.m_handle }, m_swapchain{ Forge::move(move.m_swapchain) } {
+		MACH_NO_COPY(Win32Window);
+		Win32Window(Win32Window&& move) : m_handle{ move.m_handle }, m_swapchain{ Mach::move(move.m_swapchain) } {
 			move.m_handle = nullptr;
 		}
 		Win32Window& operator=(Win32Window&& move) {
-			auto to_destroy = Forge::move(*this);
-			FORGE_UNUSED(to_destroy);
+			auto to_destroy = Mach::move(*this);
+			MACH_UNUSED(to_destroy);
 
 			m_handle = move.m_handle;
-			m_swapchain = Forge::move(move.m_swapchain);
+			m_swapchain = Mach::move(move.m_swapchain);
 			move.m_handle = nullptr;
 
 			return *this;
@@ -49,4 +49,4 @@ namespace Forge::GUI {
 		HWND m_handle;
 		UniquePtr<GPU::Swapchain> m_swapchain;
 	};
-} // namespace Forge::GUI
+} // namespace Mach::GUI

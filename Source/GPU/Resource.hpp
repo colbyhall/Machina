@@ -9,16 +9,16 @@
 #include <Core/Containers/Option.hpp>
 #include <Core/Primitives.hpp>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	using BindlessIndex = u32;
 
 	class Resource {
 	public:
-		FORGE_ALWAYS_INLINE Option<BindlessIndex> bindless() const { return m_bindless; }
+		MACH_ALWAYS_INLINE Option<BindlessIndex> bindless() const { return m_bindless; }
 
 		virtual ~Resource() {}
 
 	protected:
 		Option<BindlessIndex> m_bindless = nullopt;
 	};
-} // namespace Forge::GPU
+} // namespace Mach::GPU

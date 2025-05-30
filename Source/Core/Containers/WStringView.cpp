@@ -7,7 +7,7 @@
 #include <Core/Containers/WStringView.hpp>
 #include <Core/Debug/Test.hpp>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	bool WStringView::operator==(const WStringView& rhs) const {
 		if (len() != rhs.len()) {
 			return false;
@@ -21,15 +21,15 @@ namespace Forge::Core {
 
 		return true;
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core
 
-#if FORGE_ENABLE_TEST
-FORGE_TEST_SUITE("Containers") {
-	using namespace Forge::Core;
+#if MACH_ENABLE_TEST
+MACH_TEST_SUITE("Containers") {
+	using namespace Mach::Core;
 
-	FORGE_TEST_CASE("WStringView") {
+	MACH_TEST_CASE("WStringView") {
 		WStringView view = L"Hello World";
-		FORGE_CHECK(view.len() == 11);
+		MACH_CHECK(view.len() == 11);
 	}
 }
-#endif // FORGE_ENABLE_TEST
+#endif // MACH_ENABLE_TEST

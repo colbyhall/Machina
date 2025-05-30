@@ -8,21 +8,21 @@
 
 #include <Core/Debug/Log.hpp>
 
-#if FORGE_CPU == FORGE_CPU_ARM
-namespace Forge::Core {
-	thread_local Option<Forge::SharedPtr<Fiber>> g_current_fiber = nullopt;
+#if MACH_CPU == MACH_CPU_ARM
+namespace Mach::Core {
+	thread_local Option<Mach::SharedPtr<Fiber>> g_current_fiber = nullopt;
 
 	static void fiber_entry(Fiber::Function* f) {
 		(*f)();
 		Memory::free(f);
 	}
 
-	Forge::SharedPtr<Fiber> Fiber::spawn(Function&& f, SpawnInfo const& spawn_info) {
+	Mach::SharedPtr<Fiber> Fiber::spawn(Function&& f, SpawnInfo const& spawn_info) {
 		const auto stack_size = spawn_info.stack_size;
 		auto stack = UniquePtr<u8[]>::create(stack_size);
 
 		auto param = Memory::alloc(Memory::Layout::single<Function>());
-		Memory::emplace<Function>(param, Forge::move(f));
+		Memory::emplace<Function>(param, Mach::move(f));
 
 		// Setup the stack to call the function in spawn info
 		auto registers = AARCH64Fiber::Registers{};
@@ -30,14 +30,14 @@ namespace Forge::Core {
 		registers.pc = reinterpret_cast<u64>(&fiber_entry);
 		registers.x[0] = reinterpret_cast<u64>(*param);
 
-		AARCH64Fiber fiber{ Forge::move(registers), Forge::move(stack) };
-		return Forge::SharedPtr<AARCH64Fiber>::create(Forge::move(fiber));
+		AARCH64Fiber fiber{ Mach::move(registers), Mach::move(stack) };
+		return Mach::SharedPtr<AARCH64Fiber>::create(Mach::move(fiber));
 	}
 
 	Fiber const& Fiber::current() {
 		if (!g_current_fiber.is_set()) {
 			AARCH64Fiber fiber{ AARCH64Fiber::Registers{} };
-			g_current_fiber = Forge::SharedPtr<AARCH64Fiber>::create(Forge::move(fiber));
+			g_current_fiber = Mach::SharedPtr<AARCH64Fiber>::create(Mach::move(fiber));
 		}
 		return *g_current_fiber.as_ref().unwrap();
 	}
@@ -80,5 +80,5 @@ namespace Forge::Core {
 			: "r"(current_registers), "r"(next_registers)
 			: "x19", "memory");
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core
 #endif

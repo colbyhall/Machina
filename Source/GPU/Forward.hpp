@@ -8,7 +8,7 @@
 
 #include <Core/Containers/SharedPtr.hpp>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	template <typename T>
 	using Handle = SharedPtr<T>;
 
@@ -23,4 +23,4 @@ namespace Forge::GPU {
 
 	class MetalDevice;
 	class MetalSwapchain;
-} // namespace Forge::GPU
+} // namespace Mach::GPU

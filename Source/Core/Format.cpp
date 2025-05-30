@@ -7,7 +7,7 @@
 #include <Core/Format.hpp>
 #include <cstdio>
 
-namespace Forge::Core {
+namespace Mach::Core {
 	struct ANSIIdentifier {
 		enum Code : u8 {
 			Default = 0,
@@ -142,7 +142,7 @@ namespace Forge::Core {
 								}
 							}
 							if (!found) {
-								FORGE_PANIC("Unknown ANSI identifier");
+								MACH_PANIC("Unknown ANSI identifier");
 							}
 							break;
 						} else if (f) {
@@ -150,14 +150,14 @@ namespace Forge::Core {
 							(f.as_ref().unwrap())(rest);
 							return;
 						} else {
-							FORGE_PANIC("Not enough arguments were provided");
+							MACH_PANIC("Not enough arguments were provided");
 						}
 					}
 				}
 			}
 		}
 
-		FORGE_ASSERT(!f.is_set(), "Too many arguments were provided");
+		MACH_ASSERT(!f.is_set(), "Too many arguments were provided");
 
 		if (base != fmt.len()) {
 			m_bytes_written += m_writer.write(fmt.substring(base, fmt.len()));
@@ -167,14 +167,14 @@ namespace Forge::Core {
 	void Formatter::format_one(const StringView& fmt) { format_lambda(fmt, nullopt); }
 
 	usize print_unsigned_integer(Writer& writer, u64 value, u8 base) {
-		FORGE_UNUSED(base);
+		MACH_UNUSED(base);
 
 		char buffer[32];
 		const auto written = std::snprintf(buffer, 32, "%llu", value);
 		return writer.write(Slice<u8 const>{ (const u8*)buffer, static_cast<usize>(written) });
 	}
 	usize print_signed_integer(Writer& writer, i64 value, u8 base) {
-		FORGE_UNUSED(base);
+		MACH_UNUSED(base);
 
 		char buffer[32];
 		const auto written = std::snprintf(buffer, 32, "%lld", value);
@@ -190,4 +190,4 @@ namespace Forge::Core {
 		const auto written = std::snprintf(buffer, 32, "%f", value);
 		return writer.write(Slice<u8 const>{ (const u8*)buffer, static_cast<usize>(written) });
 	}
-} // namespace Forge::Core
+} // namespace Mach::Core

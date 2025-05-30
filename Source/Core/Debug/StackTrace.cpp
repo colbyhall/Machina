@@ -8,11 +8,11 @@
 
 #include <Core/Containers/StringView.hpp>
 
-#if FORGE_OS == FORGE_OS_WINDOWS
+#if MACH_OS == MACH_OS_WINDOWS
 	#include <Core/Windows.hpp>
 	#include <DbgHelp.h>
 
-namespace Forge::Core::StackTrace {
+namespace Mach::Core::StackTrace {
 	Array<Frame> capture() {
 		Array<Frame> result;
 
@@ -43,12 +43,12 @@ namespace Forge::Core::StackTrace {
 	#endif
 		return result;
 	}
-} // namespace Forge::Core::StackTrace
+} // namespace Mach::Core::StackTrace
 
 #else
 	#include <execinfo.h>
 
-namespace Forge::Core::StackTrace {
+namespace Mach::Core::StackTrace {
 	Array<Frame> capture() {
 		constexpr int max_frames = 128;
 		Array<Frame> result;
@@ -69,5 +69,5 @@ namespace Forge::Core::StackTrace {
 
 		return result;
 	}
-} // namespace Forge::Core::StackTrace
+} // namespace Mach::Core::StackTrace
 #endif

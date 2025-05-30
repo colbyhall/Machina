@@ -8,18 +8,18 @@
 
 #include <Core/Containers/Option.hpp>
 
-#if FORGE_OS == FORGE_OS_WINDOWS
+#if MACH_OS == MACH_OS_WINDOWS
 	#include <Core/Windows.hpp>
 #else
 	#include <time.h>
 #endif
 
-namespace Forge::Core {
-#if FORGE_OS == FORGE_OS_WINDOWS
+namespace Mach::Core {
+#if MACH_OS == MACH_OS_WINDOWS
 	static u64 acquire_frequency() {
 		LARGE_INTEGER freq;
 		const auto result = ::QueryPerformanceFrequency(&freq);
-		FORGE_ASSERT(result);
+		MACH_ASSERT(result);
 		return static_cast<u64>(freq.QuadPart);
 	}
 	static const u64 g_timer_frequency = acquire_frequency();
@@ -27,7 +27,7 @@ namespace Forge::Core {
 	Instant Instant::now() {
 		LARGE_INTEGER ticks;
 		const auto result = QueryPerformanceCounter(&ticks);
-		FORGE_ASSERT(result);
+		MACH_ASSERT(result);
 		return Instant(static_cast<u64>(ticks.QuadPart));
 	}
 
@@ -49,4 +49,4 @@ namespace Forge::Core {
 		return Duration(m_secs - earlier.m_secs, m_nanos - earlier.m_nanos);
 	}
 #endif
-} // namespace Forge::Core
+} // namespace Mach::Core

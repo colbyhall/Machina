@@ -9,18 +9,18 @@
 #include <Core/Containers/Function.hpp>
 #include <Core/Containers/SharedPtr.hpp>
 
-namespace Forge::Core {
-	class Fiber : public Forge::SharedPtrFromThis<Fiber> {
+namespace Mach::Core {
+	class Fiber : public Mach::SharedPtrFromThis<Fiber> {
 	public:
 		using Function = Function<void()>;
 		struct SpawnInfo {
 			usize stack_size = 1024 * 1024;
 		};
-		static Forge::SharedPtr<Fiber> spawn(Function&& f);
-		static Forge::SharedPtr<Fiber> spawn(Function&& f, SpawnInfo const& info);
+		static Mach::SharedPtr<Fiber> spawn(Function&& f);
+		static Mach::SharedPtr<Fiber> spawn(Function&& f, SpawnInfo const& info);
 		static Fiber const& current();
 
 		virtual void switch_to() const = 0;
 		virtual ~Fiber() {}
 	};
-} // namespace Forge::Core
+} // namespace Mach::Core

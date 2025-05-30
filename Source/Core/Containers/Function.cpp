@@ -8,9 +8,9 @@
 
 #include <Core/Debug/Test.hpp>
 
-#if FORGE_ENABLE_TEST
-FORGE_TEST_SUITE("Containers") {
-	using namespace Forge::Core;
+#if MACH_ENABLE_TEST
+MACH_TEST_SUITE("Containers") {
+	using namespace Mach::Core;
 
 	int test(int x) { return x + 7; }
 
@@ -25,39 +25,39 @@ FORGE_TEST_SUITE("Containers") {
 		int bar(int y) const { return x + y; }
 	};
 
-	FORGE_TEST_CASE("Function") {
-		FORGE_SUBCASE("from lambda") {
+	MACH_TEST_CASE("Function") {
+		MACH_SUBCASE("from lambda") {
 			int foo = 5;
 			Function<int(int)> fn = [foo](int x) { return x + foo; };
-			FORGE_CHECK(fn(5) == 10);
+			MACH_CHECK(fn(5) == 10);
 		}
 
-		FORGE_SUBCASE("from functor") {
+		MACH_SUBCASE("from functor") {
 			Function<int(int)> fn = Functor{};
-			FORGE_CHECK(fn(5) == 6);
+			MACH_CHECK(fn(5) == 6);
 		};
 
-		FORGE_SUBCASE("from function pointer") {
+		MACH_SUBCASE("from function pointer") {
 			Function<int(int)> fn = &test;
-			FORGE_CHECK(fn(5) == 12);
+			MACH_CHECK(fn(5) == 12);
 		}
 	}
 
-	FORGE_TEST_CASE("FunctionRef") {
-		FORGE_SUBCASE("from lambda") {
+	MACH_TEST_CASE("FunctionRef") {
+		MACH_SUBCASE("from lambda") {
 			FunctionRef<int(int)> fn = [](int x) { return x + 1; };
-			FORGE_CHECK(fn(5) == 6);
+			MACH_CHECK(fn(5) == 6);
 		}
 
-		FORGE_SUBCASE("from functor") {
+		MACH_SUBCASE("from functor") {
 			FunctionRef<int(int)> fn = Functor{};
-			FORGE_CHECK(fn(5) == 6);
+			MACH_CHECK(fn(5) == 6);
 		};
 
-		FORGE_SUBCASE("from function pointer") {
+		MACH_SUBCASE("from function pointer") {
 			FunctionRef<int(int)> fn = &test;
-			FORGE_CHECK(fn(5) == 12);
+			MACH_CHECK(fn(5) == 12);
 		}
 	}
 }
-#endif // FORGE_ENABLE_TEST
+#endif // MACH_ENABLE_TEST

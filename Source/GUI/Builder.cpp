@@ -6,9 +6,9 @@
 
 #include <GUI/Builder.hpp>
 
-namespace Forge::GUI {
+namespace Mach::GUI {
 	bool Builder::button(StringView text) {
-		FORGE_UNUSED(text);
+		MACH_UNUSED(text);
 		return false;
 	}
-} // namespace Forge::GUI
+} // namespace Mach::GUI

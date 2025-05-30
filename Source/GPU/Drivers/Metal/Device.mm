@@ -17,7 +17,7 @@
 #import <AppKit/AppKit.h>
 #import <Metal/Metal.h>
 
-namespace Forge::GPU {
+namespace Mach::GPU {
 	UniquePtr<Device> create_metal_device() {
 		@autoreleasepool {
 			id<MTLDevice> device = MTLCreateSystemDefaultDevice();
@@ -83,7 +83,7 @@ namespace Forge::GPU {
 	}
 
 	Handle<Library> MetalDevice::create_library_from_source(ShaderSource const& source) const {
-		FORGE_ASSERT(source.language == ShaderLanguage::MSL);
+		MACH_ASSERT(source.language == ShaderLanguage::MSL);
 		@autoreleasepool {
 			NSString* objc_source = [[NSString alloc] initWithBytesNoCopy:(void*)*source.text
 																   length:static_cast<NSUInteger>(source.text.len())
@@ -96,7 +96,7 @@ namespace Forge::GPU {
 			if (error != nil) {
 				NSString* message = [error localizedDescription];
 				NSLog(@"Error: %@", message);
-				Forge::Core::abort();
+				Mach::Core::abort();
 			}
 			return Handle<MetalLibrary>::create(library);
 		}
@@ -163,7 +163,7 @@ namespace Forge::GPU {
 			NSError* error = nil;
 			id<MTLRenderPipelineState> pipeline_state =
 				[m_device newRenderPipelineStateWithDescriptor:pipeline_descriptor error:&error];
-			FORGE_ASSERT(error == nil);
+			MACH_ASSERT(error == nil);
 			return Handle<MetalGraphicsPipeline>::create(create_info, pipeline_state);
 		}
 	}
@@ -180,4 +180,4 @@ namespace Forge::GPU {
 		}
 	}
 
-} // namespace Forge::GPU
+} // namespace Mach::GPU
