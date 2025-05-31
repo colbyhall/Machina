@@ -8,14 +8,14 @@
 
 namespace Mach::GUI {
 	Shape Shape::text(StringView s, const Bounds& bounds, Color color) {
-		return Shape(MyVariant(Text{ .string = s }), bounds, color);
+		return Shape(Shape::Variant(Text{ .string = s }), bounds, color);
 	}
 
-	Shape Shape::rect(const Bounds& bounds, Color color) { return Shape(MyVariant(Rect{}), bounds, color); }
+	Shape Shape::rect(const Bounds& bounds, Color color) { return Shape(Shape::Variant(Rect{}), bounds, color); }
 
 	Shape Shape::line(const Point& start, const Point& end, Real width, Color color) {
 		return Shape(
-			MyVariant(Line{ .width = width }),
+			Shape::Variant(Line{ .width = width }),
 			Bounds{
 				.min = start,
 				.max = end,

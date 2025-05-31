@@ -38,7 +38,7 @@ namespace Mach::GUI {
 		struct Line {
 			Real width;
 		};
-		using MyVariant = Variant<Text, Rect, Line>;
+		using Variant = Core::Variant<Text, Rect, Line>;
 
 		static Shape text(StringView s, const Bounds& bounds, Color color);
 		static Shape rect(const Bounds& bounds, Color color);
@@ -47,12 +47,12 @@ namespace Mach::GUI {
 		void tesselate(Mesh& mesh, const Bounds& clip) const;
 
 	private:
-		explicit Shape(MyVariant&& variant, const Bounds& bounds, Color color)
+		explicit Shape(Shape::Variant&& variant, const Bounds& bounds, Color color)
 			: m_variant(Mach::move(variant))
 			, m_bounds(bounds)
 			, m_color(color) {}
 
-		MyVariant m_variant;
+		Shape::Variant m_variant;
 		Bounds m_bounds;
 		Color m_color;
 	};
