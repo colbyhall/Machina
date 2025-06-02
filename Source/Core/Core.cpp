@@ -37,9 +37,9 @@ namespace Mach::Core {
 		const auto stack_trace = StackTrace::capture();
 
 		// Defines how many from the end we should early to not show OS garbage
-		constexpr u32 early_out = 4;
-		const u32 count = stack_trace.len() - early_out;
-		for (u32 i = 1; i < stack_trace.len() - early_out; i++) {
+		constexpr usize early_out = 4;
+		const usize count = stack_trace.len() - early_out;
+		for (usize i = 1; i < stack_trace.len() - early_out; i++) {
 #if MACH_OS == MACH_OS_WINDOWS
 			formatter.format(u8"{}: {}\n"_sv, count - i, stack_trace[i]);
 #else
