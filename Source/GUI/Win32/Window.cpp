@@ -71,7 +71,18 @@ namespace Mach::GUI {
 
 	bool Win32Window::minimize() { return ::ShowWindow(m_handle, SW_MINIMIZE) > 0; }
 
-	Point Win32Window::cursor_position() const { return { 0, 0 }; }
+	Point Win32Window::cursor_position() const {
+		MACH_UNIMPLEMENTED;
+		return { 0, 0 };
+	}
 
-	Bounds Win32Window::viewport() const { return { 0, 0 }; }
+	Bounds Win32Window::viewport() const {
+		MACH_UNIMPLEMENTED;
+		return { 0, 0 };
+	}
+
+	Real Win32Window::scale_factor() const {
+		MACH_UNIMPLEMENTED;
+		return Real(0);
+	}
 } // namespace Mach::GUI

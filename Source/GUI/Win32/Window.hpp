@@ -42,6 +42,7 @@ namespace Mach::GUI {
 		GPU::Swapchain& swapchain() const final { return *m_swapchain; }
 		Point cursor_position() const final;
 		Bounds viewport() const final;
+		Real scale_factor() const final;
 		~Win32Window() final;
 		// ~Window interface
 
