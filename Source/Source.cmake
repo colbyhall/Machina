@@ -43,6 +43,7 @@ endfunction()
 
 include(${SOURCE_ROOT}/Core/Core.cmake)
 include(${SOURCE_ROOT}/Doctest/Doctest.cmake)
+include(${SOURCE_ROOT}/DXC/DXC.cmake)
 include(${SOURCE_ROOT}/GPU/GPU.cmake)
 include(${SOURCE_ROOT}/GUI/GUI.cmake)
 include(${SOURCE_ROOT}/Sandbox/Sandbox.cmake)
